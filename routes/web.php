@@ -1,0 +1,98 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/portal', [App\Http\Controllers\PortalClienteController::class, 'index'])->name('portal.app');
+Route::get('/app', [App\Http\Controllers\PortalClienteController::class, 'index'])->name('portal.mobile');
+
+Route::middleware('auth')->group(function () {
+    // Rutas para Módulo de Análisis con IA y Dashboard Dinámico
+    Route::get('dashboard/export', [App\Http\Controllers\DashboardController::class, 'export'])->name('dashboard.export');
+    Route::post('dashboard/filter', [App\Http\Controllers\DashboardController::class, 'filterData'])->name('dashboard.filter');
+    Route::post('dashboard/ask-ai', [App\Http\Controllers\DashboardController::class, 'askAi'])->name('dashboard.ask_ai');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('clientes/export', [App\Http\Controllers\ClienteController::class, 'export'])->name('clientes.export');
+    Route::post('tramites/cambiar-estado', [App\Http\Controllers\TramiteController::class, 'cambiarEstado'])->name('tramites.cambiar_estado');
+    Route::get('clientes/{cliente}/tramites', [App\Http\Controllers\TramiteController::class, 'index'])->name('clientes.tramites');
+    Route::get('clientes/{cliente}/pagos', [App\Http\Controllers\ClienteController::class, 'pagos'])->name('clientes.pagos');
+    Route::get('clientes/{cliente}/recibo-abono', [App\Http\Controllers\ClienteController::class, 'reciboAbono'])->name('clientes.recibo_abono');
+    Route::post('clientes/{cliente}/abonar', [App\Http\Controllers\ClienteController::class, 'abonar'])->name('clientes.abonar');
+    Route::resource('clientes', App\Http\Controllers\ClienteController::class);
+    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::resource('oficinas', App\Http\Controllers\OficinaController::class);
+    Route::resource('tramites-varios', App\Http\Controllers\TramiteVarioController::class);
+    Route::get('clientes/{cliente}/divorcios/create', [App\Http\Controllers\TramiteDivorcioController::class, 'create'])->name('divorcios.create');
+    Route::post('clientes/{cliente}/divorcios', [App\Http\Controllers\TramiteDivorcioController::class, 'store'])->name('divorcios.store');
+    Route::get('divorcios/{id}', [App\Http\Controllers\TramiteDivorcioController::class, 'show'])->name('divorcios.show');
+
+    Route::get('clientes/{cliente}/impuestos/create', [App\Http\Controllers\TramiteImpuestoController::class, 'create'])->name('impuestos.create');
+    Route::post('clientes/{cliente}/impuestos', [App\Http\Controllers\TramiteImpuestoController::class, 'store'])->name('impuestos.store');
+    Route::get('impuestos/{id}', [App\Http\Controllers\TramiteImpuestoController::class, 'show'])->name('impuestos.show');
+
+    Route::get('clientes/{cliente}/poderes/create', [App\Http\Controllers\TramitePoderController::class, 'create'])->name('poderes.create');
+    Route::post('clientes/{cliente}/poderes', [App\Http\Controllers\TramitePoderController::class, 'store'])->name('poderes.store');
+    Route::get('poderes/{id}', [App\Http\Controllers\TramitePoderController::class, 'show'])->name('poderes.show');
+
+    // Rutas para Constructor de Trámites Dinámicos y Formularios
+    Route::resource('tipo-tramites', App\Http\Controllers\TipoTramiteController::class);
+    Route::get('clientes/{cliente}/tramites-personalizados/{tipoTramite}/create', [App\Http\Controllers\TramitePersonalizadoController::class, 'create'])->name('tramites-personalizados.create');
+    Route::post('clientes/{cliente}/tramites-personalizados/{tipoTramite}', [App\Http\Controllers\TramitePersonalizadoController::class, 'store'])->name('tramites-personalizados.store');
+    Route::get('tramites-personalizados/{tramitePersonalizado}', [App\Http\Controllers\TramitePersonalizadoController::class, 'show'])->name('tramites-personalizados.show');
+
+    // Rutas para Módulo de Plantillas y Diseñador de Documentos
+    Route::post('plantillas/upload-image', [App\Http\Controllers\PlantillaController::class, 'uploadImage'])->name('plantillas.upload_image');
+    Route::post('plantillas/import-pdf', [App\Http\Controllers\PlantillaController::class, 'importPdf'])->name('plantillas.import_pdf');
+    Route::post('plantillas/guardar-documento-cliente', [App\Http\Controllers\PlantillaController::class, 'guardarDocumentoCliente'])->name('plantillas.guardar_documento_cliente');
+    Route::post('plantillas/{plantilla}/guardar-expediente', [App\Http\Controllers\PlantillaController::class, 'guardarDocumentoCliente'])->name('plantillas.guardar_expediente');
+    Route::get('plantillas/{plantilla}/generar', [App\Http\Controllers\PlantillaController::class, 'generar'])->name('plantillas.generar');
+    Route::post('plantillas/{plantilla}/duplicar', [App\Http\Controllers\PlantillaController::class, 'duplicar'])->name('plantillas.duplicar');
+    Route::post('plantillas/{plantilla}/descargar-pdf', [App\Http\Controllers\PlantillaController::class, 'descargarPdf'])->name('plantillas.descargar_pdf');
+    Route::post('plantillas/{plantilla}/descargar-docx', [App\Http\Controllers\PlantillaController::class, 'descargarDocx'])->name('plantillas.descargar_docx');
+    
+    // Rutas para Membretes (Encabezados y Pies de Página)
+    Route::post('plantillas-membretes/upload-image', [App\Http\Controllers\PlantillaMembreteController::class, 'uploadImage'])->name('plantillas-membretes.upload_image');
+    Route::resource('plantillas-membretes', App\Http\Controllers\PlantillaMembreteController::class)->parameters(['plantillas-membretes' => 'membrete']);
+
+    Route::resource('plantillas', App\Http\Controllers\PlantillaController::class);
+
+    // Rutas para Módulo Financiero: Bancos y Tarjetas
+    Route::resource('bancos', App\Http\Controllers\BancoController::class);
+    Route::resource('tarjetas', App\Http\Controllers\TarjetaController::class);
+
+    // Rutas para Módulo Operativo de Caja (Apertura, Arqueo, Cierre, Historial)
+    Route::get('cajas', [App\Http\Controllers\CajaController::class, 'index'])->name('cajas.index');
+    Route::post('cajas/abrir', [App\Http\Controllers\CajaController::class, 'abrir'])->name('cajas.abrir');
+    Route::post('cajas/movimiento-manual', [App\Http\Controllers\CajaController::class, 'registrarMovimientoManual'])->name('cajas.movimiento_manual');
+    Route::get('cajas/cerrar', [App\Http\Controllers\CajaController::class, 'showCerrar'])->name('cajas.cerrar');
+    Route::post('cajas/check-cuadre', [App\Http\Controllers\CajaController::class, 'checkCuadre'])->name('cajas.check_cuadre');
+    Route::post('cajas/cerrar', [App\Http\Controllers\CajaController::class, 'cerrar'])->name('cajas.procesar_cierre');
+    Route::get('cajas/historial', [App\Http\Controllers\CajaController::class, 'historial'])->name('cajas.historial');
+    Route::get('cajas/{id}/acta-pdf', [App\Http\Controllers\CajaController::class, 'actaPdf'])->name('cajas.acta_pdf');
+
+    // Rutas para Módulo de Reportes de Caja y Desempeño (Exclusivo Administrador / Supervisor)
+    Route::get('reportes/cajas', [App\Http\Controllers\CajaReporteController::class, 'index'])->name('reportes.cajas.index');
+    Route::get('reportes/cajas/export', [App\Http\Controllers\CajaReporteController::class, 'export'])->name('reportes.cajas.export');
+    Route::get('reportes/cajas/desempeno', [App\Http\Controllers\CajaReporteController::class, 'desempeno'])->name('reportes.cajas.desempeno');
+    Route::get('reportes/cajas/{id}', [App\Http\Controllers\CajaReporteController::class, 'show'])->name('reportes.cajas.show');
+
+    // Rutas para Módulo de Gestión de Permisos Granulares
+    Route::get('permisos', [App\Http\Controllers\PermisoController::class, 'index'])->name('permisos.index');
+    Route::get('permisos/{user}/edit', [App\Http\Controllers\PermisoController::class, 'edit'])->name('permisos.edit');
+    Route::put('permisos/{user}', [App\Http\Controllers\PermisoController::class, 'update'])->name('permisos.update');
+    Route::post('permisos/{user}/preset', [App\Http\Controllers\PermisoController::class, 'applyPreset'])->name('permisos.preset');
+});
+
+require __DIR__.'/auth.php';

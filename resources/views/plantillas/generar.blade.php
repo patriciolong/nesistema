@@ -405,11 +405,11 @@
                             <span class="text-[11px] font-black uppercase text-amber-800 tracking-wider flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-amber-500"></span> Encabezado:
                             </span>
-                            <select x-model="encabezadoId" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-amber-500">
+                            <select x-model="encabezadoId" @change="encabezadoId = $event.target.value" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-amber-500">
                                 <option value="">(Sin encabezado)</option>
-                                <template x-for="enc in encabezadosList" :key="enc.id">
-                                    <option :value="enc.id" x-text="enc.nombre + (enc.es_predeterminado ? ' ★' : '')"></option>
-                                </template>
+                                @foreach($encabezados as $enc)
+                                    <option value="{{ $enc->id }}">{{ $enc->nombre }}{{ $enc->es_predeterminado ? ' ★' : '' }}</option>
+                                @endforeach
                             </select>
                             <button type="button" @click="openCanvasDesigner('encabezado')" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-lg text-[11px] shadow-xs flex items-center gap-1 transition">
                                 <span>🎨</span>
@@ -422,11 +422,11 @@
                             <span class="text-[11px] font-black uppercase text-indigo-800 tracking-wider flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-indigo-600"></span> Pie de Página:
                             </span>
-                            <select x-model="pieId" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-indigo-500">
+                            <select x-model="pieId" @change="pieId = $event.target.value" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-indigo-500">
                                 <option value="">(Sin pie de página)</option>
-                                <template x-for="pie in piesList" :key="pie.id">
-                                    <option :value="pie.id" x-text="pie.nombre + (pie.es_predeterminado ? ' ★' : '')"></option>
-                                </template>
+                                @foreach($pies as $pie)
+                                    <option value="{{ $pie->id }}">{{ $pie->nombre }}{{ $pie->es_predeterminado ? ' ★' : '' }}</option>
+                                @endforeach
                             </select>
                             <button type="button" @click="openCanvasDesigner('pie')" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-lg text-[11px] shadow-xs flex items-center gap-1 transition">
                                 <span>🎨</span>
@@ -820,8 +820,8 @@
 
                         <!-- 1. ENCABEZADO SUPERIOR (Se repite en CADA hoja A4) -->
                         <div class="a4-sheet-header-render select-none bg-white transition-all rounded-t" 
-                             x-show="selectedEncabezadoHtml" 
-                             x-html="selectedEncabezadoHtml"
+                             x-show="getEncabezadoHtml()" 
+                             x-html="getEncabezadoHtml()"
                              x-cloak></div>
 
                         <!-- 2. CUERPO EDITABLE DE LA HOJA A4 -->
@@ -837,8 +837,8 @@
 
                         <!-- 3. PIE DE PÁGINA INFERIOR (Se repite en CADA hoja A4) -->
                         <div class="a4-sheet-footer-render select-none bg-white transition-all rounded-b" 
-                             x-show="selectedPieHtml" 
-                             x-html="selectedPieHtml"
+                             x-show="getPieHtml()" 
+                             x-html="getPieHtml()"
                              x-cloak></div>
 
                     </div>
@@ -943,16 +943,24 @@
                 encabezadoId: @json($plantilla->encabezado_id ?? ''),
                 pieId: @json($plantilla->pie_id ?? ''),
 
-                get selectedEncabezadoHtml() {
+                getEncabezadoHtml() {
                     if (!this.encabezadoId) return '';
-                    const item = this.encabezadosList.find(e => e.id == this.encabezadoId);
+                    const item = this.encabezadosList.find(e => String(e.id) === String(this.encabezadoId));
                     return item ? item.contenido_html : '';
                 },
 
-                get selectedPieHtml() {
+                getPieHtml() {
                     if (!this.pieId) return '';
-                    const item = this.piesList.find(p => p.id == this.pieId);
+                    const item = this.piesList.find(p => String(p.id) === String(this.pieId));
                     return item ? item.contenido_html : '';
+                },
+
+                get selectedEncabezadoHtml() {
+                    return this.getEncabezadoHtml();
+                },
+
+                get selectedPieHtml() {
+                    return this.getPieHtml();
                 },
 
                 // Arquitectura Multi-Página A4 (Estilo Word)
@@ -1760,6 +1768,19 @@
                             this.encabezadosList.push(m);
                         }
                         this.encabezadoId = m.id;
+                        this.$nextTick(() => {
+                            const selectEl = document.querySelector('select[x-model="encabezadoId"]');
+                            if (selectEl) {
+                                let opt = Array.from(selectEl.options).find(o => o.value == m.id);
+                                if (!opt) {
+                                    opt = document.createElement('option');
+                                    opt.value = m.id;
+                                    selectEl.appendChild(opt);
+                                }
+                                opt.textContent = m.nombre + (m.es_predeterminado ? ' ★' : '');
+                                selectEl.value = m.id;
+                            }
+                        });
                     } else {
                         const idx = this.piesList.findIndex(p => p.id == m.id);
                         if (idx >= 0) {
@@ -1768,6 +1789,19 @@
                             this.piesList.push(m);
                         }
                         this.pieId = m.id;
+                        this.$nextTick(() => {
+                            const selectEl = document.querySelector('select[x-model="pieId"]');
+                            if (selectEl) {
+                                let opt = Array.from(selectEl.options).find(o => o.value == m.id);
+                                if (!opt) {
+                                    opt = document.createElement('option');
+                                    opt.value = m.id;
+                                    selectEl.appendChild(opt);
+                                }
+                                opt.textContent = m.nombre + (m.es_predeterminado ? ' ★' : '');
+                                selectEl.value = m.id;
+                            }
+                        });
                     }
                 }
             };

@@ -103,11 +103,10 @@ class PlantillaMembreteController extends Controller
      */
     public function destroy(PlantillaMembrete $membrete)
     {
-        if ($membrete->es_predeterminado) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se puede eliminar un membrete oficial del sistema.',
-            ], 403);
+        if ($membrete->tipo === 'encabezado') {
+            \App\Models\Plantilla::where('encabezado_id', $membrete->id)->update(['encabezado_id' => null]);
+        } else {
+            \App\Models\Plantilla::where('pie_id', $membrete->id)->update(['pie_id' => null]);
         }
 
         $membrete->delete();

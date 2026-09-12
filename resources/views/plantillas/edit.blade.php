@@ -360,7 +360,7 @@
         }
     </style>
 
-    <div class="py-6 bg-slate-100 min-h-screen" x-data="templateDesigner()" @membrete-saved.window="onMembreteSaved($event.detail)">
+    <div class="py-6 bg-slate-100 min-h-screen" x-data="{ showSidebar: false, ...templateDesigner() }" @membrete-saved.window="onMembreteSaved($event.detail)">
         <div class="w-full max-w-[1750px] mx-auto sm:px-6 lg:px-8 space-y-5">
             
             <form action="{{ route('plantillas.update', $plantilla->id_plantilla) }}" method="POST" @submit="syncContent">
@@ -417,11 +417,11 @@
                                 <span class="text-[11px] font-black uppercase text-amber-800 tracking-wider flex items-center gap-1.5">
                                     <span class="w-2 h-2 rounded-full bg-amber-500"></span> Encabezado:
                                 </span>
-                                <select x-model="encabezadoId" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-amber-500">
+                                <select x-model="encabezadoId" @change="encabezadoId = $event.target.value" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-amber-500">
                                     <option value="">(Sin encabezado)</option>
-                                    <template x-for="enc in encabezadosList" :key="enc.id">
-                                        <option :value="enc.id" x-text="enc.nombre + (enc.es_predeterminado ? ' ★' : '')"></option>
-                                    </template>
+                                    @foreach($encabezados as $enc)
+                                        <option value="{{ $enc->id }}">{{ $enc->nombre }}{{ $enc->es_predeterminado ? ' ★' : '' }}</option>
+                                    @endforeach
                                 </select>
                                 <button type="button" @click="openCanvasDesigner('encabezado')" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-lg text-[11px] shadow-xs flex items-center gap-1 transition">
                                     <span>🎨</span>
@@ -434,11 +434,11 @@
                                 <span class="text-[11px] font-black uppercase text-indigo-800 tracking-wider flex items-center gap-1.5">
                                     <span class="w-2 h-2 rounded-full bg-indigo-600"></span> Pie de Página:
                                 </span>
-                                <select x-model="pieId" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-indigo-500">
+                                <select x-model="pieId" @change="pieId = $event.target.value" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:border-indigo-500">
                                     <option value="">(Sin pie de página)</option>
-                                    <template x-for="pie in piesList" :key="pie.id">
-                                        <option :value="pie.id" x-text="pie.nombre + (pie.es_predeterminado ? ' ★' : '')"></option>
-                                    </template>
+                                    @foreach($pies as $pie)
+                                        <option value="{{ $pie->id }}">{{ $pie->nombre }}{{ $pie->es_predeterminado ? ' ★' : '' }}</option>
+                                    @endforeach
                                 </select>
                                 <button type="button" @click="openCanvasDesigner('pie')" class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-lg text-[11px] shadow-xs flex items-center gap-1 transition">
                                     <span>🎨</span>
@@ -454,22 +454,25 @@
                     </div>
                 </div>
 
-                <!-- Grid Principal: Sidebar de Variables + Hoja de Trabajo -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Grid Principal: Sidebar Opcional + Hoja de Trabajo Centrada -->
+                <div class="grid grid-cols-1 gap-6 items-start" :class="showSidebar ? 'lg:grid-cols-12' : ''">
                     
-                    <!-- SIDEBAR IZQUIERDA: Panel de Variables y Multimedia -->
-                    <div class="lg:col-span-4 xl:col-span-3 space-y-4 sticky top-20 no-print">
+                    <!-- SIDEBAR IZQUIERDA: Panel de Variables y Multimedia (Opcional) -->
+                    <div x-show="showSidebar" x-transition class="lg:col-span-4 xl:col-span-3 space-y-4 sticky top-20 no-print" x-cloak>
                         
                         <!-- Panel 1: Variables de Cliente -->
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                            <div class="pb-3 border-b border-slate-100">
-                                <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                                    <span class="w-2.5 h-4 bg-indigo-600 rounded-full inline-block"></span>
-                                    Variables del Cliente
-                                </h3>
-                                <p class="text-[11px] text-slate-400 mt-0.5">
-                                    <strong>Arrastra</strong> o haz <strong>clic</strong> para insertar en el cursor.
-                                </p>
+                            <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                                        <span class="w-2.5 h-4 bg-indigo-600 rounded-full inline-block"></span>
+                                        Variables del Cliente
+                                    </h3>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">
+                                        <strong>Arrastra</strong> o haz <strong>clic</strong> para insertar.
+                                    </p>
+                                </div>
+                                <button type="button" @click="showSidebar = false" class="text-slate-400 hover:text-slate-600 text-xs font-bold p-1">✕</button>
                             </div>
 
                             <!-- 1. Datos Personales -->
@@ -553,8 +556,8 @@
 
                     </div>
 
-                    <!-- ÁREA CENTRAL: Barra de Herramientas y Hojas de Documento -->
-                    <div class="lg:col-span-8 xl:col-span-9 space-y-4">
+                    <!-- ÁREA CENTRAL: Barra de Herramientas y Hojas de Documento (Espaciosa y Centrada) -->
+                    <div :class="showSidebar ? 'lg:col-span-8 xl:col-span-9' : 'w-full max-w-5xl mx-auto'" class="space-y-4">
                         
                         <!-- Barra de Herramientas Principal de Word Completa -->
                         <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2 no-print">
@@ -562,6 +565,132 @@
                             <!-- Fila de Edición de Texto y Formato -->
                             <div class="flex flex-wrap items-center gap-1.5">
                                 
+                                <!-- MENÚ DESPLEGABLE 1: VARIABLES NOTARIALES DINÁMICAS -->
+                                <div class="relative inline-block" x-data="{ openVars: false }">
+                                    <button type="button" 
+                                            @mousedown.prevent="" 
+                                            @click="openVars = !openVars" 
+                                            @click.away="openVars = false" 
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-sm transition transform active:scale-95 cursor-pointer"
+                                            title="Insertar Variables Notariales en el cursor">
+                                        <span>🏷️ Variables Notariales</span>
+                                        <span class="text-[9px] opacity-80">▼</span>
+                                    </button>
+                                    
+                                    <div x-show="openVars" 
+                                         x-transition 
+                                         class="absolute left-0 mt-2 w-80 sm:w-96 max-h-[75vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 space-y-3 no-print text-xs" 
+                                         x-cloak>
+                                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                            <span class="font-extrabold text-slate-800 text-xs">📌 Haz clic para insertar en el cursor:</span>
+                                            <button type="button" @click="openVars = false" class="text-slate-400 hover:text-slate-600 font-bold text-xs p-1">✕</button>
+                                        </div>
+
+                                        <!-- 1. Datos Personales -->
+                                        <div class="space-y-1.5">
+                                            <h4 class="text-[10px] font-black uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+                                                👤 Datos Personales
+                                            </h4>
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <template x-for="v in variablesCliente" :key="v.tag">
+                                                    <div class="variable-badge inline-flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold shadow-2xs cursor-pointer"
+                                                         draggable="true" 
+                                                         @dragstart="onDragStart($event, v.tag)"
+                                                         @click="insertTag(v.tag); openVars = false;"
+                                                         :title="'Clic o arrastrar para insertar: ' + v.tag">
+                                                        <span x-text="v.label"></span>
+                                                        <span class="text-[9px] opacity-60 font-mono">+</span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Ubicación -->
+                                        <div class="space-y-1.5 pt-2 border-t border-slate-100">
+                                            <h4 class="text-[10px] font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1">
+                                                📍 Ubicación y Domicilio
+                                            </h4>
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <template x-for="v in variablesUbicacion" :key="v.tag">
+                                                    <div class="variable-badge inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-2xs cursor-pointer"
+                                                         draggable="true" 
+                                                         @dragstart="onDragStart($event, v.tag)"
+                                                         @click="insertTag(v.tag); openVars = false;"
+                                                         :title="'Clic o arrastrar para insertar: ' + v.tag">
+                                                        <span x-text="v.label"></span>
+                                                        <span class="text-[9px] opacity-60 font-mono">+</span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <!-- 3. Fechas y Notaría -->
+                                        <div class="space-y-1.5 pt-2 border-t border-slate-100">
+                                            <h4 class="text-[10px] font-black uppercase tracking-wider text-amber-700 flex items-center gap-1">
+                                                🏛️ Notaría y Fechas
+                                            </h4>
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <template x-for="v in variablesNotaria" :key="v.tag">
+                                                    <div class="variable-badge inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[11px] font-bold shadow-2xs cursor-pointer"
+                                                         draggable="true" 
+                                                         @dragstart="onDragStart($event, v.tag)"
+                                                         @click="insertTag(v.tag); openVars = false;"
+                                                         :title="'Clic o arrastrar para insertar: ' + v.tag">
+                                                        <span x-text="v.label"></span>
+                                                        <span class="text-[9px] opacity-60 font-mono">+</span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- MENÚ DESPLEGABLE 2: BLOQUES Y SELLOS RÁPIDOS -->
+                                <div class="relative inline-block" x-data="{ openBlocks: false }">
+                                    <button type="button" 
+                                            @mousedown.prevent="" 
+                                            @click="openBlocks = !openBlocks" 
+                                            @click.away="openBlocks = false" 
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold text-xs shadow-sm transition transform active:scale-95 cursor-pointer"
+                                            title="Insertar Bloques Notariales Rápidos">
+                                        <span>📜 Bloques Rápidos</span>
+                                        <span class="text-[9px] opacity-80">▼</span>
+                                    </button>
+                                    
+                                    <div x-show="openBlocks" 
+                                         x-transition 
+                                         class="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 space-y-1.5 text-xs no-print" 
+                                         x-cloak>
+                                        <div class="px-2 py-1 font-extrabold text-slate-800 uppercase text-[10px] tracking-wider border-b border-slate-100 flex items-center justify-between">
+                                            <span>Bloques Notariales:</span>
+                                            <button type="button" @click="openBlocks = false" class="text-slate-400 hover:text-slate-600 font-bold text-xs p-1">✕</button>
+                                        </div>
+                                        <button type="button" @mousedown.prevent="" @click="insertSignatureBlock(); openBlocks = false;" class="w-full text-left p-2 rounded-xl border border-slate-100 hover:border-indigo-300 bg-slate-50 hover:bg-indigo-50/50 font-bold text-slate-700 transition flex items-center justify-between">
+                                            <span>✍️ Bloque de Doble Firma</span>
+                                            <span class="text-[10px] text-indigo-600 font-black">+ Insertar</span>
+                                        </button>
+                                        <button type="button" @mousedown.prevent="" @click="insertFingerprintBox(); openBlocks = false;" class="w-full text-left p-2 rounded-xl border border-slate-100 hover:border-indigo-300 bg-slate-50 hover:bg-indigo-50/50 font-bold text-slate-700 transition flex items-center justify-between">
+                                            <span>🖐️ Recuadro Pulgar Derecho</span>
+                                            <span class="text-[10px] text-indigo-600 font-black">+ Insertar</span>
+                                        </button>
+                                        <button type="button" @mousedown.prevent="" @click="insertNotaryApostilleBlock(); openBlocks = false;" class="w-full text-left p-2 rounded-xl border border-slate-100 hover:border-indigo-300 bg-slate-50 hover:bg-indigo-50/50 text-xs font-bold text-slate-700 transition flex items-center justify-between">
+                                            <span>⚖️ Certificación Notarial NY</span>
+                                            <span class="text-[10px] text-indigo-600 font-black">+ Insertar</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- BOTÓN VER/OCULTAR SIDEBAR LATERAL -->
+                                <button type="button" 
+                                        @click="showSidebar = !showSidebar" 
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"
+                                        title="Mostrar/Ocultar panel lateral izquierdo">
+                                    <span>📌</span>
+                                    <span x-text="showSidebar ? 'Ocultar Panel' : 'Panel Lateral'"></span>
+                                </button>
+
+                                <span class="w-px h-5 bg-slate-200 mx-0.5"></span>
+
                                 <!-- Deshacer / Rehacer -->
                                 <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-0.5 shadow-2xs">
                                     <button type="button" @mousedown.prevent="" @click="formatDoc('undo')" class="p-1.5 hover:bg-white hover:text-indigo-600 rounded-lg text-slate-700 transition" title="Deshacer (Ctrl+Z)">
@@ -939,8 +1068,8 @@
 
                                     <!-- 1. ENCABEZADO SUPERIOR (Se repite en CADA hoja A4) -->
                                     <div class="a4-sheet-header-render select-none bg-white transition-all rounded-t" 
-                                         x-show="selectedEncabezadoHtml" 
-                                         x-html="selectedEncabezadoHtml"
+                                         x-show="getEncabezadoHtml()" 
+                                         x-html="getEncabezadoHtml()"
                                          x-cloak></div>
 
                                     <!-- 2. CUERPO EDITABLE DE LA HOJA A4 -->
@@ -958,8 +1087,8 @@
 
                                     <!-- 3. PIE DE PÁGINA INFERIOR (Se repite en CADA hoja A4) -->
                                     <div class="a4-sheet-footer-render select-none bg-white transition-all rounded-b" 
-                                         x-show="selectedPieHtml" 
-                                         x-html="selectedPieHtml"
+                                         x-show="getPieHtml()" 
+                                         x-html="getPieHtml()"
                                          x-cloak></div>
 
                                 </div>
@@ -1167,16 +1296,24 @@
                 encabezadoId: @json($plantilla->encabezado_id ?? ''),
                 pieId: @json($plantilla->pie_id ?? ''),
 
-                get selectedEncabezadoHtml() {
+                getEncabezadoHtml() {
                     if (!this.encabezadoId) return '';
-                    const item = this.encabezadosList.find(e => e.id == this.encabezadoId);
+                    const item = this.encabezadosList.find(e => String(e.id) === String(this.encabezadoId));
                     return item ? item.contenido_html : '';
                 },
 
-                get selectedPieHtml() {
+                getPieHtml() {
                     if (!this.pieId) return '';
-                    const item = this.piesList.find(p => p.id == this.pieId);
+                    const item = this.piesList.find(p => String(p.id) === String(this.pieId));
                     return item ? item.contenido_html : '';
+                },
+
+                get selectedEncabezadoHtml() {
+                    return this.getEncabezadoHtml();
+                },
+
+                get selectedPieHtml() {
+                    return this.getPieHtml();
                 },
 
                 // Arquitectura Multi-Página A4 (Estilo Word)
@@ -2405,6 +2542,19 @@
                             this.encabezadosList.push(m);
                         }
                         this.encabezadoId = m.id;
+                        this.$nextTick(() => {
+                            const selectEl = document.querySelector('select[x-model="encabezadoId"]');
+                            if (selectEl) {
+                                let opt = Array.from(selectEl.options).find(o => o.value == m.id);
+                                if (!opt) {
+                                    opt = document.createElement('option');
+                                    opt.value = m.id;
+                                    selectEl.appendChild(opt);
+                                }
+                                opt.textContent = m.nombre + (m.es_predeterminado ? ' ★' : '');
+                                selectEl.value = m.id;
+                            }
+                        });
                     } else {
                         const idx = this.piesList.findIndex(p => p.id == m.id);
                         if (idx >= 0) {
@@ -2413,6 +2563,19 @@
                             this.piesList.push(m);
                         }
                         this.pieId = m.id;
+                        this.$nextTick(() => {
+                            const selectEl = document.querySelector('select[x-model="pieId"]');
+                            if (selectEl) {
+                                let opt = Array.from(selectEl.options).find(o => o.value == m.id);
+                                if (!opt) {
+                                    opt = document.createElement('option');
+                                    opt.value = m.id;
+                                    selectEl.appendChild(opt);
+                                }
+                                opt.textContent = m.nombre + (m.es_predeterminado ? ' ★' : '');
+                                selectEl.value = m.id;
+                            }
+                        });
                     }
                 }
             };

@@ -91,11 +91,9 @@
                                 <button type="button" @click="openMembrete({{ json_encode($enc) }})" class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition">
                                     ✏️ Abrir en Diseñador Visual
                                 </button>
-                                @if(!$enc->es_predeterminado)
-                                    <button type="button" @click="deleteMembrete({{ $enc->id }})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition">
-                                        Eliminar
-                                    </button>
-                                @endif
+                                <button type="button" @click="deleteMembrete({{ $enc->id }})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition" title="Eliminar este encabezado">
+                                    Eliminar
+                                </button>
                             </div>
                         </div>
                     @empty
@@ -154,11 +152,9 @@
                                 <button type="button" @click="openMembrete({{ json_encode($pie) }})" class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition">
                                     ✏️ Abrir en Diseñador Visual
                                 </button>
-                                @if(!$pie->es_predeterminado)
-                                    <button type="button" @click="deleteMembrete({{ $pie->id }})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition">
-                                        Eliminar
-                                    </button>
-                                @endif
+                                <button type="button" @click="deleteMembrete({{ $pie->id }})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl transition" title="Eliminar este pie de página">
+                                    Eliminar
+                                </button>
                             </div>
                         </div>
                     @empty

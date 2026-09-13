@@ -24,6 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Rutas para Módulo de Cartera de Clientes (Cuentas por Cobrar & Créditos)
+    Route::get('cartera', [App\Http\Controllers\CarteraController::class, 'index'])->name('cartera.index');
+    Route::get('cartera/cliente/{cliente}/detalle', [App\Http\Controllers\CarteraController::class, 'getDetalleDeuda'])->name('cartera.detalle');
+    Route::post('cartera/cobrar', [App\Http\Controllers\CarteraController::class, 'cobrar'])->name('cartera.cobrar');
+
     Route::get('clientes/export', [App\Http\Controllers\ClienteController::class, 'export'])->name('clientes.export');
     Route::post('tramites/cambiar-estado', [App\Http\Controllers\TramiteController::class, 'cambiarEstado'])->name('tramites.cambiar_estado');
     Route::post('tramites/cobrar', [App\Http\Controllers\TramiteController::class, 'cobrarTramite'])->name('tramites.cobrar');

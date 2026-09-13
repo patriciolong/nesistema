@@ -44,6 +44,28 @@
             </a>
         @endif
 
+        <!-- Cartera de Clientes (Cuentas por Cobrar & Créditos) Link -->
+        @if(Auth::check() && (Auth::user()->hasPermission('cartera.view') || Auth::user()->hasPermission('clientes.view')))
+            @php
+                $deudoresNavCount = \App\Models\Cliente::where('c_saldo', '>', 0)->count();
+            @endphp
+            <a href="{{ route('cartera.index') }}" 
+               style="{{ request()->routeIs('cartera.*') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
+               class="flex items-center justify-between px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
+                <div class="flex items-center min-w-0">
+                    <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('cartera.*') ? 'color: #ffffff;' : 'color: #fb923c;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    <span class="truncate">Cartera & Créditos</span>
+                </div>
+                @if($deudoresNavCount > 0)
+                    <span style="font-size: 9px; font-weight: 800; padding: 2px 6px; background-color: #ea580c; color: #ffffff; border-radius: 9999px; letter-spacing: 0.5px;">
+                        {{ $deudoresNavCount }}
+                    </span>
+                @endif
+            </a>
+        @endif
+
         <!-- Módulo de Caja (Apertura, Arqueo, Cierre) -->
         @if(Auth::check() && Auth::user()->hasPermission('cajas.operar'))
             @php

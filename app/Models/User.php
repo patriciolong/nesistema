@@ -69,6 +69,10 @@ class User extends Authenticatable
                     'nombre' => 'Exportar Clientes a Excel',
                     'descripcion' => 'Permite descargar el padrón de clientes en formato Excel.',
                 ],
+                'cartera.view' => [
+                    'nombre' => 'Consultar Cartera y Créditos',
+                    'descripcion' => 'Permite consultar las cuentas por cobrar, estados de deuda de clientes y gestionar pagos de créditos.',
+                ],
             ],
         ],
         'cajas' => [
@@ -228,7 +232,7 @@ class User extends Authenticatable
         if ($role === 'Supervisor') {
             return [
                 'dashboard.view', 'dashboard.export', 'dashboard.ia',
-                'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'clientes.export',
+                'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'clientes.export', 'cartera.view',
                 'cajas.operar', 'cajas.historial',
                 'tramites.create', 'plantillas.view', 'plantillas.generar', 'plantillas.manage',
                 'reportes.cajas', 'reportes.desempeno',
@@ -239,7 +243,7 @@ class User extends Authenticatable
         // Empleado / Cajero por defecto
         return [
             'dashboard.view',
-            'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar',
+            'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'cartera.view',
             'cajas.operar', 'cajas.historial',
             'tramites.create', 'plantillas.view', 'plantillas.generar',
         ];

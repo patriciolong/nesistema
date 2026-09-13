@@ -24,11 +24,6 @@ class TramiteVarioController extends Controller
 
     public function create(Request $request)
     {
-        if (!$this->cajaService->hasCajaAbierta(Auth::user())) {
-            return redirect()->route('cajas.index')
-                ->with('error', '⚠️ Debes abrir tu caja de atención antes de iniciar o registrar un trámite.');
-        }
-
         $clienteId = $request->query('cliente');
         if (!$clienteId) abort(404, 'Cliente no especificado');
 
@@ -57,7 +52,7 @@ class TramiteVarioController extends Controller
             'tv_certificacion' => ['nullable', 'boolean'],
             'tv_apostilla' => ['nullable', 'boolean'],
             'tv_valor_tramite' => ['required', 'numeric', 'min:0'],
-            'tv_abono_tramite' => ['required', 'numeric', 'min:0'],
+            'tv_abono_tramite' => ['nullable', 'numeric', 'min:0'],
             'tv_observaciones' => ['nullable', 'string', 'max:250'],
             'tv_razon_t' => ['nullable', 'string', 'max:150'],
             'tv_firmar_en' => ['nullable', 'string', 'max:150'],
@@ -67,16 +62,20 @@ class TramiteVarioController extends Controller
             'numero_referencia' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $abono = floatval($validated['tv_abono_tramite']);
+        $honorarios = floatval($validated['tv_valor_tramite']);
+        $abono = floatval($validated['tv_abono_tramite'] ?? 0);
+        $saldo = max(0, $honorarios - $abono);
+        
         $user = Auth::user();
         $caja = $this->cajaService->getCajaAbierta($user);
 
         if ($abono > 0 && !$caja) {
-            return back()->withInput()->with('error', 'Debes abrir caja antes de registrar un trámite con cobro o abono inicial.');
+            return back()->withInput()->with('error', '⚠️ No tienes una caja abierta para recibir este pago en tu turno. Si el cliente pagará en ventanilla de caja, deja el "Abono Inicial" en $0.00 y el trámite se registrará en la Cartera de Clientes.');
         }
 
-        $validated['tv_saldo'] = $validated['tv_valor_tramite'] - $validated['tv_abono_tramite'];
-        if ($validated['tv_saldo'] < 0) $validated['tv_saldo'] = 0;
+        $validated['tv_abono_tramite'] = $abono;
+        $validated['tv_saldo'] = $saldo;
+        $validated['estado'] = 'en_proceso';
         
         $validated['id_usuario'] = Auth::id();
         $validated['tv_oficina'] = Auth::user()->office ?? 'General';
@@ -93,13 +92,12 @@ class TramiteVarioController extends Controller
             // 1. Create the Trámite
             $tramite = TramiteVario::create($validated);
 
-            // 2. Update the client's global debt if there's a pending balance
+            // 2. Update the client's global debt
             $cliente = Cliente::findOrFail($validated['id_cliente']);
-            if ($validated['tv_saldo'] > 0) {
-                $cliente->c_deuda += $validated['tv_saldo'];
-                $cliente->c_saldo += $validated['tv_saldo'];
-                $cliente->save();
-            }
+            $cliente->c_deuda += $honorarios;
+            $cliente->c_abonado += $abono;
+            $cliente->c_saldo += $saldo;
+            $cliente->save();
 
             // 3. Register the payment and caja movement (if any abono was made)
             if ($abono > 0 && $caja) {
@@ -114,6 +112,8 @@ class TramiteVarioController extends Controller
                     'banco_id' => $validated['banco_id'] ?? null,
                     'tarjeta_id' => $validated['tarjeta_id'] ?? null,
                     'numero_referencia' => $validated['numero_referencia'] ?? null,
+                    'tramite_tipo' => 'Vario',
+                    'tramite_id' => $tramite->id_tramite_varios,
                 ]);
 
                 $this->cajaService->registrarMovimiento([
@@ -135,9 +135,11 @@ class TramiteVarioController extends Controller
 
             DB::commit();
 
+            $mensaje = 'Trámite Vario guardado correctamente.' . ($saldo > 0 ? ' Saldo de $' . number_format($saldo, 2) . ' añadido a la Cartera del Cliente para cobro en caja.' : '');
+
             // Flash session to trigger PDF generation
             $redirect = redirect()->route('clientes.tramites', $cliente->id_cliente)
-                ->with('success', 'Trámite Vario guardado correctamente.')
+                ->with('success', $mensaje)
                 ->with('imprimir_tramite', route('tramites-varios.show', $tramite->id_tramite_varios));
                 
             if ($abono > 0) {

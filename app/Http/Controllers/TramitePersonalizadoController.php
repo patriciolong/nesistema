@@ -28,11 +28,6 @@ class TramitePersonalizadoController extends Controller
      */
     public function create(Request $request, Cliente $cliente, TipoTramite $tipoTramite)
     {
-        if (!$this->cajaService->hasCajaAbierta(Auth::user())) {
-            return redirect()->route('cajas.index')
-                ->with('error', '⚠️ Debes abrir tu caja de atención antes de iniciar o registrar un trámite.');
-        }
-
         $bancos = Banco::activos()->orderBy('nombre')->get();
         $tarjetas = Tarjeta::with('banco')->activas()->orderBy('nombre')->get();
         $cajaAbierta = $this->cajaService->getCajaAbierta(Auth::user());
@@ -47,7 +42,7 @@ class TramitePersonalizadoController extends Controller
     {
         $request->validate([
             'valor_tramite' => 'required|numeric|min:0',
-            'abono_tramite' => 'required|numeric|min:0',
+            'abono_tramite' => 'nullable|numeric|min:0',
             'metodo_pago' => 'nullable|string|in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito',
             'banco_id' => 'nullable|exists:bancos,id',
             'tarjeta_id' => 'nullable|exists:tarjetas,id',
@@ -56,14 +51,13 @@ class TramitePersonalizadoController extends Controller
 
         $valor_tramite = floatval($request->input('valor_tramite', 0));
         $abono_tramite = floatval($request->input('abono_tramite', 0));
-        $saldo = $valor_tramite - $abono_tramite;
-        if ($saldo < 0) $saldo = 0;
+        $saldo = max(0, $valor_tramite - $abono_tramite);
 
         $user = Auth::user();
         $caja = $this->cajaService->getCajaAbierta($user);
 
         if ($abono_tramite > 0 && !$caja) {
-            return redirect()->back()->withInput()->with('error', 'Debes abrir caja antes de registrar un trámite con cobro o abono inicial.');
+            return redirect()->back()->withInput()->with('error', '⚠️ No tienes una caja abierta para recibir este pago en tu turno. Si el cliente pagará en ventanilla de caja, deja el "Abono Inicial" en $0.00 y el trámite se registrará en la Cartera de Clientes.');
         }
 
         // Extract custom field data based on the schema
@@ -93,14 +87,14 @@ class TramitePersonalizadoController extends Controller
                 'fecha' => now()->format('Y-m-d'),
                 'usuario' => Auth::user()->name ?? 'Sistema',
                 'oficina' => Auth::user()->office ?? 'General',
+                'estado' => 'en_proceso',
             ]);
 
-            // 2. Actualizar deuda/saldo global del cliente si queda saldo pendiente
-            if ($saldo > 0) {
-                $cliente->c_deuda += $saldo;
-                $cliente->c_saldo += $saldo;
-                $cliente->save();
-            }
+            // 2. Actualizar deuda/saldo global del cliente
+            $cliente->c_deuda += $valor_tramite;
+            $cliente->c_abonado += $abono_tramite;
+            $cliente->c_saldo += $saldo;
+            $cliente->save();
 
             // 3. Registrar el abono en el historial de pagos y en la caja activa
             if ($abono_tramite > 0 && $caja) {
@@ -115,6 +109,8 @@ class TramitePersonalizadoController extends Controller
                     'banco_id' => $request->banco_id,
                     'tarjeta_id' => $request->tarjeta_id,
                     'numero_referencia' => $request->numero_referencia,
+                    'tramite_tipo' => 'Personalizado',
+                    'tramite_id' => $tramite->id,
                 ]);
 
                 $this->cajaService->registrarMovimiento([
@@ -136,8 +132,10 @@ class TramitePersonalizadoController extends Controller
 
             DB::commit();
 
+            $mensaje = '¡Trámite de ' . $tipoTramite->nombre . ' registrado correctamente!' . ($saldo > 0 ? ' Saldo de $' . number_format($saldo, 2) . ' añadido a la Cartera del Cliente para cobro en caja.' : '');
+
             return redirect()->route('clientes.tramites', $cliente->id_cliente)
-                ->with('success', '¡Trámite de ' . $tipoTramite->nombre . ' registrado correctamente!')
+                ->with('success', $mensaje)
                 ->with('imprimir_tramite', route('tramites-personalizados.show', $tramite->id))
                 ->with('imprimir_recibo', $abono_tramite > 0 ? route('clientes.recibo_abono', ['cliente' => $cliente->id_cliente, 'monto' => $abono_tramite]) : null);
 

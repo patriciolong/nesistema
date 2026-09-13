@@ -29,11 +29,6 @@ class TramitePoderController extends Controller
 
     public function create(Cliente $cliente)
     {
-        if (!$this->cajaService->hasCajaAbierta(Auth::user())) {
-            return redirect()->route('cajas.index')
-                ->with('error', '⚠️ Debes abrir tu caja de atención antes de iniciar o registrar un trámite.');
-        }
-
         $bancos = Banco::activos()->orderBy('nombre')->get();
         $tarjetas = Tarjeta::with('banco')->activas()->orderBy('nombre')->get();
         $cajaAbierta = $this->cajaService->getCajaAbierta(Auth::user());
@@ -48,7 +43,7 @@ class TramitePoderController extends Controller
             'fecha' => 'required|date',
             'estcivil' => 'required|string',
             'honorarios' => 'required|numeric|min:0',
-            'abono' => 'required|numeric|min:0',
+            'abono' => 'nullable|numeric|min:0',
             'nombres_otorga' => 'required|string',
             'cedula_otorga' => 'required|string',
             'razon_poder' => 'required|string',
@@ -60,14 +55,14 @@ class TramitePoderController extends Controller
         ]);
 
         $honorarios = (float) $request->honorarios;
-        $abono = (float) $request->abono;
+        $abono = (float) ($request->abono ?? 0);
         $saldo = max(0, $honorarios - $abono);
 
         $user = Auth::user();
         $caja = $this->cajaService->getCajaAbierta($user);
 
         if ($abono > 0 && !$caja) {
-            return redirect()->back()->withInput()->with('error', 'Debes abrir caja antes de registrar un trámite con cobro o abono inicial.');
+            return redirect()->back()->withInput()->with('error', '⚠️ No tienes una caja abierta para recibir este pago en tu turno. Si el cliente pagará en ventanilla de caja, deja el "Abono Inicial" en $0.00 y el trámite se registrará en la Cartera de Clientes.');
         }
 
         DB::beginTransaction();
@@ -98,6 +93,7 @@ class TramitePoderController extends Controller
                 'tp_apellido2' => $request->apellido2,
                 'tp_identificacion2' => $request->identificacion2,
                 'tp_telefono2' => $request->telefono2,
+                'estado' => 'en_proceso',
             ]);
 
             if ($abono > 0 && $caja) {
@@ -112,6 +108,8 @@ class TramitePoderController extends Controller
                     'banco_id' => $request->banco_id,
                     'tarjeta_id' => $request->tarjeta_id,
                     'numero_referencia' => $request->numero_referencia,
+                    'tramite_tipo' => 'Poder',
+                    'tramite_id' => $tramite->id_tram_poderes,
                 ]);
 
                 $this->cajaService->registrarMovimiento([
@@ -131,14 +129,17 @@ class TramitePoderController extends Controller
                 ]);
             }
 
-            $cliente->c_saldo += $saldo;
+            $cliente->c_deuda += $honorarios;
             $cliente->c_abonado += $abono;
+            $cliente->c_saldo += $saldo;
             $cliente->save();
 
             DB::commit();
 
+            $mensaje = 'Trámite de poder registrado correctamente.' . ($saldo > 0 ? ' Saldo de $' . number_format($saldo, 2) . ' añadido a la Cartera del Cliente para cobro en caja.' : '');
+
             return redirect()->route('clientes.tramites', $cliente->id_cliente)
-                             ->with('success', 'Trámite de poder registrado correctamente.')
+                             ->with('success', $mensaje)
                              ->with('imprimir_tramite', route('poderes.show', $tramite->id_tram_poderes))
                              ->with('imprimir_recibo', $abono > 0 ? route('clientes.recibo_abono', ['cliente' => $cliente->id_cliente, 'monto' => $abono]) : null);
         } catch (\Exception $e) {

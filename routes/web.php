@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('clientes/export', [App\Http\Controllers\ClienteController::class, 'export'])->name('clientes.export');
     Route::post('tramites/cambiar-estado', [App\Http\Controllers\TramiteController::class, 'cambiarEstado'])->name('tramites.cambiar_estado');
+    Route::post('tramites/cobrar', [App\Http\Controllers\TramiteController::class, 'cobrarTramite'])->name('tramites.cobrar');
     Route::get('clientes/{cliente}/tramites', [App\Http\Controllers\TramiteController::class, 'index'])->name('clientes.tramites');
     Route::get('clientes/{cliente}/pagos', [App\Http\Controllers\ClienteController::class, 'pagos'])->name('clientes.pagos');
     Route::get('clientes/{cliente}/recibo-abono', [App\Http\Controllers\ClienteController::class, 'reciboAbono'])->name('clientes.recibo_abono');

@@ -163,7 +163,20 @@
                         </div>
                     </div>
 
+                    <!-- Caja status indicator -->
+                    @if($cajaAbierta)
+                        <div class="flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 mb-4">
+                            <span>🟢</span>
+                            <span>Caja <strong>#{{ $cajaAbierta->id }}</strong> activa para cobro de abonos</span>
+                        </div>
+                    @else
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-xs text-blue-800 leading-relaxed mb-4">
+                            <span>ℹ️</span> Si redactas este trámite sin caja abierta, deja el abono en <strong>$0.00</strong> para que se registre en la Cartera del Cliente y se cobre en ventanilla.
+                        </div>
+                    @endif
+
                     <!-- Métodos de Pago para el Abono -->
+                    @if($cajaAbierta)
                     <div x-show="parseFloat(abono) > 0" class="pt-4 border-t border-slate-100 space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
@@ -204,6 +217,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <!-- Botón de Envío -->

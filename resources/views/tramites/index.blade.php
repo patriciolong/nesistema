@@ -84,7 +84,7 @@
                 </div>
             @endif
 
-            @if (session('imprimir_tramite'))
+            @if (session('imprimir_tramite') || session('imprimir_recibo'))
                 <div x-data="{ open: true }" @keydown.window.escape="open = false" x-show="open" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
                     <!-- Background backdrop -->
                     <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="open = false"></div>
@@ -101,7 +101,7 @@
                                             </svg>
                                         </div>
                                         <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                            <h3 class="text-base font-bold leading-6 text-gray-900" id="modal-title">¡Trámite registrado correctamente!</h3>
+                                            <h3 class="text-base font-bold leading-6 text-gray-900" id="modal-title">¡Operación registrada correctamente!</h3>
                                             <div class="mt-2">
                                                 <p class="text-sm text-gray-500">¿Qué documento deseas imprimir en este momento?</p>
                                             </div>
@@ -109,15 +109,17 @@
                                     </div>
                                 </div>
                                 <div class="bg-gray-50 px-4 py-4 sm:px-6 flex flex-col gap-3 border-t border-gray-100">
+                                    @if(session('imprimir_tramite'))
                                     <a href="{{ session('imprimir_tramite') }}" target="_blank" class="inline-flex w-full justify-center items-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors">
                                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                         Imprimir Comprobante de Trámite
                                     </a>
+                                    @endif
                                     
                                     @if(session('imprimir_recibo'))
                                     <a href="{{ session('imprimir_recibo') }}" target="_blank" class="inline-flex w-full justify-center items-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-colors">
                                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        Imprimir Recibo de Abono
+                                        Imprimir Recibo de Cobro / Abono
                                     </a>
                                     @endif
                                     
@@ -131,28 +133,38 @@
                 </div>
             @endif
 
-            @if(!$tieneCajaAbierta)
-                <!-- Banner de Alerta: Caja No Abierta -->
-                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-2xl shrink-0 shadow-md shadow-amber-200">
-                            🔒
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="text-base font-black text-amber-950">Atención: No tienes una caja de atención abierta</h4>
-                                <span class="bg-amber-200 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded-full">Requerido</span>
-                            </div>
-                            <p class="text-xs font-semibold text-amber-800 mt-0.5">
-                                Para poder ingresar y registrar cualquier trámite debes realizar la apertura de tu caja. Esto previene pérdidas de tiempo y asegura el registro de cobros.
-                            </p>
-                        </div>
+            <!-- Resumen Financiero y Cartera del Cliente -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Honorarios (Deuda)</p>
+                        <p class="text-2xl font-black text-slate-900 mt-0.5">${{ number_format($cliente->c_deuda, 2) }}</p>
                     </div>
-                    <a href="{{ route('cajas.index') }}" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-xl text-xs font-black shadow-md shadow-amber-300 flex items-center gap-2 whitespace-nowrap transition-all">
-                        <span>Abrir Caja de Atención</span> &rarr;
-                    </a>
+                    <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xl">
+                        📊
+                    </div>
                 </div>
-            @endif
+
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Total Cobrado / Abonado</p>
+                        <p class="text-2xl font-black text-emerald-700 mt-0.5">${{ number_format($cliente->c_abonado, 2) }}</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xl">
+                        ✓
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border {{ $cliente->c_saldo > 0 ? 'border-amber-300 bg-amber-50/50' : 'border-slate-200' }} shadow-xs flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold {{ $cliente->c_saldo > 0 ? 'text-amber-800' : 'text-slate-500' }} uppercase tracking-wider">Saldo Pendiente en Cartera</p>
+                        <p class="text-2xl font-black {{ $cliente->c_saldo > 0 ? 'text-amber-700' : 'text-slate-900' }} mt-0.5">${{ number_format($cliente->c_saldo, 2) }}</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-2xl {{ $cliente->c_saldo > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600' }} flex items-center justify-center font-bold text-xl">
+                        💵
+                    </div>
+                </div>
+            </div>
 
             <!-- Hub de Creación - Tarjetas Arrastrables y Reordenables -->
             <div class="pt-2">
@@ -162,16 +174,10 @@
                         <h3 class="text-xl font-extrabold text-gray-900">
                             Iniciar Nuevo Trámite
                         </h3>
-                        @if(!$tieneCajaAbierta)
-                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                                🔒 Requiere Apertura de Caja
-                            </span>
-                        @else
-                            <span class="text-xs text-gray-400 font-medium ml-2 hidden sm:inline-flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
-                                (Arrastra las tarjetas para reordenarlas a tu gusto)
-                            </span>
-                        @endif
+                        <span class="text-xs text-gray-400 font-medium ml-2 hidden sm:inline-flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                            (Arrastra las tarjetas para reordenarlas a tu gusto)
+                        </span>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -195,14 +201,8 @@
                     <!-- 1. Trámites Varios -->
                     <div data-id="tramite_vario" class="tramite-hub-card relative group">
                         <a href="{{ route('tramites-varios.create', ['cliente' => $cliente->id_cliente]) }}" 
-                           onclick="verificarAperturaCaja(event, this.href)"
                            style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);"
                            class="block rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-indigo-400/30 relative">
-                            @if(!$tieneCajaAbierta)
-                                <span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                                    🔒 Caja requerida
-                                </span>
-                            @endif
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: rgba(255, 255, 255, 0.25);">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -223,14 +223,8 @@
                     <!-- 2. Divorcio -->
                     <div data-id="divorcio" class="tramite-hub-card relative group">
                         <a href="{{ route('divorcios.create', ['cliente' => $cliente->id_cliente]) }}" 
-                           onclick="verificarAperturaCaja(event, this.href)"
                            style="background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%);"
                            class="block rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-rose-400/30 relative">
-                            @if(!$tieneCajaAbierta)
-                                <span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                                    🔒 Caja requerida
-                                </span>
-                            @endif
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: rgba(255, 255, 255, 0.25);">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -251,14 +245,8 @@
                     <!-- 3. Impuestos -->
                     <div data-id="impuestos" class="tramite-hub-card relative group">
                         <a href="{{ route('impuestos.create', ['cliente' => $cliente->id_cliente]) }}" 
-                           onclick="verificarAperturaCaja(event, this.href)"
                            style="background: linear-gradient(135deg, #059669 0%, #064e3b 100%);"
                            class="block rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-emerald-400/30 relative">
-                            @if(!$tieneCajaAbierta)
-                                <span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                                    🔒 Caja requerida
-                                </span>
-                            @endif
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: rgba(255, 255, 255, 0.25);">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -279,14 +267,8 @@
                     <!-- 4. Poderes -->
                     <div data-id="poderes" class="tramite-hub-card relative group">
                         <a href="{{ route('poderes.create', ['cliente' => $cliente->id_cliente]) }}" 
-                           onclick="verificarAperturaCaja(event, this.href)"
                            style="background: linear-gradient(135deg, #d97706 0%, #78350f 100%);"
                            class="block rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-amber-400/30 relative">
-                            @if(!$tieneCajaAbierta)
-                                <span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                                    🔒 Caja requerida
-                                </span>
-                            @endif
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: rgba(255, 255, 255, 0.25);">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
@@ -308,14 +290,8 @@
                     @foreach($tiposPersonalizados as $tipoCustom)
                         <div data-id="custom_{{ $tipoCustom->id }}" class="tramite-hub-card relative group">
                             <a href="{{ route('tramites-personalizados.create', ['cliente' => $cliente->id_cliente, 'tipoTramite' => $tipoCustom->id]) }}" 
-                               onclick="verificarAperturaCaja(event, this.href)"
                                style="background: {{ $tipoCustom->color_gradient }};"
                                class="block rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-white/20 relative">
-                                @if(!$tieneCajaAbierta)
-                                    <span class="absolute top-3 right-3 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                                        🔒 Caja requerida
-                                    </span>
-                                @endif
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background-color: rgba(255, 255, 255, 0.25);">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -401,10 +377,17 @@
                                             </div>
                                         </td>
                                         <td class="py-4 px-6 text-center">
-                                            <a href="{{ route('tramites-personalizados.show', $tp->id) }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors border shadow-sm bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-600 hover:text-white">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                                Imprimir PDF
-                                            </a>
+                                            <div class="flex items-center justify-center gap-2">
+                                                @if($tp->saldo > 0)
+                                                    <button type="button" onclick="abrirModalCobro('personalizados', {{ $tp->id }}, '{{ $tp->tipoTramite->nombre ?? 'Trámite' }} #{{ $tp->id }}', {{ $tp->saldo }})" class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer">
+                                                        💵 Cobrar
+                                                    </button>
+                                                @endif
+                                                <a href="{{ route('tramites-personalizados.show', $tp->id) }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors border shadow-sm bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-600 hover:text-white">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                                    PDF
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -435,6 +418,7 @@
                                             <th scope="col" class="py-3.5 px-6 font-bold">Fecha</th>
                                             <th scope="col" class="py-3.5 px-6 font-bold">Envío</th>
                                             <th scope="col" class="py-3.5 px-6 font-bold">Estado / Notificación App</th>
+                                            <th scope="col" class="py-3.5 px-6 text-right font-bold">Valor / Saldo</th>
                                             <th scope="col" class="py-3.5 px-6 text-center font-bold">Acciones</th>
                                         </tr>
                                     </thead>
@@ -463,11 +447,28 @@
                                                         </select>
                                                     </form>
                                                 </td>
+                                                <td class="py-4 px-6 text-right font-semibold">
+                                                    <div class="text-xs">
+                                                        <span class="text-slate-800 font-bold">${{ number_format($tramite->tv_valor_tramite ?? 0, 2) }}</span>
+                                                        @if(($tramite->tv_saldo ?? 0) > 0)
+                                                            <span class="text-amber-600 block text-[11px] font-bold">Saldo: ${{ number_format($tramite->tv_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-600 block text-[11px] font-bold">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
+                                                </td>
                                                 <td class="py-4 px-6 text-center">
-                                                    <a href="{{ route('tramites-varios.show', $tramite->id_tramite_varios) }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors border shadow-sm" style="background-color: #e0e7ff; color: #312e81; border-color: #c7d2fe;">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                                        Imprimir PDF
-                                                    </a>
+                                                    <div class="flex items-center justify-center gap-2">
+                                                        @if(($tramite->tv_saldo ?? 0) > 0)
+                                                            <button type="button" onclick="abrirModalCobro('varios', {{ $tramite->id_tramite_varios }}, 'Trámite Vario #{{ $tramite->id_tramite_varios }}', {{ $tramite->tv_saldo }})" class="inline-flex items-center gap-1 font-bold text-xs px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer">
+                                                                💵 Cobrar
+                                                            </button>
+                                                        @endif
+                                                        <a href="{{ route('tramites-varios.show', $tramite->id_tramite_varios) }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors border shadow-sm" style="background-color: #e0e7ff; color: #312e81; border-color: #c7d2fe;">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                                            PDF
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -513,6 +514,14 @@
                                                             Cónyugue: <span class="font-bold text-gray-900">{{ $tramite->td_nombre_c }}</span>
                                                         </p>
                                                     @endif
+                                                    <div class="mt-1 flex items-center gap-2 text-xs">
+                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->td_valor ?? 0, 2) }}</span>
+                                                        @if(($tramite->td_saldo ?? 0) > 0)
+                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->td_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <div class="flex items-center gap-2">
                                                     <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
@@ -527,6 +536,11 @@
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
+                                                    @if(($tramite->td_saldo ?? 0) > 0)
+                                                        <button type="button" onclick="abrirModalCobro('divorcios', {{ $tramite->id_tram_div }}, 'Divorcio #{{ $tramite->id_tram_div }}', {{ $tramite->td_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
+                                                            💵 Cobrar
+                                                        </button>
+                                                    @endif
                                                     <a href="{{ route('divorcios.show', $tramite->id_tram_div) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #ffe4e6; color: #881337; border-color: #fecdd3;">
                                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                                         PDF
@@ -572,6 +586,14 @@
                                                             Año Reporte: <span class="font-bold text-gray-900">{{ $tramite->ti_anio_reporte }}</span>
                                                         </p>
                                                     @endif
+                                                    <div class="mt-1 flex items-center gap-2 text-xs">
+                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->ti_costo_tramite ?? 0, 2) }}</span>
+                                                        @if(($tramite->ti_saldo ?? 0) > 0)
+                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->ti_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <div class="flex items-center gap-2">
                                                     <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
@@ -586,6 +608,11 @@
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
+                                                    @if(($tramite->ti_saldo ?? 0) > 0)
+                                                        <button type="button" onclick="abrirModalCobro('impuestos', {{ $tramite->id_tram_impuestos }}, 'Impuestos #{{ $tramite->id_tram_impuestos }}', {{ $tramite->ti_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
+                                                            💵 Cobrar
+                                                        </button>
+                                                    @endif
                                                     <a href="{{ route('impuestos.show', $tramite->id_tram_impuestos) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #d1fae5; color: #064e3b; border-color: #a7f3d0;">
                                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                                         PDF
@@ -636,6 +663,14 @@
                                                             Motivo: {{ $tramite->tp_razon_otorga_poder }}
                                                         </p>
                                                     @endif
+                                                    <div class="mt-1 flex items-center gap-2 text-xs">
+                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->tp_costo_tramite ?? 0, 2) }}</span>
+                                                        @if(($tramite->tp_saldo ?? 0) > 0)
+                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->tp_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <div class="flex items-center gap-2">
                                                     <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
@@ -650,6 +685,11 @@
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
+                                                    @if(($tramite->tp_saldo ?? 0) > 0)
+                                                        <button type="button" onclick="abrirModalCobro('poderes', {{ $tramite->id_tram_poderes }}, 'Poder #{{ $tramite->id_tram_poderes }}', {{ $tramite->tp_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
+                                                            💵 Cobrar
+                                                        </button>
+                                                    @endif
                                                     <a href="{{ route('poderes.show', $tramite->id_tram_poderes) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #fef3c7; color: #78350f; border-color: #fde68a;">
                                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                                         PDF
@@ -731,6 +771,145 @@
         </div>
     </div>
 
+    <!-- Modal: Cobrar Trámite en Ventanilla / Caja -->
+    <div id="modalCobrarTramite" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-cobro-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="cerrarModalCobro()"></div>
+
+            <div class="relative inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200">
+                <form method="POST" action="{{ route('tramites.cobrar') }}" id="formCobroTramite">
+                    @csrf
+                    <input type="hidden" name="cliente_id" value="{{ $cliente->id_cliente }}">
+                    <input type="hidden" name="tramite_tipo" id="cobro_tramite_tipo" value="">
+                    <input type="hidden" name="tramite_id" id="cobro_tramite_id" value="">
+
+                    <!-- Header Modal -->
+                    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-5 text-white flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-white/15 backdrop-blur-md rounded-xl border border-white/20">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black tracking-tight" id="modal-cobro-title">Cobro de Trámite en Caja</h3>
+                                <p class="text-xs text-emerald-100 font-medium" id="cobro_tramite_titulo">Cargando...</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="cerrarModalCobro()" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Body Modal -->
+                    <div class="p-6 space-y-5">
+                        
+                        <!-- Caja Status -->
+                        @if($cajaAbierta)
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                                <div class="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span>Caja Activa #{{ $cajaAbierta->id }}</span>
+                                </div>
+                                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                                    {{ Auth::user()->name }}
+                                </span>
+                            </div>
+                        @else
+                            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 font-semibold flex items-center gap-2">
+                                <span>⚠️</span>
+                                <span>No tienes una caja abierta. Se requiere abrir caja para registrar este cobro.</span>
+                            </div>
+                        @endif
+
+                        <!-- Resumen Deuda / Saldo -->
+                        <div class="grid grid-cols-2 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Cliente</span>
+                                <p class="text-xs font-black text-slate-800 truncate">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Saldo Pendiente</span>
+                                <p class="text-lg font-black text-amber-600">$<span id="cobro_saldo_pendiente_display">0.00</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Monto a Cobrar -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label for="cobro_monto_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Monto a Cobrar ($) <span class="text-red-500">*</span></label>
+                                <button type="button" onclick="setCobroTotal()" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer">
+                                    Cobrar Todo
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                <input type="number" step="0.01" min="0.01" name="monto_pago" id="cobro_monto_pago" required
+                                       class="w-full pl-8 pr-4 py-3 text-lg font-black text-emerald-700 bg-white border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                            </div>
+                        </div>
+
+                        <!-- Método de Pago -->
+                        <div>
+                            <label for="cobro_metodo_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Método de Pago</label>
+                            <select name="metodo_pago" id="cobro_metodo_pago" onchange="toggleCobroPaymentFields()"
+                                    class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-bold text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                                <option value="Efectivo">💵 Efectivo</option>
+                                <option value="Tarjeta">💳 Tarjeta (POS / Débito / Crédito)</option>
+                                <option value="Transferencia">🏦 Transferencia Bancaria</option>
+                                <option value="Cheque">📜 Cheque</option>
+                            </select>
+                        </div>
+
+                        <!-- Selector de Tarjeta (Condicional) -->
+                        <div id="cobro_campo_tarjeta" class="hidden">
+                            <label for="cobro_tarjeta_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Tarjeta / Terminal POS</label>
+                            <select name="tarjeta_id" id="cobro_tarjeta_id" class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
+                                <option value="">Seleccione Tarjeta / POS...</option>
+                                @foreach($tarjetas as $tar)
+                                    <option value="{{ $tar->id }}">{{ $tar->nombre }} ({{ $tar->franquicia }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Selector de Banco (Condicional) -->
+                        <div id="cobro_campo_banco" class="hidden">
+                            <label for="cobro_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Banco de Destino</label>
+                            <select name="banco_id" id="cobro_banco_id" class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
+                                <option value="">Seleccione Banco...</option>
+                                @foreach($bancos as $ban)
+                                    <option value="{{ $ban->id }}">{{ $ban->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Nro de Referencia -->
+                        <div id="cobro_campo_referencia" class="hidden">
+                            <label for="cobro_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Voucher / Cheque / Transferencia</label>
+                            <input type="text" name="numero_referencia" id="cobro_numero_referencia" placeholder="Ej: Aut #893412 / Ref #0482"
+                                   class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
+                        </div>
+
+                    </div>
+
+                    <!-- Footer Modal -->
+                    <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3">
+                        <button type="button" onclick="cerrarModalCobro()" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+                            Cancelar
+                        </button>
+                        @if($tieneCajaAbierta)
+                            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-xl text-xs font-extrabold shadow-md shadow-emerald-200 transition-all cursor-pointer">
+                                <span>💵 Confirmar Cobro e Imprimir</span>
+                            </button>
+                        @else
+                            <button type="button" onclick="cerrarModalCobro(); document.getElementById('modalCajaRequerida').classList.remove('hidden');" class="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold shadow-md transition-all cursor-pointer">
+                                <span>⚠️ Abrir Caja para Cobrar</span>
+                            </button>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Apertura de Caja Requerida -->
     <div id="modalCajaRequerida" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
@@ -747,11 +926,11 @@
                         Apertura de Caja Requerida
                     </h3>
                     <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        No puedes ingresar a redactar o crear este trámite porque <strong>no tienes una caja de atención abierta</strong>.
+                        No puedes registrar cobros directos porque <strong>no tienes una caja de atención abierta</strong>.
                     </p>
                     <div class="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200 text-left text-[11px] text-amber-900 font-semibold space-y-1">
                         <p>✓ Abre tu caja con tu fondo inicial.</p>
-                        <p>✓ Esto garantiza que tus cobros y abonos se guarden sin perder tu progreso.</p>
+                        <p>✓ Esto garantiza que tus cobros y abonos se registren en tu sesión de cuadre.</p>
                     </div>
                 </div>
 
@@ -774,14 +953,58 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <script>
         const tieneCajaAbierta = @json($tieneCajaAbierta ?? false);
+        let currentTramiteSaldo = 0;
+
+        function abrirModalCobro(tramiteTipo, tramiteId, tramiteTitulo, saldoPendiente) {
+            if (!tieneCajaAbierta) {
+                document.getElementById('modalCajaRequerida').classList.remove('hidden');
+                return;
+            }
+
+            currentTramiteSaldo = parseFloat(saldoPendiente) || 0;
+            document.getElementById('cobro_tramite_tipo').value = tramiteTipo;
+            document.getElementById('cobro_tramite_id').value = tramiteId;
+            document.getElementById('cobro_tramite_titulo').innerText = tramiteTitulo;
+            document.getElementById('cobro_saldo_pendiente_display').innerText = currentTramiteSaldo.toFixed(2);
+            
+            const inputMonto = document.getElementById('cobro_monto_pago');
+            inputMonto.value = currentTramiteSaldo.toFixed(2);
+            inputMonto.max = currentTramiteSaldo.toFixed(2);
+
+            document.getElementById('cobro_metodo_pago').value = 'Efectivo';
+            toggleCobroPaymentFields();
+
+            document.getElementById('modalCobrarTramite').classList.remove('hidden');
+        }
+
+        function cerrarModalCobro() {
+            document.getElementById('modalCobrarTramite').classList.add('hidden');
+        }
+
+        function setCobroTotal() {
+            document.getElementById('cobro_monto_pago').value = currentTramiteSaldo.toFixed(2);
+        }
+
+        function toggleCobroPaymentFields() {
+            const metodo = document.getElementById('cobro_metodo_pago').value;
+            const campoTarjeta = document.getElementById('cobro_campo_tarjeta');
+            const campoBanco = document.getElementById('cobro_campo_banco');
+            const campoRef = document.getElementById('cobro_campo_referencia');
+
+            campoTarjeta.classList.add('hidden');
+            campoBanco.classList.add('hidden');
+            campoRef.classList.add('hidden');
+
+            if (metodo === 'Tarjeta') {
+                campoTarjeta.classList.remove('hidden');
+                campoRef.classList.remove('hidden');
+            } else if (metodo === 'Transferencia' || metodo === 'Cheque') {
+                campoBanco.classList.remove('hidden');
+                campoRef.classList.remove('hidden');
+            }
+        }
 
         function verificarAperturaCaja(event, targetUrl) {
-            if (!tieneCajaAbierta) {
-                event.preventDefault();
-                event.stopPropagation();
-                document.getElementById('modalCajaRequerida').classList.remove('hidden');
-                return false;
-            }
             return true;
         }
 

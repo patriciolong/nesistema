@@ -24,11 +24,6 @@ class TramiteImpuestoController extends Controller
 
     public function create(Cliente $cliente)
     {
-        if (!$this->cajaService->hasCajaAbierta(Auth::user())) {
-            return redirect()->route('cajas.index')
-                ->with('error', '⚠️ Debes abrir tu caja de atención antes de iniciar o registrar un trámite.');
-        }
-
         $bancos = Banco::activos()->orderBy('nombre')->get();
         $tarjetas = Tarjeta::with('banco')->activas()->orderBy('nombre')->get();
         $cajaAbierta = $this->cajaService->getCajaAbierta(Auth::user());
@@ -54,7 +49,7 @@ class TramiteImpuestoController extends Controller
             'nruta' => ['nullable', 'string'],
             
             'vtramite' => ['required', 'numeric', 'min:0'],
-            'abono' => ['required', 'numeric', 'min:0'],
+            'abono' => ['nullable', 'numeric', 'min:0'],
             'notas' => ['nullable', 'string'],
             'metodo_pago' => ['nullable', 'string', 'in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito'],
             'banco_id' => ['nullable', 'exists:bancos,id'],
@@ -63,14 +58,14 @@ class TramiteImpuestoController extends Controller
         ]);
 
         $honorarios = floatval($validated['vtramite']);
-        $abono = floatval($validated['abono']);
-        $saldo = $honorarios - $abono;
+        $abono = floatval($validated['abono'] ?? 0);
+        $saldo = max(0, $honorarios - $abono);
 
         $user = Auth::user();
         $caja = $this->cajaService->getCajaAbierta($user);
 
         if ($abono > 0 && !$caja) {
-            return back()->withInput()->with('error', 'Debes abrir caja antes de registrar un trámite con cobro o abono inicial.');
+            return back()->withInput()->with('error', '⚠️ No tienes una caja abierta para recibir este pago en tu turno. Si el cliente pagará en ventanilla de caja, deja el "Abono Inicial" en $0.00 y el trámite se registrará en la Cartera de Clientes.');
         }
 
         DB::beginTransaction();
@@ -99,12 +94,14 @@ class TramiteImpuestoController extends Controller
             $tramite->ti_costo_tramite = $honorarios;
             $tramite->ti_abono_tramite = $abono;
             $tramite->ti_saldo = $saldo;
+            $tramite->estado = 'en_proceso';
 
             $tramite->save();
 
             // Update client's debt
-            $cliente->c_saldo += $saldo;
+            $cliente->c_deuda += $honorarios;
             $cliente->c_abonado += $abono;
+            $cliente->c_saldo += $saldo;
             $cliente->save();
 
             // Register payment and movement if there's an abono
@@ -120,6 +117,8 @@ class TramiteImpuestoController extends Controller
                     'banco_id' => $validated['banco_id'] ?? null,
                     'tarjeta_id' => $validated['tarjeta_id'] ?? null,
                     'numero_referencia' => $validated['numero_referencia'] ?? null,
+                    'tramite_tipo' => 'Impuesto',
+                    'tramite_id' => $tramite->id_tram_impuestos,
                 ]);
 
                 $this->cajaService->registrarMovimiento([
@@ -141,8 +140,10 @@ class TramiteImpuestoController extends Controller
 
             DB::commit();
 
+            $mensaje = 'Declaración de Impuestos guardada correctamente.' . ($saldo > 0 ? ' Saldo de $' . number_format($saldo, 2) . ' añadido a la Cartera del Cliente para cobro en caja.' : '');
+
             $redirect = redirect()->route('clientes.tramites', $cliente->id_cliente)
-                ->with('success', 'Declaración de Impuestos guardada correctamente.')
+                ->with('success', $mensaje)
                 ->with('imprimir_tramite', route('impuestos.show', $tramite->id_tram_impuestos));
                 
             if ($abono > 0) {

@@ -20,6 +20,8 @@ class Pago extends Model
         'banco_id',
         'tarjeta_id',
         'numero_referencia',
+        'tramite_tipo',
+        'tramite_id',
     ];
 
     public function cliente()

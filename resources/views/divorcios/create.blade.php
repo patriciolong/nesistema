@@ -281,20 +281,23 @@
                             </div>
 
                             <div class="mb-5">
-                                <label for="abono" class="block text-sm font-bold text-gray-700 mb-1">Abono Inicial del Cliente ($) <span class="text-red-500">*</span></label>
+                                <label for="abono" class="block text-sm font-bold text-gray-700 mb-1">Abono Inicial Inmediato ($)</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span class="text-emerald-500 sm:text-sm font-bold">$</span>
                                     </div>
-                                    <input id="abono" type="number" step="0.01" name="abono" value="{{ old('abono', 0) }}" required oninput="calcularSaldo()"
+                                    <input id="abono" type="number" step="0.01" name="abono" value="{{ old('abono', 0) }}" oninput="calcularSaldo()"
                                         onfocus="if(this.value=='0') this.value=''" onblur="if(this.value=='') this.value='0'"
                                         class="block w-full pl-7 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 font-bold text-lg text-emerald-600">
                                 </div>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    💡 Si el cliente pagará en ventanilla de caja, deja el abono en <strong>$0.00</strong>.
+                                </p>
                                 <x-input-error :messages="$errors->get('abono')" class="mt-1" />
                             </div>
 
                             <div class="pt-4 border-t border-gray-200">
-                                <label for="saldo" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Saldo a Sumar a Deuda</label>
+                                <label for="saldo" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Saldo a Cartera (Por Cobrar)</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span class="text-orange-500 sm:text-sm font-bold">$</span>
@@ -304,45 +307,61 @@
                                 </div>
                             </div>
 
-                            <!-- Métodos de Pago -->
-                            <div id="seccion_metodo_pago" class="mt-4 pt-4 border-t border-gray-200 space-y-3">
-                                <div>
-                                    <label for="metodo_pago" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Método de Pago</label>
-                                    <select name="metodo_pago" id="metodo_pago" onchange="toggleDivorcioPaymentFields()"
-                                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-xs bg-white">
-                                        <option value="Efectivo">Efectivo</option>
-                                        <option value="Tarjeta">Tarjeta / POS</option>
-                                        <option value="Transferencia">Transferencia Bancaria</option>
-                                        <option value="Cheque">Cheque</option>
-                                    </select>
-                                </div>
+                            @if($cajaAbierta)
+                                <!-- Métodos de Pago si tiene caja abierta -->
+                                <div id="seccion_metodo_pago" class="mt-4 pt-4 border-t border-gray-200 space-y-3">
+                                    <div class="flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 p-2 rounded-lg border border-emerald-200 mb-2">
+                                        <span>🟢</span>
+                                        <span>Caja <strong>#{{ $cajaAbierta->id }}</strong> activa para cobro</span>
+                                    </div>
 
-                                <div id="div_tarjeta" class="hidden">
-                                    <label for="tarjeta_id" class="block text-xs font-bold text-gray-700 mb-1">Tarjeta / POS</label>
-                                    <select name="tarjeta_id" id="tarjeta_id" class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
-                                        <option value="">Seleccione Tarjeta...</option>
-                                        @foreach($tarjetas as $tar)
-                                            <option value="{{ $tar->id }}">{{ $tar->nombre }} ({{ $tar->franquicia }})</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div>
+                                        <label for="metodo_pago" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Método de Pago</label>
+                                        <select name="metodo_pago" id="metodo_pago" onchange="toggleDivorcioPaymentFields()"
+                                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-xs bg-white">
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Tarjeta">Tarjeta / POS</option>
+                                            <option value="Transferencia">Transferencia Bancaria</option>
+                                            <option value="Cheque">Cheque</option>
+                                        </select>
+                                    </div>
 
-                                <div id="div_banco" class="hidden">
-                                    <label for="banco_id" class="block text-xs font-bold text-gray-700 mb-1">Banco</label>
-                                    <select name="banco_id" id="banco_id" class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
-                                        <option value="">Seleccione Banco...</option>
-                                        @foreach($bancos as $ban)
-                                            <option value="{{ $ban->id }}">{{ $ban->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div id="div_tarjeta" class="hidden">
+                                        <label for="tarjeta_id" class="block text-xs font-bold text-gray-700 mb-1">Tarjeta / POS</label>
+                                        <select name="tarjeta_id" id="tarjeta_id" class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
+                                            <option value="">Seleccione Tarjeta...</option>
+                                            @foreach($tarjetas as $tar)
+                                                <option value="{{ $tar->id }}">{{ $tar->nombre }} ({{ $tar->franquicia }})</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
 
-                                <div id="div_ref" class="hidden">
-                                    <label for="numero_referencia" class="block text-xs font-bold text-gray-700 mb-1">N° Voucher / Ref</label>
-                                    <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ej: Voucher #1234"
-                                           class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
+                                    <div id="div_banco" class="hidden">
+                                        <label for="banco_id" class="block text-xs font-bold text-gray-700 mb-1">Banco</label>
+                                        <select name="banco_id" id="banco_id" class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
+                                            <option value="">Seleccione Banco...</option>
+                                            @foreach($bancos as $ban)
+                                                <option value="{{ $ban->id }}">{{ $ban->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div id="div_ref" class="hidden">
+                                        <label for="numero_referencia" class="block text-xs font-bold text-gray-700 mb-1">N° Voucher / Ref</label>
+                                        <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ej: Voucher #1234"
+                                               class="block w-full rounded-lg border-gray-300 shadow-sm sm:text-xs">
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="mt-4 pt-3 border-t border-gray-200">
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800 leading-relaxed">
+                                        <div class="font-bold flex items-center gap-1 mb-1">
+                                            <span>ℹ️</span> Redacción sin Cobro en Caja
+                                        </div>
+                                        El trámite se registrará en la <strong>Cartera del Cliente</strong> y el cajero podrá cobrarlo en ventanilla.
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Observaciones -->

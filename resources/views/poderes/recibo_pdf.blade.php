@@ -7,7 +7,7 @@
     <style>
         @page {
             size: letter portrait;
-            margin: 7mm 10mm 7mm 10mm;
+            margin: 5mm 9mm 5mm 9mm;
         }
         * {
             box-sizing: border-box;
@@ -16,63 +16,63 @@
             font-family: 'Helvetica', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            color: #1e293b;
-            font-size: 7.5pt;
-            line-height: 1.2;
+            color: #0f172a;
+            font-size: 8.5pt;
+            line-height: 1.25;
         }
 
         /* Header Table */
         .header-table {
             width: 100%;
             border-bottom: 2px solid #5a189a;
-            padding-bottom: 5px;
-            margin-bottom: 6px;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
         }
         .header-table td {
             vertical-align: middle;
         }
         .logo-cell {
-            width: 100px;
+            width: 105px;
         }
         .logo-cell img {
-            max-width: 90px;
-            max-height: 38px;
+            max-width: 95px;
+            max-height: 40px;
         }
         .title-cell {
             text-align: center;
         }
         .title-cell h1 {
             color: #5a189a;
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
             text-transform: uppercase;
             font-weight: 800;
             letter-spacing: 0.5px;
         }
         .title-cell p {
-            color: #64748b;
+            color: #475569;
             margin: 1px 0 0 0;
-            font-size: 7.5pt;
+            font-size: 8pt;
             font-weight: bold;
         }
         .info-cell {
-            width: 155px;
+            width: 165px;
             text-align: right;
-            font-size: 7pt;
-            color: #475569;
-            line-height: 1.3;
+            font-size: 7.5pt;
+            color: #334155;
+            line-height: 1.35;
         }
 
         /* Section Headings */
         .sec-title {
             background-color: #5a189a;
             color: white;
-            padding: 2.5px 6px;
-            font-size: 7.5pt;
+            padding: 3px 6px;
+            font-size: 8.5pt;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 4px;
             margin-bottom: 3px;
-            border-radius: 2px;
+            border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
@@ -81,39 +81,39 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .data-table td {
             padding: 2px 4px;
             vertical-align: top;
-            font-size: 7.5pt;
+            font-size: 8.5pt;
         }
         .lbl {
-            font-size: 6.5pt;
+            font-size: 7pt;
             font-weight: bold;
-            color: #64748b;
+            color: #475569;
             text-transform: uppercase;
             display: block;
             margin-bottom: 1px;
         }
         .val {
-            font-size: 7.5pt;
+            font-size: 8.5pt;
             font-weight: 600;
             color: #0f172a;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #cbd5e1;
             padding-bottom: 1px;
-            min-height: 12px;
+            min-height: 14px;
             word-wrap: break-word;
         }
 
-        /* Text Boxes (Reason / Observations) */
+        /* Text Boxes */
         .box-text {
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
             padding: 4px 6px;
             border-radius: 3px;
-            font-size: 7.5pt;
-            color: #1e293b;
+            font-size: 8.5pt;
+            color: #0f172a;
             min-height: 28px;
             line-height: 1.25;
         }
@@ -127,17 +127,17 @@
         }
         .fin-table th {
             background-color: #f1f5f9;
-            color: #475569;
-            padding: 3.5px 5px;
+            color: #334155;
+            padding: 4px 6px;
             text-align: right;
-            font-size: 7pt;
+            font-size: 8pt;
             font-weight: bold;
             border-bottom: 1px solid #e2e8f0;
         }
         .fin-table td {
-            padding: 3.5px 5px;
+            padding: 4px 6px;
             text-align: right;
-            font-size: 8pt;
+            font-size: 9pt;
             font-weight: bold;
             color: #0f172a;
             border-bottom: 1px solid #e2e8f0;
@@ -146,7 +146,7 @@
         .fin-table .row-total td {
             background-color: #f3e8ff;
             color: #5a189a;
-            font-size: 9pt;
+            font-size: 10pt;
             font-weight: 900;
             border-bottom: none;
         }
@@ -154,7 +154,7 @@
         /* Signatures */
         .sig-table {
             width: 100%;
-            margin-top: 14px;
+            margin-top: 15px;
             text-align: center;
         }
         .sig-table td {
@@ -163,21 +163,21 @@
             padding: 0 20px;
         }
         .sig-line {
-            border-top: 1px solid #334155;
+            border-top: 1.5px solid #1e293b;
             padding-top: 2px;
-            font-size: 7pt;
+            font-size: 8pt;
             font-weight: bold;
-            color: #334155;
+            color: #0f172a;
             text-transform: uppercase;
         }
 
         .footer-bar {
             text-align: center;
-            font-size: 6.5pt;
-            color: #94a3b8;
-            margin-top: 8px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 3px;
+            font-size: 7pt;
+            color: #64748b;
+            margin-top: 6px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 2px;
         }
     </style>
 </head>
@@ -212,21 +212,25 @@
     <div class="sec-title">1. Persona que Otorga el Poder (Poderdante)</div>
     <table class="data-table">
         <tr>
-            <td style="width: 50%;">
+            <td style="width: 45%;">
                 <span class="lbl">Nombres y Apellidos Completos</span>
                 <div class="val">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
             </td>
             <td style="width: 25%;">
-                <span class="lbl">Nº Identificación / Cédula / Pasaporte</span>
+                <span class="lbl">Identificación / Cédula / Pasaporte</span>
                 <div class="val">{{ $cliente->c_identificacion ?: 'S/I' }}</div>
             </td>
-            <td style="width: 25%;">
+            <td style="width: 15%;">
                 <span class="lbl">Estado Civil</span>
                 <div class="val">{{ mb_strtoupper($tramite->tp_estado_civil) ?: 'N/E' }}</div>
             </td>
+            <td style="width: 15%;">
+                <span class="lbl">Teléfono</span>
+                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
+            </td>
         </tr>
         <tr>
-            <td style="width: 50%;">
+            <td style="width: 45%;">
                 <span class="lbl">Dirección Residencial</span>
                 <div class="val">{{ $cliente->c_direccion ?: 'N/E' }} {{ $cliente->c_departamento ? 'Apt '.$cliente->c_departamento : '' }}</div>
             </td>
@@ -234,9 +238,9 @@
                 <span class="lbl">Ciudad / Estado / C.P.</span>
                 <div class="val">{{ $cliente->c_ciudad ?: 'N/E' }}{{ $cliente->c_estado ? ', '.$cliente->c_estado : '' }} {{ $cliente->c_codpostal }}</div>
             </td>
-            <td style="width: 25%;">
-                <span class="lbl">Teléfono / Celular</span>
-                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
+            <td colspan="2" style="width: 30%;">
+                <span class="lbl">Correo Electrónico</span>
+                <div class="val">{{ $cliente->c_email ?: 'S/E' }}</div>
             </td>
         </tr>
     </table>
@@ -297,12 +301,12 @@
     <div class="sec-title">4. Envío y Entrega</div>
     <table class="data-table">
         <tr>
-            <td style="width: 35%;">
+            <td style="width: 30%;">
                 <span class="lbl">Método de Envío</span>
                 <div class="val" style="color: #5a189a; font-weight: bold;">{{ mb_strtoupper($tramite->tp_opcion_envio_poder) ?: 'OFICINA' }}</div>
             </td>
-            <td style="width: 65%;">
-                <span class="lbl">Destinatario en Destino / Ciudad</span>
+            <td style="width: 70%;">
+                <span class="lbl">Destinatario en Destino / Ciudad / Teléfono</span>
                 <div class="val">
                     @if($tramite->tp_enviar_nombrede)
                         {{ $tramite->tp_enviar_nombrede }} ({{ $tramite->tp_ciudad_enviar ?: '' }} - {{ $tramite->tp_provincia ?: '' }}) - Tel: {{ $tramite->tp_telefonos_enviar ?: 'S/T' }}
@@ -319,8 +323,8 @@
     <table style="width: 100%; border-collapse: separate; border-spacing: 4px 0;">
         <tr>
             <td style="width: 58%; vertical-align: top;">
-                <div class="box-text" style="min-height: 48px;">
-                    <strong style="color: #475569; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Notas / Observaciones:</strong>
+                <div class="box-text" style="min-height: 52px;">
+                    <strong style="color: #475569; font-size: 7pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Notas / Observaciones:</strong>
                     {!! nl2br(e($tramite->tp_observaciones ?: 'Ninguna observación especial registrada.')) !!}
                 </div>
             </td>
@@ -349,10 +353,10 @@
     <table class="sig-table">
         <tr>
             <td>
-                <div class="sig-line">Firma del Cliente / Otorgante<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
+                <div class="sig-line">Firma del Cliente / Otorgante<br><span style="font-size: 7pt; color: #475569; text-transform: none; font-weight: normal;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
             </td>
             <td>
-                <div class="sig-line">Firma y Sello Notaría / Asesor<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $tramite->usuario->name ?? 'Personal Autorizado' }}</span></div>
+                <div class="sig-line">Firma y Sello Notaría / Asesor<br><span style="font-size: 7pt; color: #475569; text-transform: none; font-weight: normal;">{{ $tramite->usuario->name ?? 'Personal Autorizado' }}</span></div>
             </td>
         </tr>
     </table>

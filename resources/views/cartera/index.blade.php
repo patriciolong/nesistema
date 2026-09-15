@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-orange-50 text-orange-600 rounded-xl border border-orange-200 shadow-xs">
+                <div class="p-2.5 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 shadow-sm">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
@@ -11,357 +11,368 @@
                     <h2 class="font-bold text-2xl text-slate-800 tracking-tight leading-none">
                         {{ __('Cartera de Clientes & Cuentas por Cobrar (Créditos)') }}
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">Control centralizado de créditos, trámites por cobrar y recaudación en ventanilla de caja</p>
+                    <p class="text-xs text-slate-500 mt-1">Control de clientes a crédito, liquidación de trámites y recaudación en ventanilla de caja</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2.5">
                 @if($tieneCajaAbierta && $cajaAbierta)
-                    <div class="flex items-center gap-2 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-xs">
+                    <div class="flex items-center gap-2 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-sm">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span class="text-xs text-emerald-800 font-bold">Caja #{{ $cajaAbierta->id }} Activa</span>
                     </div>
                 @else
-                    <a href="{{ route('cajas.index') }}" class="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-xs transition-all">
+                    <a href="{{ route('cajas.index') }}" class="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm transition-all">
                         <span>⚠️ Abrir Caja para Cobrar</span> &rarr;
                     </a>
                 @endif
-                <a href="{{ route('clientes.index') }}" class="px-3.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs transition-all">
-                    &larr; Ir a Directorio de Clientes
+                <a href="{{ route('clientes.index') }}" class="px-3.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-sm transition-all">
+                    &larr; Directorio de Clientes
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-6 space-y-6">
-        <div class="w-full max-w-[1700px] mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            <!-- Notificaciones de Sistema -->
-            @if (session('success'))
-                <div class="flex items-center p-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-xs transition-all" role="alert">
-                    <svg class="w-5 h-5 mr-3 shrink-0 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="text-sm font-semibold">{{ session('success') }}</span>
-                </div>
-            @endif
+    <div class="space-y-6">
+        
+        <!-- Notificaciones del Sistema -->
+        @if (session('success'))
+            <div class="flex items-center p-4 text-emerald-900 bg-emerald-50 border border-emerald-200 rounded-2xl shadow-sm transition-all" role="alert">
+                <svg class="w-5 h-5 mr-3 shrink-0 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-sm font-bold">{{ session('success') }}</span>
+            </div>
+        @endif
 
-            @if (session('error'))
-                <div class="flex items-center p-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-2xl shadow-xs transition-all" role="alert">
-                    <svg class="w-5 h-5 mr-3 shrink-0 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="text-sm font-semibold">{{ session('error') }}</span>
-                </div>
-            @endif
+        @if (session('error'))
+            <div class="flex items-center p-4 text-rose-900 bg-rose-50 border border-rose-200 rounded-2xl shadow-sm transition-all" role="alert">
+                <svg class="w-5 h-5 mr-3 shrink-0 text-rose-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-sm font-bold">{{ session('error') }}</span>
+            </div>
+        @endif
 
-            <!-- Modal de Impresión de Recibo si aplica -->
-            @if (session('imprimir_recibo'))
-                <div x-data="{ open: true }" @keydown.window.escape="open = false" x-show="open" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
-                    <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" @click="open = false"></div>
-                    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md p-6 border border-emerald-200">
-                                <div class="text-center">
-                                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 mb-3 ring-8 ring-emerald-50">
-                                        <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-lg font-black text-slate-900">¡Cobro Registrado con Éxito!</h3>
-                                    <p class="text-xs text-slate-500 mt-1">El ingreso se registró en tu sesión de caja y la deuda fue actualizada.</p>
+        <!-- Modal de Impresión Automática de Recibo de Abono -->
+        @if (session('imprimir_recibo'))
+            <div x-data="{ open: true }" @keydown.window.escape="open = false" x-show="open" class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+                <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="open = false"></div>
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div x-show="open" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md p-6 border border-emerald-200">
+                            <div class="text-center">
+                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 mb-3 ring-8 ring-emerald-50">
+                                    <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                 </div>
-                                <div class="mt-6 flex flex-col gap-2.5">
-                                    <a href="{{ session('imprimir_recibo') }}" target="_blank" class="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-black text-white shadow-md shadow-emerald-200 hover:bg-emerald-700 transition-all">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                        <span>Imprimir Recibo Oficial PDF</span>
-                                    </a>
-                                    <button type="button" @click="open = false" class="w-full inline-flex justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-all">
-                                        Continuar en Cartera
-                                    </button>
-                                </div>
+                                <h3 class="text-lg font-black text-slate-900">¡Cobro Registrado con Éxito!</h3>
+                                <p class="text-xs text-slate-600 mt-1">El ingreso se registró en tu sesión de caja y el saldo del cliente fue actualizado.</p>
+                            </div>
+                            <div class="mt-6 flex flex-col gap-2.5">
+                                <a href="{{ session('imprimir_recibo') }}" target="_blank" class="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-xs font-black text-white shadow-md shadow-emerald-200 hover:bg-emerald-700 transition-all">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                    <span>Imprimir Recibo Oficial PDF</span>
+                                </a>
+                                <button type="button" @click="open = false" class="w-full inline-flex justify-center rounded-xl bg-slate-100 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-all">
+                                    Continuar en Cartera
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endif
+            </div>
+        @endif
 
-            <!-- 4 Tarjetas de Estadísticas Principales de Cartera -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <!-- 1. Total Saldo en Cartera (Por Cobrar) -->
-                <div class="bg-gradient-to-br from-rose-500 to-rose-600 p-5 rounded-3xl shadow-lg shadow-rose-200/50 text-white flex items-center justify-between relative overflow-hidden">
-                    <div class="relative z-10">
-                        <p class="text-[11px] font-extrabold uppercase tracking-wider text-rose-100">Saldo por Cobrar (Créditos)</p>
-                        <p class="text-3xl font-black text-white mt-1">${{ number_format($totalCarteraPorCobrar, 2) }}</p>
-                        <p class="text-[11px] font-medium text-rose-100 mt-1 flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-rose-200 animate-pulse"></span>
-                            {{ number_format($clientesDeudoresCount) }} clientes con saldo
-                        </p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-white text-2xl shrink-0 border border-white/30">
-                        💳
-                    </div>
+        <!-- 4 Tarjetas de Estadísticas Principales de Cartera -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- 1. Total Saldo en Cartera (Por Cobrar) -->
+            <div class="bg-white p-5 rounded-2xl border border-rose-200/90 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-xs font-bold uppercase tracking-wider text-rose-600">Saldo por Cobrar (Créditos)</p>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">${{ number_format($totalCarteraPorCobrar, 2) }}</h3>
+                    <p class="text-xs font-bold text-rose-700 mt-1.5 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        {{ number_format($clientesDeudoresCount) }} clientes con saldo
+                    </p>
                 </div>
-
-                <!-- 2. Clientes Deudores Activos -->
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex items-center justify-between hover:shadow-md transition-shadow">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Clientes con Saldo Pendiente</p>
-                        <p class="text-3xl font-black text-slate-900 mt-1">{{ number_format($clientesDeudoresCount) }}</p>
-                        <p class="text-[11px] font-semibold text-amber-600 mt-1">Requieren gestión o cobro</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 text-2xl shrink-0">
-                        👥
-                    </div>
+                <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
                 </div>
-
-                <!-- 3. Total Facturado Histórico -->
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex items-center justify-between hover:shadow-md transition-shadow">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Honorarios (Facturado)</p>
-                        <p class="text-3xl font-black text-slate-900 mt-1">${{ number_format($totalDeudaHistorica, 2) }}</p>
-                        <p class="text-[11px] font-semibold text-indigo-600 mt-1">Acumulado total de trámites</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 text-2xl shrink-0">
-                        📊
-                    </div>
-                </div>
-
-                <!-- 4. Total Recaudado / Cobrado -->
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex items-center justify-between hover:shadow-md transition-shadow">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Cobrado (Abonado)</p>
-                        <p class="text-3xl font-black text-emerald-600 mt-1">${{ number_format($totalAbonado, 2) }}</p>
-                        <p class="text-[11px] font-semibold text-emerald-600 mt-1">Ingresado en caja / bancos</p>
-                    </div>
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 text-2xl shrink-0">
-                        💵
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Barra de Búsqueda y Filtros de Cartera -->
-            <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-4">
-                <form method="GET" action="{{ route('cartera.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
-                    
-                    <!-- Buscador -->
-                    <div class="lg:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Buscar Cliente</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, apellido, cédula, teléfono..." class="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 font-medium text-slate-800">
-                        </div>
-                    </div>
-
-                    <!-- Filtro Estado Deuda -->
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Filtro de Cartera</label>
-                        <select name="filtro_estado" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-bold text-slate-800 focus:bg-white">
-                            <option value="deudores" {{ request('filtro_estado', 'deudores') === 'deudores' ? 'selected' : '' }}>🔴 Solo con Deuda Pendiente</option>
-                            <option value="al_dia" {{ request('filtro_estado') === 'al_dia' ? 'selected' : '' }}>🟢 Clientes al Día ($0.00)</option>
-                            <option value="todos" {{ request('filtro_estado') === 'todos' ? 'selected' : '' }}>👥 Todos los Clientes</option>
-                        </select>
-                    </div>
-
-                    <!-- Filtro Oficina -->
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Oficina de Registro</label>
-                        <select name="oficina" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-medium text-slate-800 focus:bg-white">
-                            <option value="">Todas las Oficinas</option>
-                            @foreach($oficinas as $ofi)
-                                <option value="{{ $ofi }}" {{ request('oficina') == $ofi ? 'selected' : '' }}>{{ $ofi }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Orden y Botón Filtrar -->
-                    <div class="flex items-center gap-2">
-                        <div class="flex-1">
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Ordenar</label>
-                            <select name="orden" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-medium text-slate-800 focus:bg-white">
-                                <option value="mayor_saldo" {{ request('orden', 'mayor_saldo') === 'mayor_saldo' ? 'selected' : '' }}>Mayor Saldo</option>
-                                <option value="menor_saldo" {{ request('orden') === 'menor_saldo' ? 'selected' : '' }}>Menor Saldo</option>
-                                <option value="nombre" {{ request('orden') === 'nombre' ? 'selected' : '' }}>Nombre A-Z</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all h-[38px] flex items-center justify-center shrink-0">
-                            Filtrar
-                        </button>
-                        @if(request()->hasAny(['search', 'oficina', 'filtro_estado', 'orden']))
-                            <a href="{{ route('cartera.index') }}" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-all h-[38px] flex items-center justify-center shrink-0" title="Limpiar Filtros">
-                                ✕
-                            </a>
-                        @endif
-                    </div>
-
-                </form>
+            <!-- 2. Clientes Deudores Activos -->
+            <div class="bg-white p-5 rounded-2xl border border-amber-200/90 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Clientes con Saldo</p>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">{{ number_format($clientesDeudoresCount) }}</h3>
+                    <p class="text-xs font-medium text-slate-500 mt-1.5">Con trámites pendientes</p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Tabla de Clientes en Cartera -->
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                        Clientes y Estados de Cuenta
-                    </h3>
-                    <span class="text-xs font-bold text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">
-                        Mostrando {{ $clientes->count() }} de {{ $clientes->total() }} clientes
-                    </span>
+            <!-- 3. Total Facturado Histórico -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Facturado (Deuda)</p>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">${{ number_format($totalDeudaHistorica, 2) }}</h3>
+                    <p class="text-xs font-medium text-slate-500 mt-1.5">Acumulado de trámites</p>
                 </div>
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                    </svg>
+                </div>
+            </div>
 
-                @if($clientes->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs text-slate-700">
-                            <thead class="bg-slate-50 uppercase text-[11px] font-bold text-slate-500 border-b border-slate-200">
-                                <tr>
-                                    <th class="py-3.5 px-6">Cliente</th>
-                                    <th class="py-3.5 px-6">Contacto / Oficina</th>
-                                    <th class="py-3.5 px-6 text-right">Total Facturado</th>
-                                    <th class="py-3.5 px-6 text-right">Total Abonado</th>
-                                    <th class="py-3.5 px-6 text-right">Saldo Pendiente (Crédito)</th>
-                                    <th class="py-3.5 px-6 text-center">Estado</th>
-                                    <th class="py-3.5 px-6 text-center">Acciones de Cobro</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                @foreach($clientes as $c)
-                                    <tr class="hover:bg-slate-50/80 transition-colors {{ $c->c_saldo > 0 ? 'bg-rose-50/20' : '' }}">
-                                        
-                                        <!-- Cliente -->
-                                        <td class="py-4 px-6">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 {{ $c->c_saldo > 0 ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200' }}">
-                                                    {{ strtoupper(substr($c->c_nombre, 0, 1)) }}{{ strtoupper(substr($c->c_apellido, 0, 1)) }}
-                                                </div>
-                                                <div>
-                                                    <a href="{{ route('clientes.tramites', $c->id_cliente) }}" class="font-extrabold text-slate-900 hover:text-indigo-600 text-sm transition-colors block">
-                                                        {{ $c->c_nombre }} {{ $c->c_apellido }}
-                                                    </a>
-                                                    <span class="text-[11px] font-semibold text-slate-500">ID / C.I.: {{ $c->c_identificacion ?: 'Sin C.I.' }}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Contacto y Oficina -->
-                                        <td class="py-4 px-6">
-                                            <div class="space-y-1">
-                                                @if($c->c_telefono)
-                                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $c->c_telefono) }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-slate-700 hover:text-emerald-600 transition-colors">
-                                                        <span>📱 {{ $c->c_telefono }}</span>
-                                                    </a>
-                                                @else
-                                                    <span class="text-slate-400">Sin teléfono</span>
-                                                @endif
-                                                <div>
-                                                    @if($c->c_oficina_registro)
-                                                        <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                                                            {{ $c->c_oficina_registro }}
-                                                        </span>
-                                                    @else
-                                                        <span class="text-[10px] text-slate-400">Oficina General</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <!-- Facturado -->
-                                        <td class="py-4 px-6 text-right font-bold text-slate-700">
-                                            ${{ number_format($c->c_deuda, 2) }}
-                                        </td>
-
-                                        <!-- Abonado -->
-                                        <td class="py-4 px-6 text-right font-bold text-emerald-600">
-                                            ${{ number_format($c->c_abonado, 2) }}
-                                        </td>
-
-                                        <!-- Saldo Pendiente -->
-                                        <td class="py-4 px-6 text-right">
-                                            @if($c->c_saldo > 0)
-                                                <span class="inline-block px-3 py-1 rounded-xl text-xs font-black bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
-                                                    ${{ number_format($c->c_saldo, 2) }}
-                                                </span>
-                                            @else
-                                                <span class="inline-block px-3 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                                    $0.00
-                                                </span>
-                                            @endif
-                                        </td>
-
-                                        <!-- Estado -->
-                                        <td class="py-4 px-6 text-center">
-                                            @if($c->c_saldo > 0)
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                                                    A Crédito
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                                    ✓ Al Día
-                                                </span>
-                                            @endif
-                                        </td>
-
-                                        <!-- Acciones -->
-                                        <td class="py-4 px-6 text-center">
-                                            <div class="flex items-center justify-center gap-2">
-                                                @if($c->c_saldo > 0)
-                                                    <button type="button" onclick="cargarDetalleCliente({{ $c->id_cliente }})" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-xs shadow-sm shadow-emerald-200 transition-all cursor-pointer">
-                                                        <span>⚡ Ver Deuda & Cobrar</span>
-                                                    </button>
-                                                @else
-                                                    <button type="button" onclick="cargarDetalleCliente({{ $c->id_cliente }})" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer">
-                                                        <span>🔍 Consultar</span>
-                                                    </button>
-                                                @endif
-
-                                                <a href="{{ route('clientes.tramites', $c->id_cliente) }}" class="p-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors" title="Ver Hub de Trámites">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                                                </a>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginación -->
-                    <div class="p-5 border-t border-slate-100 bg-slate-50/50">
-                        {{ $clientes->links() }}
-                    </div>
-                @else
-                    <div class="text-center py-16 px-4">
-                        <div class="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-100 shadow-xs">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h4 class="text-base font-extrabold text-slate-800">¡Cartera Completamente al Día!</h4>
-                        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">No hay registros de clientes con deudas pendientes bajo los filtros aplicados.</p>
-                        <a href="{{ route('cartera.index', ['filtro_estado' => 'todos']) }}" class="inline-block mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors">
-                            Ver Todos los Clientes
-                        </a>
-                    </div>
-                @endif
+            <!-- 4. Total Recaudado / Cobrado -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Recaudado (Abonos)</p>
+                    <h3 class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">${{ number_format($totalAbonado, 2) }}</h3>
+                    <p class="text-xs text-emerald-700 font-semibold mt-1.5">Ingresos confirmados en caja</p>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
             </div>
 
         </div>
+
+        <!-- Barra de Búsqueda y Filtros de Cartera -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-4">
+            <form method="GET" action="{{ route('cartera.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                
+                <!-- Buscador -->
+                <div class="lg:col-span-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Buscar Cliente</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </span>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar por nombre, cédula, teléfono..." class="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 font-medium text-slate-900 placeholder-slate-400">
+                    </div>
+                </div>
+
+                <!-- Filtro Estado Deuda -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Filtro de Estado</label>
+                    <select name="filtro_estado" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-bold text-slate-800 focus:bg-white focus:border-indigo-500">
+                        <option value="deudores" {{ request('filtro_estado', 'deudores') === 'deudores' ? 'selected' : '' }}>🔴 Con Deuda Pendiente</option>
+                        <option value="al_dia" {{ request('filtro_estado') === 'al_dia' ? 'selected' : '' }}>🟢 Clientes al Día ($0.00)</option>
+                        <option value="todos" {{ request('filtro_estado') === 'todos' ? 'selected' : '' }}>👥 Todos los Clientes</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Oficina -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Oficina de Registro</label>
+                    <select name="oficina" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-800 focus:bg-white focus:border-indigo-500">
+                        <option value="">🏢 Todas las Oficinas</option>
+                        @foreach($oficinas as $ofi)
+                            <option value="{{ $ofi }}" {{ request('oficina') == $ofi ? 'selected' : '' }}>{{ $ofi }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Orden y Botón Filtrar -->
+                <div class="flex items-center gap-2">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Ordenar Por</label>
+                        <select name="orden" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-800 focus:bg-white focus:border-indigo-500">
+                            <option value="mayor_saldo" {{ request('orden', 'mayor_saldo') === 'mayor_saldo' ? 'selected' : '' }}>Mayor Deuda</option>
+                            <option value="menor_saldo" {{ request('orden') === 'menor_saldo' ? 'selected' : '' }}>Menor Deuda</option>
+                            <option value="nombre" {{ request('orden') === 'nombre' ? 'selected' : '' }}>Nombre A-Z</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all h-[38px] flex items-center justify-center shrink-0 cursor-pointer">
+                        Filtrar
+                    </button>
+                    @if(request()->hasAny(['search', 'oficina', 'filtro_estado', 'orden']))
+                        <a href="{{ route('cartera.index') }}" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all h-[38px] flex items-center justify-center shrink-0" title="Limpiar Filtros">
+                            ✕
+                        </a>
+                    @endif
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Tabla de Clientes en Cartera -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    Clientes y Cuentas por Cobrar
+                </h3>
+                <span class="text-xs font-bold text-slate-600 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                    Mostrando {{ $clientes->count() }} de {{ $clientes->total() }} registros
+                </span>
+            </div>
+
+            @if($clientes->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-800">
+                        <thead class="bg-slate-50 uppercase text-xs font-bold text-slate-700 border-b border-slate-200">
+                            <tr>
+                                <th class="py-3.5 px-6">Cliente</th>
+                                <th class="py-3.5 px-6">Contacto / Oficina</th>
+                                <th class="py-3.5 px-6 text-right">Total Facturado</th>
+                                <th class="py-3.5 px-6 text-right">Total Abonado</th>
+                                <th class="py-3.5 px-6 text-right">Saldo Pendiente (Crédito)</th>
+                                <th class="py-3.5 px-6 text-center">Estado</th>
+                                <th class="py-3.5 px-6 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($clientes as $c)
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    
+                                    <!-- Cliente -->
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 {{ $c->c_saldo > 0 ? 'bg-rose-100 text-rose-800 border border-rose-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200' }}">
+                                                {{ strtoupper(mb_substr($c->c_nombre ?? '', 0, 1)) }}{{ strtoupper(mb_substr($c->c_apellido ?? '', 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('clientes.tramites', $c->id_cliente) }}" class="font-bold text-slate-900 hover:text-indigo-600 text-sm transition-colors block leading-tight">
+                                                    {{ $c->c_nombre }} {{ $c->c_apellido }}
+                                                </a>
+                                                <span class="text-xs font-medium text-slate-500 mt-0.5 block">ID / C.I.: {{ $c->c_identificacion ?: 'Sin C.I.' }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Contacto y Oficina -->
+                                    <td class="py-4 px-6">
+                                        <div class="space-y-1">
+                                            @if($c->c_telefono)
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $c->c_telefono) }}" target="_blank" class="inline-flex items-center gap-1.5 font-bold text-slate-800 hover:text-emerald-700 transition-colors">
+                                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.12.553 4.11 1.523 5.84l-1.617 5.908 6.074-1.593c1.665.906 3.568 1.42 5.599 1.42 6.627 0 12-5.373 12-12s-5.373-12-12-12z"/>
+                                                    </svg>
+                                                    <span>{{ $c->c_telefono }}</span>
+                                                </a>
+                                            @else
+                                                <span class="text-slate-500 font-medium">Sin teléfono</span>
+                                            @endif
+                                            <div>
+                                                @if($c->c_oficina_registro)
+                                                    <span class="inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
+                                                        {{ $c->c_oficina_registro }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-[11px] text-slate-500 font-medium">Oficina General</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Facturado -->
+                                    <td class="py-4 px-6 text-right font-bold text-slate-900 text-sm">
+                                        ${{ number_format($c->c_deuda, 2) }}
+                                    </td>
+
+                                    <!-- Abonado -->
+                                    <td class="py-4 px-6 text-right font-bold text-emerald-700 text-sm">
+                                        ${{ number_format($c->c_abonado, 2) }}
+                                    </td>
+
+                                    <!-- Saldo Pendiente -->
+                                    <td class="py-4 px-6 text-right">
+                                        @if($c->c_saldo > 0)
+                                            <span class="inline-block px-3.5 py-1 rounded-xl text-sm font-black bg-rose-50 text-rose-700 border border-rose-200 shadow-sm">
+                                                ${{ number_format($c->c_saldo, 2) }}
+                                            </span>
+                                        @else
+                                            <span class="inline-block px-3.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                                $0.00
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <!-- Estado -->
+                                    <td class="py-4 px-6 text-center">
+                                        @if($c->c_saldo > 0)
+                                            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                                                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                                                Con Deuda
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                ✓ Al Día
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <!-- Acciones -->
+                                    <td class="py-4 px-6 text-center">
+                                        <div class="flex items-center justify-center gap-2">
+                                            @if($c->c_saldo > 0)
+                                                <button type="button" onclick="cargarDetalleCliente({{ $c->id_cliente }})" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-all cursor-pointer">
+                                                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    <span>Cobrar & Trámites</span>
+                                                </button>
+                                            @else
+                                                <button type="button" onclick="cargarDetalleCliente({{ $c->id_cliente }})" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer">
+                                                    <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                                    <span>Ver Detalle</span>
+                                                </button>
+                                            @endif
+
+                                            <a href="{{ route('clientes.tramites', $c->id_cliente) }}" class="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors" title="Ver Hub de Trámites">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                                            </a>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div class="p-5 border-t border-slate-100 bg-slate-50/50">
+                    {{ $clientes->links() }}
+                </div>
+            @else
+                <div class="text-center py-16 px-4">
+                    <div class="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-100 shadow-sm">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h4 class="text-base font-extrabold text-slate-900">¡Cartera Completamente al Día!</h4>
+                    <p class="text-xs text-slate-600 mt-1 max-w-sm mx-auto">No hay registros de clientes con deudas pendientes bajo los filtros aplicados.</p>
+                    <a href="{{ route('cartera.index', ['filtro_estado' => 'todos']) }}" class="inline-block mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-colors">
+                        Ver Todos los Clientes
+                    </a>
+                </div>
+            @endif
+        </div>
+
     </div>
 
-    <!-- MODAL SLIDE-OVER: GESTIÓN DE CARTERA, DETALLE DE TRÁMITES Y COBRO EN CAJA -->
+    <!-- MODAL / DRAWER: GESTIÓN DE CARTERA, DETALLE DE TRÁMITES Y COBRO EN CAJA -->
     <div id="modalGestionCartera" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-cartera-title" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onclick="cerrarModalCartera()"></div>
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalCartera()"></div>
 
             <div class="relative inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-slate-200">
                 
                 <!-- Loading State -->
                 <div id="carteraLoadingState" class="p-12 text-center">
                     <div class="inline-block w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                    <p class="text-xs font-bold text-slate-600 mt-3">Consultando trámites y estado de deuda...</p>
+                    <p class="text-sm font-bold text-slate-800 mt-3">Consultando trámites y estado de deuda...</p>
                 </div>
 
                 <!-- Cartera Content Form -->
@@ -373,19 +384,19 @@
                     <input type="hidden" name="tramite_id" id="cartera_tramite_id" value="">
 
                     <!-- Header Modal -->
-                    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 px-6 py-5 text-white flex justify-between items-center">
+                    <div class="bg-slate-900 px-6 py-5 text-white flex justify-between items-center border-b border-slate-800">
                         <div class="flex items-center gap-3">
-                            <div class="p-2.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                            <div class="p-2.5 bg-white/10 rounded-2xl border border-white/20 text-emerald-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-black tracking-tight" id="modal-cartera-title">
-                                    Estado de Cartera & Cobro
+                                <h3 class="text-lg font-bold tracking-tight text-white" id="modal-cartera-title">
+                                    Gestión de Cartera & Cobro
                                 </h3>
-                                <p class="text-xs text-indigo-200 font-medium" id="modal_cliente_nombre">Cargando...</p>
+                                <p class="text-sm text-slate-200 font-medium" id="modal_cliente_nombre">Cargando...</p>
                             </div>
                         </div>
-                        <button type="button" onclick="cerrarModalCartera()" class="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all cursor-pointer">
+                        <button type="button" onclick="cerrarModalCartera()" class="text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all cursor-pointer">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
@@ -394,45 +405,51 @@
                         
                         <!-- Caja Status Badge -->
                         @if($cajaAbierta)
-                            <div class="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 border border-emerald-200">
-                                <div class="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                            <div class="flex items-center justify-between p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200">
+                                <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">
                                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span>Caja Activa #{{ $cajaAbierta->id }} para Recaudación</span>
                                 </div>
-                                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-lg">
                                     Cajero: {{ Auth::user()->name }}
                                 </span>
                             </div>
                         @else
-                            <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-800 font-semibold flex items-center gap-2">
-                                <span>⚠️</span>
-                                <span>No tienes una caja abierta. Podrás ver los trámites, pero para registrar cobros requieres abrir caja.</span>
+                            <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 font-bold flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span>⚠️</span>
+                                    <span>No tienes una caja abierta. Puedes ver los trámites, pero para registrar cobros requieres abrir caja.</span>
+                                </div>
+                                <a href="{{ route('cajas.index') }}" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shrink-0 shadow-sm transition-all">
+                                    Abrir Caja &rarr;
+                                </a>
                             </div>
                         @endif
 
                         <!-- Resumen Financiero del Cliente -->
                         <div class="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center">
                             <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">Total Facturado</span>
-                                <span class="text-sm font-black text-slate-800" id="modal_cliente_deuda">$0.00</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Total Facturado</span>
+                                <span class="text-base font-black text-slate-900 mt-1 block" id="modal_cliente_deuda">$0.00</span>
                             </div>
                             <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600 block">Total Abonado</span>
-                                <span class="text-sm font-black text-emerald-600" id="modal_cliente_abonado">$0.00</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block">Total Abonado</span>
+                                <span class="text-base font-black text-emerald-700 mt-1 block" id="modal_cliente_abonado">$0.00</span>
                             </div>
                             <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 block">Saldo Pendiente</span>
-                                <span class="text-lg font-black text-rose-600" id="modal_cliente_saldo">$0.00</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-rose-700 block">Saldo Pendiente</span>
+                                <span class="text-xl font-black text-rose-700 mt-1 block" id="modal_cliente_saldo">$0.00</span>
                             </div>
                         </div>
 
                         <!-- Sección: Listado de Trámites con Deuda -->
                         <div>
                             <div class="flex justify-between items-center mb-2.5">
-                                <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                                    <span>📑</span> Trámites a Crédito / Pendientes de Pago
+                                <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    Trámites a Crédito / Pendientes de Pago
                                 </h4>
-                                <span class="text-[11px] font-bold text-slate-500" id="modal_count_tramites">0 trámites</span>
+                                <span class="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full" id="modal_count_tramites">0 trámites</span>
                             </div>
 
                             <div id="listaTramitesContainer" class="space-y-2.5">
@@ -441,13 +458,13 @@
                         </div>
 
                         <!-- Panel de Configuración del Cobro -->
-                        <div id="panelFormularioPago" class="p-5 bg-gradient-to-br from-indigo-50/50 to-slate-50 rounded-2xl border border-indigo-100 space-y-4">
-                            <div class="flex items-center justify-between pb-2 border-b border-indigo-100">
+                        <div id="panelFormularioPago" class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
                                 <div>
-                                    <h5 class="text-xs font-black text-indigo-950 uppercase tracking-wider" id="label_destino_pago">Cobro de Trámite</h5>
-                                    <p class="text-[11px] text-slate-500 font-medium" id="desc_destino_pago">Selecciona un trámite o la deuda completa</p>
+                                    <h5 class="text-xs font-black text-slate-900 uppercase tracking-wider" id="label_destino_pago">Cobro de Trámite</h5>
+                                    <p class="text-xs text-slate-600 font-semibold" id="desc_destino_pago">Selecciona un trámite o la deuda completa</p>
                                 </div>
-                                <button type="button" onclick="seleccionarCobroTotal()" class="text-xs font-bold text-indigo-700 hover:text-indigo-900 bg-indigo-100/80 hover:bg-indigo-200 px-3 py-1.5 rounded-xl transition-all cursor-pointer">
+                                <button type="button" onclick="seleccionarCobroTotal()" class="text-xs font-black text-indigo-700 hover:text-white bg-indigo-50 hover:bg-indigo-600 border border-indigo-200 px-3.5 py-2 rounded-xl transition-all cursor-pointer">
                                     Cancelar Toda la Deuda
                                 </button>
                             </div>
@@ -455,23 +472,23 @@
                             <!-- Monto a Cobrar -->
                             <div>
                                 <div class="flex justify-between items-center mb-1.5">
-                                    <label for="cartera_monto_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Monto a Cobrar ($) <span class="text-red-500">*</span></label>
+                                    <label for="cartera_monto_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-800">Monto a Cobrar ($) <span class="text-rose-500">*</span></label>
                                     <div class="flex gap-1.5">
-                                        <button type="button" onclick="ajustarMontoPorcentaje(1)" class="text-[10px] font-bold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-lg hover:bg-slate-100">100%</button>
-                                        <button type="button" onclick="ajustarMontoPorcentaje(0.5)" class="text-[10px] font-bold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-lg hover:bg-slate-100">50%</button>
+                                        <button type="button" onclick="ajustarMontoPorcentaje(1)" class="text-xs font-bold text-slate-700 bg-white border border-slate-300 px-2.5 py-1 rounded-lg hover:bg-slate-100 shadow-sm cursor-pointer">100% Total</button>
+                                        <button type="button" onclick="ajustarMontoPorcentaje(0.5)" class="text-xs font-bold text-slate-700 bg-white border border-slate-300 px-2.5 py-1 rounded-lg hover:bg-slate-100 shadow-sm cursor-pointer">50% Mitad</button>
                                     </div>
                                 </div>
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">$</div>
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 font-bold">$</div>
                                     <input type="number" step="0.01" min="0.01" name="monto_pago" id="cartera_monto_pago" required
-                                           class="w-full pl-8 pr-4 py-3 text-lg font-black text-emerald-700 bg-white border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                                           class="w-full pl-8 pr-4 py-3 text-lg font-black text-emerald-700 bg-white border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
                                 </div>
                             </div>
 
                             <!-- Método de Pago -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label for="cartera_metodo_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Método de Pago</label>
+                                    <label for="cartera_metodo_pago" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">Método de Pago</label>
                                     <select name="metodo_pago" id="cartera_metodo_pago" onchange="toggleCarteraPaymentFields()"
                                             class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-bold text-slate-800 focus:border-emerald-500">
                                         <option value="Efectivo">💵 Efectivo</option>
@@ -483,8 +500,8 @@
 
                                 <!-- Selector de Tarjeta (Condicional) -->
                                 <div id="cartera_campo_tarjeta" class="hidden">
-                                    <label for="cartera_tarjeta_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Tarjeta / Terminal POS</label>
-                                    <select name="tarjeta_id" id="cartera_tarjeta_id" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-medium text-slate-800">
+                                    <label for="cartera_tarjeta_id" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">Tarjeta / Datáfono POS</label>
+                                    <select name="tarjeta_id" id="cartera_tarjeta_id" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-900">
                                         <option value="">Seleccione Tarjeta / POS...</option>
                                         @foreach($tarjetas as $tar)
                                             <option value="{{ $tar->id }}">{{ $tar->nombre }} ({{ $tar->franquicia }})</option>
@@ -494,8 +511,8 @@
 
                                 <!-- Selector de Banco (Condicional) -->
                                 <div id="cartera_campo_banco" class="hidden">
-                                    <label for="cartera_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Banco Destino</label>
-                                    <select name="banco_id" id="cartera_banco_id" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-medium text-slate-800">
+                                    <label for="cartera_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">Banco Destino</label>
+                                    <select name="banco_id" id="cartera_banco_id" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-900">
                                         <option value="">Seleccione Banco...</option>
                                         @foreach($bancos as $ban)
                                             <option value="{{ $ban->id }}">{{ $ban->nombre }}</option>
@@ -506,9 +523,9 @@
 
                             <!-- Nro de Referencia -->
                             <div id="cartera_campo_referencia" class="hidden">
-                                <label for="cartera_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Voucher / Cheque / Autorización</label>
+                                <label for="cartera_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">N° Voucher / Cheque / Autorización</label>
                                 <input type="text" name="numero_referencia" id="cartera_numero_referencia" placeholder="Ej: Voucher #12345 / Lote #09"
-                                       class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-medium text-slate-800">
+                                       class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-900 placeholder-slate-400">
                             </div>
 
                         </div>
@@ -522,7 +539,8 @@
                         </button>
                         @if($tieneCajaAbierta)
                             <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-xl text-xs font-black shadow-md shadow-emerald-200 transition-all cursor-pointer">
-                                <span>💵 Procesar Cobro e Imprimir Recibo</span>
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>Procesar Cobro e Imprimir Recibo</span>
                             </button>
                         @else
                             <a href="{{ route('cajas.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-md transition-all">
@@ -578,7 +596,7 @@
         function renderizarDetalleCliente(data) {
             const cli = data.cliente;
             document.getElementById('cartera_cliente_id').value = cli.id_cliente;
-            document.getElementById('modal_cliente_nombre').innerText = `${cli.nombre_completo} (${cli.identificacion || 'Sin C.I.'})`;
+            document.getElementById('modal_cliente_nombre').innerText = `${cli.nombre_completo} (C.I.: ${cli.identificacion || 'Sin C.I.'})`;
             document.getElementById('modal_cliente_deuda').innerText = `$${parseFloat(cli.deuda).toFixed(2)}`;
             document.getElementById('modal_cliente_abonado').innerText = `$${parseFloat(cli.abonado).toFixed(2)}`;
             document.getElementById('modal_cliente_saldo').innerText = `$${parseFloat(cli.saldo).toFixed(2)}`;
@@ -589,47 +607,53 @@
 
             if (data.tramites.length === 0) {
                 container.innerHTML = `
-                    <div class="p-6 text-center bg-white rounded-2xl border border-slate-200 text-slate-500">
+                    <div class="p-6 text-center bg-white rounded-2xl border border-slate-200 text-slate-600">
                         <span class="text-2xl block mb-1">🎉</span>
-                        <p class="text-xs font-bold">Este cliente no tiene trámites individuales pendientes de pago.</p>
+                        <p class="text-xs font-bold text-slate-800">Este cliente no tiene trámites individuales pendientes de pago.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Su cuenta se encuentra al día.</p>
                     </div>
                 `;
                 seleccionarCobroTotal();
                 return;
             }
 
-            data.tramites.forEach((t, index) => {
+            data.tramites.forEach((t) => {
                 const itemDiv = document.createElement('div');
-                itemDiv.className = 'p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-indigo-300 hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+                itemDiv.id = `card_tramite_${t.tipo}_${t.id}`;
+                itemDiv.className = 'tramite-card-item p-4 rounded-2xl border border-slate-200 bg-white hover:border-indigo-400 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer';
                 
+                itemDiv.onclick = function(e) {
+                    seleccionarTramiteIndividual(t.tipo, t.id, `${t.tipo_label} #${t.id}`, t.saldo);
+                };
+
                 itemDiv.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black border ${t.color_badge}">
+                            <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border ${t.color_badge}">
                                 ${t.icon} ${t.tipo_label} #${t.id}
                             </span>
-                            <span class="text-[11px] font-semibold text-slate-400">• ${t.fecha}</span>
+                            <span class="text-xs font-medium text-slate-500">• ${t.fecha}</span>
                         </div>
-                        <p class="text-xs font-bold text-slate-800 truncate">${t.descripcion}</p>
-                        <div class="flex items-center gap-3 text-[11px] mt-1">
-                            <span class="text-slate-500 font-medium">Costo: <strong>$${t.costo.toFixed(2)}</strong></span>
-                            <span class="text-emerald-600 font-medium">Abonado: <strong>$${t.abono.toFixed(2)}</strong></span>
+                        <p class="text-xs font-bold text-slate-900 truncate">${t.descripcion}</p>
+                        <div class="flex items-center gap-3 text-xs mt-1.5">
+                            <span class="text-slate-600">Costo Total: <strong class="text-slate-900 font-bold">$${t.costo.toFixed(2)}</strong></span>
+                            <span class="text-emerald-700">Abonado: <strong class="font-bold">$${t.abono.toFixed(2)}</strong></span>
                         </div>
                     </div>
                     <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                         <div class="text-right">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Saldo Pendiente</span>
-                            <span class="text-sm font-black text-rose-600">$${t.saldo.toFixed(2)}</span>
+                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Saldo Pendiente</span>
+                            <span class="text-base font-black text-rose-700">$${t.saldo.toFixed(2)}</span>
                         </div>
-                        <button type="button" onclick="seleccionarTramiteIndividual('${t.tipo}', ${t.id}, '${t.tipo_label} #${t.id}', ${t.saldo})" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white font-extrabold text-xs transition-all border border-indigo-200 cursor-pointer">
-                            Cobrar este &rarr;
+                        <button type="button" class="btn-select-indicator px-3.5 py-2 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-xs transition-all border border-indigo-200 pointer-events-none shadow-sm">
+                            Seleccionar &rarr;
                         </button>
                     </div>
                 `;
                 container.appendChild(itemDiv);
             });
 
-            // Por defecto seleccionar el primer trámite o la deuda total
+            // Por defecto seleccionar el primer trámite
             if (data.tramites.length > 0) {
                 const first = data.tramites[0];
                 seleccionarTramiteIndividual(first.tipo, first.id, `${first.tipo_label} #${first.id}`, first.saldo);
@@ -642,13 +666,34 @@
             document.getElementById('cartera_modo_cobro').value = 'individual';
             document.getElementById('cartera_tramite_tipo').value = tipo;
             document.getElementById('cartera_tramite_id').value = id;
-            document.getElementById('label_destino_pago').innerText = `Cobrar: ${label}`;
-            document.getElementById('desc_destino_pago').innerText = `Saldo pendiente de este trámite: $${saldo.toFixed(2)}`;
+            document.getElementById('label_destino_pago').innerText = `Cobro Seleccionado: ${label}`;
+            document.getElementById('desc_destino_pago').innerText = `Saldo pendiente de este trámite: $${parseFloat(saldo).toFixed(2)}`;
             
             selectedTramiteSaldoMax = parseFloat(saldo);
             const inputMonto = document.getElementById('cartera_monto_pago');
             inputMonto.value = selectedTramiteSaldoMax.toFixed(2);
             inputMonto.max = selectedTramiteSaldoMax.toFixed(2);
+
+            // Resaltar visualmente la tarjeta seleccionada
+            document.querySelectorAll('.tramite-card-item').forEach(el => {
+                el.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50/40', 'border-indigo-400');
+                const btn = el.querySelector('.btn-select-indicator');
+                if (btn) {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-indigo-50', 'text-indigo-700');
+                    btn.innerText = 'Seleccionar →';
+                }
+            });
+            const activeCard = document.getElementById(`card_tramite_${tipo}_${id}`);
+            if (activeCard) {
+                activeCard.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50/40', 'border-indigo-400');
+                const btn = activeCard.querySelector('.btn-select-indicator');
+                if (btn) {
+                    btn.classList.remove('bg-indigo-50', 'text-indigo-700');
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.innerText = '✓ Seleccionado';
+                }
+            }
         }
 
         function seleccionarCobroTotal() {
@@ -658,12 +703,23 @@
             document.getElementById('cartera_tramite_tipo').value = '';
             document.getElementById('cartera_tramite_id').value = '';
             document.getElementById('label_destino_pago').innerText = 'Cancelar / Abonar a Deuda Total del Cliente';
-            document.getElementById('desc_destino_pago').innerText = `Se aplicará a la deuda global de $${totalSaldo.toFixed(2)}`;
+            document.getElementById('desc_destino_pago').innerText = `Se distribuirá en la deuda global de $${parseFloat(totalSaldo).toFixed(2)}`;
 
             selectedTramiteSaldoMax = parseFloat(totalSaldo);
             const inputMonto = document.getElementById('cartera_monto_pago');
             inputMonto.value = selectedTramiteSaldoMax.toFixed(2);
             inputMonto.max = selectedTramiteSaldoMax.toFixed(2);
+
+            // Deseleccionar tarjetas individuales
+            document.querySelectorAll('.tramite-card-item').forEach(el => {
+                el.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50/40', 'border-indigo-400');
+                const btn = el.querySelector('.btn-select-indicator');
+                if (btn) {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-indigo-50', 'text-indigo-700');
+                    btn.innerText = 'Seleccionar →';
+                }
+            });
         }
 
         function ajustarMontoPorcentaje(factor) {

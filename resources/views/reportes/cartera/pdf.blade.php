@@ -28,11 +28,13 @@
             vertical-align: middle;
         }
         .logo-cell {
-            width: 120px;
+            width: 180px;
+            text-align: left;
         }
         .logo-cell img {
-            width: 100%;
-            max-width: 100px;
+            width: 170px;
+            max-height: 60px;
+            height: auto;
         }
         .title-cell {
             text-align: center;

@@ -7,7 +7,7 @@
     <style>
         @page {
             size: letter portrait;
-            margin: 5mm 9mm 5mm 9mm;
+            margin: 4mm 8mm 4mm 8mm;
         }
         * {
             box-sizing: border-box;
@@ -24,26 +24,28 @@
         /* Header Table */
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #004080;
-            padding-bottom: 4px;
+            border-bottom: 2.5px solid #004080;
+            padding-bottom: 5px;
             margin-bottom: 4px;
         }
         .header-table td {
             vertical-align: middle;
         }
         .logo-cell {
-            width: 105px;
+            width: 180px;
+            text-align: left;
         }
         .logo-cell img {
-            max-width: 95px;
-            max-height: 40px;
+            width: 170px;
+            max-height: 60px;
+            height: auto;
         }
         .title-cell {
             text-align: center;
         }
         .title-cell h1 {
             color: #004080;
-            font-size: 14pt;
+            font-size: 15pt;
             margin: 0;
             text-transform: uppercase;
             font-weight: 800;
@@ -51,14 +53,14 @@
         }
         .title-cell p {
             color: #475569;
-            margin: 1px 0 0 0;
-            font-size: 8pt;
+            margin: 2px 0 0 0;
+            font-size: 8.5pt;
             font-weight: bold;
         }
         .info-cell {
             width: 165px;
             text-align: right;
-            font-size: 7.5pt;
+            font-size: 8pt;
             color: #334155;
             line-height: 1.35;
         }
@@ -71,7 +73,7 @@
             font-size: 8.5pt;
             font-weight: bold;
             margin-top: 4px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -143,7 +145,7 @@
             border-radius: 3px;
             font-size: 8.5pt;
             color: #0f172a;
-            min-height: 52px;
+            min-height: 50px;
             line-height: 1.25;
         }
 
@@ -183,7 +185,7 @@
         /* Signatures */
         .sig-table {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 14px;
             text-align: center;
         }
         .sig-table td {
@@ -204,7 +206,7 @@
             text-align: center;
             font-size: 7pt;
             color: #64748b;
-            margin-top: 6px;
+            margin-top: 5px;
             border-top: 1px solid #cbd5e1;
             padding-top: 2px;
         }

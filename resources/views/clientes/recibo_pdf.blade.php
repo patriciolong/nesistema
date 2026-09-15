@@ -7,7 +7,7 @@
     <style>
         @page {
             size: letter portrait;
-            margin: 6mm 10mm 6mm 10mm;
+            margin: 5mm 10mm 5mm 10mm;
         }
         * {
             box-sizing: border-box;
@@ -24,7 +24,7 @@
         /* Header Table */
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #059669;
+            border-bottom: 2.5px solid #059669;
             padding-bottom: 5px;
             margin-bottom: 8px;
         }
@@ -32,18 +32,20 @@
             vertical-align: middle;
         }
         .logo-cell {
-            width: 110px;
+            width: 180px;
+            text-align: left;
         }
         .logo-cell img {
-            max-width: 100px;
-            max-height: 42px;
+            width: 170px;
+            max-height: 60px;
+            height: auto;
         }
         .title-cell {
             text-align: center;
         }
         .title-cell h1 {
             color: #065f46;
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
             text-transform: uppercase;
             font-weight: 800;

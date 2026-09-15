@@ -106,11 +106,11 @@ class CarteraController extends Controller
      */
     public function getDetalleDeuda(Cliente $cliente)
     {
-        $poderes = DB::table('tramite_poderes')
-            ->where('id_cliente', $cliente->id_cliente)
+        $poderes = TramitePoder::where('id_cliente', $cliente->id_cliente)
             ->where('tp_saldo', '>', 0)
             ->get()
             ->map(function($p) {
+                $desc = $p->tp_razon_otorga_poder ?: ($p->tp_nombres_otorga_poder ? 'Otorga: ' . $p->tp_nombres_otorga_poder : 'Poder General / Especial');
                 return [
                     'tipo' => 'poderes',
                     'tipo_label' => 'Poder Notarial',
@@ -118,7 +118,7 @@ class CarteraController extends Controller
                     'icon' => '📜',
                     'id' => $p->id_tram_poderes,
                     'fecha' => $p->tp_fecha ? date('d/m/Y', strtotime($p->tp_fecha)) : '-',
-                    'descripcion' => $p->tp_razon_otorga_poder ?: 'Poder General / Especial',
+                    'descripcion' => $desc,
                     'costo' => floatval($p->tp_costo_tramite),
                     'abono' => floatval($p->tp_abono_tramite),
                     'saldo' => floatval($p->tp_saldo),
@@ -126,11 +126,12 @@ class CarteraController extends Controller
                 ];
             });
 
-        $divorcios = DB::table('tramite_divorcio')
-            ->where('id_cliente', $cliente->id_cliente)
+        $divorcios = TramiteDivorcio::where('id_cliente', $cliente->id_cliente)
             ->where('td_saldo', '>', 0)
             ->get()
             ->map(function($d) {
+                $tipoDiv = $d->td_controvertido ? 'Controvertido' : ($d->td_consensual ? 'Por Consenso' : ($d->td_notarial ? 'Notarial' : ''));
+                $desc = 'Divorcio' . ($tipoDiv ? ' ' . $tipoDiv : '') . ($d->td_nombre_c ? ' - Cónyuge: ' . $d->td_nombre_c : ($d->td_motivo_divorcio ? ' - ' . $d->td_motivo_divorcio : ''));
                 return [
                     'tipo' => 'divorcios',
                     'tipo_label' => 'Divorcio',
@@ -138,7 +139,7 @@ class CarteraController extends Controller
                     'icon' => '💔',
                     'id' => $d->id_tram_div,
                     'fecha' => $d->td_fecha ? date('d/m/Y', strtotime($d->td_fecha)) : '-',
-                    'descripcion' => 'Divorcio ' . ($d->tipo_divorcio ?: '') . ($d->td_nombre_c ? ' - Cónyuge: ' . $d->td_nombre_c : ''),
+                    'descripcion' => $desc,
                     'costo' => floatval($d->td_valor),
                     'abono' => floatval($d->td_abono),
                     'saldo' => floatval($d->td_saldo),
@@ -146,8 +147,7 @@ class CarteraController extends Controller
                 ];
             });
 
-        $impuestos = DB::table('tramite_impuestos')
-            ->where('id_cliente', $cliente->id_cliente)
+        $impuestos = TramiteImpuesto::where('id_cliente', $cliente->id_cliente)
             ->where('ti_saldo', '>', 0)
             ->get()
             ->map(function($i) {
@@ -166,8 +166,7 @@ class CarteraController extends Controller
                 ];
             });
 
-        $varios = DB::table('tramite_varios')
-            ->where('id_cliente', $cliente->id_cliente)
+        $varios = TramiteVario::where('id_cliente', $cliente->id_cliente)
             ->where('tv_saldo', '>', 0)
             ->get()
             ->map(function($v) {

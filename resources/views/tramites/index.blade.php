@@ -497,55 +497,64 @@
                                     {{ $divorcios->count() }} Registros
                                 </span>
                             </div>
-                            <div class="p-5 text-sm">
+                            <div class="p-4 text-sm">
                                 @if($divorcios->count() > 0)
-                                    <ul class="divide-y divide-gray-100">
+                                    <ul class="space-y-3">
                                         @foreach($divorcios as $tramite)
-                                            <li class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="font-extrabold text-gray-900 text-sm">#{{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}</span>
+                                            <li class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-rose-300 hover:shadow-sm transition-all space-y-2.5">
+                                                
+                                                <!-- Fila 1: ID, Fecha y Selector de Estado -->
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-2 min-w-0">
+                                                        <span class="font-black text-slate-900 text-sm">#{{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}</span>
                                                         @if(!empty($tramite->td_fecha))
-                                                             <span class="text-xs text-gray-500 font-semibold">• {{ date('d/m/Y', strtotime($tramite->td_fecha)) }}</span>
+                                                            <span class="text-xs text-slate-500 font-semibold truncate">• {{ date('d/m/Y', strtotime($tramite->td_fecha)) }}</span>
                                                         @endif
                                                     </div>
-                                                    @if(!empty($tramite->td_nombre_c))
-                                                        <p class="text-xs text-gray-700 font-medium truncate mt-1">
-                                                            Cónyugue: <span class="font-bold text-gray-900">{{ $tramite->td_nombre_c }}</span>
-                                                        </p>
-                                                    @endif
-                                                    <div class="mt-1 flex items-center gap-2 text-xs">
-                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->td_valor ?? 0, 2) }}</span>
-                                                        @if(($tramite->td_saldo ?? 0) > 0)
-                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->td_saldo, 2) }}</span>
-                                                        @else
-                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-2">
-                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
+                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0 shrink-0">
                                                         @csrf
                                                         <input type="hidden" name="cliente_id" value="{{ $cliente->id_cliente }}">
                                                         <input type="hidden" name="tramite_tipo" value="divorcios">
                                                         <input type="hidden" name="tramite_id" value="{{ $tramite->id_tram_div }}">
-                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-[10px] font-bold py-1 px-2 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
+                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-xs font-bold py-1 px-2.5 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
                                                             <option value="en_proceso" {{ ($tramite->estado ?? 'en_proceso') === 'en_proceso' ? 'selected' : '' }}>🟡 En Proceso</option>
                                                             <option value="en_revision" {{ ($tramite->estado ?? '') === 'en_revision' ? 'selected' : '' }}>🔵 En Revisión</option>
                                                             <option value="listo" {{ ($tramite->estado ?? '') === 'listo' ? 'selected' : '' }}>🟢 ¡Listo!</option>
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
-                                                    @if(($tramite->td_saldo ?? 0) > 0)
-                                                        <button type="button" onclick="abrirModalCobro('divorcios', {{ $tramite->id_tram_div }}, 'Divorcio #{{ $tramite->id_tram_div }}', {{ $tramite->td_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
-                                                            💵 Cobrar
-                                                        </button>
-                                                    @endif
-                                                    <a href="{{ route('divorcios.show', $tramite->id_tram_div) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #ffe4e6; color: #881337; border-color: #fecdd3;">
-                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                                        PDF
-                                                    </a>
                                                 </div>
+
+                                                <!-- Fila 2: Detalles Cónyuge / Motivo -->
+                                                @if(!empty($tramite->td_nombre_c))
+                                                    <p class="text-xs text-slate-700 font-medium truncate">
+                                                        Cónyuge: <strong class="text-slate-900 font-bold">{{ $tramite->td_nombre_c }}</strong>
+                                                    </p>
+                                                @endif
+
+                                                <!-- Fila 3: Valor / Saldo a la izquierda, Botones a la derecha -->
+                                                <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                                        <span class="text-slate-800 font-bold text-xs">${{ number_format($tramite->td_valor ?? 0, 2) }}</span>
+                                                        @if(($tramite->td_saldo ?? 0) > 0)
+                                                            <span class="text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-rose-200">Saldo: ${{ number_format($tramite->td_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-1.5 shrink-0">
+                                                        @if(($tramite->td_saldo ?? 0) > 0)
+                                                            <button type="button" onclick="abrirModalCobro('divorcios', {{ $tramite->id_tram_div }}, 'Divorcio #{{ $tramite->id_tram_div }}', {{ $tramite->td_saldo }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer">
+                                                                <span>💵 Cobrar</span>
+                                                            </button>
+                                                        @endif
+                                                        <a href="{{ route('divorcios.show', $tramite->id_tram_div) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors bg-rose-50 text-rose-800 border-rose-200 hover:bg-rose-100">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                                            <span>PDF</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
                                             </li>
                                         @endforeach
                                     </ul>
@@ -569,55 +578,64 @@
                                     {{ $impuestos->count() }} Registros
                                 </span>
                             </div>
-                            <div class="p-5 text-sm">
+                            <div class="p-4 text-sm">
                                 @if($impuestos->count() > 0)
-                                    <ul class="divide-y divide-gray-100">
+                                    <ul class="space-y-3">
                                         @foreach($impuestos as $tramite)
-                                            <li class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="font-extrabold text-gray-900 text-sm">#{{ str_pad($tramite->id_tram_impuestos, 5, '0', STR_PAD_LEFT) }}</span>
+                                            <li class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-emerald-300 hover:shadow-sm transition-all space-y-2.5">
+                                                
+                                                <!-- Fila 1: ID, Fecha y Selector de Estado -->
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-2 min-w-0">
+                                                        <span class="font-black text-slate-900 text-sm">#{{ str_pad($tramite->id_tram_impuestos, 5, '0', STR_PAD_LEFT) }}</span>
                                                         @if(!empty($tramite->ti_fecha))
-                                                            <span class="text-xs text-gray-500 font-semibold">• {{ date('d/m/Y', strtotime($tramite->ti_fecha)) }}</span>
+                                                            <span class="text-xs text-slate-500 font-semibold truncate">• {{ date('d/m/Y', strtotime($tramite->ti_fecha)) }}</span>
                                                         @endif
                                                     </div>
-                                                    @if(!empty($tramite->ti_anio_reporte))
-                                                        <p class="text-xs text-gray-700 font-medium truncate mt-1">
-                                                            Año Reporte: <span class="font-bold text-gray-900">{{ $tramite->ti_anio_reporte }}</span>
-                                                        </p>
-                                                    @endif
-                                                    <div class="mt-1 flex items-center gap-2 text-xs">
-                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->ti_costo_tramite ?? 0, 2) }}</span>
-                                                        @if(($tramite->ti_saldo ?? 0) > 0)
-                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->ti_saldo, 2) }}</span>
-                                                        @else
-                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-2">
-                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
+                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0 shrink-0">
                                                         @csrf
                                                         <input type="hidden" name="cliente_id" value="{{ $cliente->id_cliente }}">
                                                         <input type="hidden" name="tramite_tipo" value="impuestos">
                                                         <input type="hidden" name="tramite_id" value="{{ $tramite->id_tram_impuestos }}">
-                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-[10px] font-bold py-1 px-2 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
+                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-xs font-bold py-1 px-2.5 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
                                                             <option value="en_proceso" {{ ($tramite->estado ?? 'en_proceso') === 'en_proceso' ? 'selected' : '' }}>🟡 En Proceso</option>
                                                             <option value="en_revision" {{ ($tramite->estado ?? '') === 'en_revision' ? 'selected' : '' }}>🔵 En Revisión</option>
                                                             <option value="listo" {{ ($tramite->estado ?? '') === 'listo' ? 'selected' : '' }}>🟢 ¡Listo!</option>
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
-                                                    @if(($tramite->ti_saldo ?? 0) > 0)
-                                                        <button type="button" onclick="abrirModalCobro('impuestos', {{ $tramite->id_tram_impuestos }}, 'Impuestos #{{ $tramite->id_tram_impuestos }}', {{ $tramite->ti_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
-                                                            💵 Cobrar
-                                                        </button>
-                                                    @endif
-                                                    <a href="{{ route('impuestos.show', $tramite->id_tram_impuestos) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #d1fae5; color: #064e3b; border-color: #a7f3d0;">
-                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                                        PDF
-                                                    </a>
                                                 </div>
+
+                                                <!-- Fila 2: Año Reporte -->
+                                                @if(!empty($tramite->ti_anio_reporte))
+                                                    <p class="text-xs text-slate-700 font-medium truncate">
+                                                        Año Reporte: <strong class="text-slate-900 font-bold">{{ $tramite->ti_anio_reporte }}</strong>
+                                                    </p>
+                                                @endif
+
+                                                <!-- Fila 3: Valor / Saldo a la izquierda, Botones a la derecha -->
+                                                <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                                        <span class="text-slate-800 font-bold text-xs">${{ number_format($tramite->ti_costo_tramite ?? 0, 2) }}</span>
+                                                        @if(($tramite->ti_saldo ?? 0) > 0)
+                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->ti_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-1.5 shrink-0">
+                                                        @if(($tramite->ti_saldo ?? 0) > 0)
+                                                            <button type="button" onclick="abrirModalCobro('impuestos', {{ $tramite->id_tram_impuestos }}, 'Impuestos #{{ $tramite->id_tram_impuestos }}', {{ $tramite->ti_saldo }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer">
+                                                                <span>💵 Cobrar</span>
+                                                            </button>
+                                                        @endif
+                                                        <a href="{{ route('impuestos.show', $tramite->id_tram_impuestos) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                                            <span>PDF</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
                                             </li>
                                         @endforeach
                                     </ul>
@@ -641,60 +659,69 @@
                                     {{ $poderes->count() }} Registros
                                 </span>
                             </div>
-                            <div class="p-5 text-sm">
+                            <div class="p-4 text-sm">
                                 @if($poderes->count() > 0)
-                                    <ul class="divide-y divide-gray-100">
+                                    <ul class="space-y-3">
                                         @foreach($poderes as $tramite)
-                                            <li class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="font-extrabold text-gray-900 text-sm">#{{ str_pad($tramite->id_tram_poderes, 5, '0', STR_PAD_LEFT) }}</span>
+                                            <li class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-amber-300 hover:shadow-sm transition-all space-y-2.5">
+                                                
+                                                <!-- Fila 1: ID, Fecha y Selector de Estado -->
+                                                <div class="flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-2 min-w-0">
+                                                        <span class="font-black text-slate-900 text-sm">#{{ str_pad($tramite->id_tram_poderes, 5, '0', STR_PAD_LEFT) }}</span>
                                                         @if(!empty($tramite->tp_fecha))
-                                                            <span class="text-xs text-gray-500 font-semibold">• {{ date('d/m/Y', strtotime($tramite->tp_fecha)) }}</span>
+                                                            <span class="text-xs text-slate-500 font-semibold truncate">• {{ date('d/m/Y', strtotime($tramite->tp_fecha)) }}</span>
                                                         @endif
                                                     </div>
-                                                    @if(!empty($tramite->tp_nombres_otorga_poder))
-                                                        <p class="text-xs text-gray-700 font-medium truncate mt-1">
-                                                            Otorga: <span class="font-bold text-gray-900">{{ $tramite->tp_nombres_otorga_poder }}</span>
-                                                        </p>
-                                                    @endif
-                                                    @if(!empty($tramite->tp_razon_otorga_poder))
-                                                        <p class="text-xs text-gray-500 truncate mt-0.5">
-                                                            Motivo: {{ $tramite->tp_razon_otorga_poder }}
-                                                        </p>
-                                                    @endif
-                                                    <div class="mt-1 flex items-center gap-2 text-xs">
-                                                        <span class="text-slate-700 font-bold">${{ number_format($tramite->tp_costo_tramite ?? 0, 2) }}</span>
-                                                        @if(($tramite->tp_saldo ?? 0) > 0)
-                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->tp_saldo, 2) }}</span>
-                                                        @else
-                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-2">
-                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0">
+                                                    <form method="POST" action="{{ route('tramites.cambiar_estado') }}" class="form-cambiar-estado inline-flex items-center m-0 shrink-0">
                                                         @csrf
                                                         <input type="hidden" name="cliente_id" value="{{ $cliente->id_cliente }}">
                                                         <input type="hidden" name="tramite_tipo" value="poderes">
                                                         <input type="hidden" name="tramite_id" value="{{ $tramite->id_tram_poderes }}">
-                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-[10px] font-bold py-1 px-2 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
+                                                        <select name="estado" data-previous="{{ $tramite->estado ?? 'en_proceso' }}" class="estado-select text-xs font-bold py-1 px-2.5 rounded-lg border focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer {{ ($tramite->estado ?? 'en_proceso') === 'listo' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : (($tramite->estado ?? '') === 'en_revision' ? 'bg-blue-50 text-blue-700 border-blue-300' : (($tramite->estado ?? '') === 'entregado' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-amber-50 text-amber-800 border-amber-300')) }}">
                                                             <option value="en_proceso" {{ ($tramite->estado ?? 'en_proceso') === 'en_proceso' ? 'selected' : '' }}>🟡 En Proceso</option>
                                                             <option value="en_revision" {{ ($tramite->estado ?? '') === 'en_revision' ? 'selected' : '' }}>🔵 En Revisión</option>
                                                             <option value="listo" {{ ($tramite->estado ?? '') === 'listo' ? 'selected' : '' }}>🟢 ¡Listo!</option>
                                                             <option value="entregado" {{ ($tramite->estado ?? '') === 'entregado' ? 'selected' : '' }}>⚪ Entregado</option>
                                                         </select>
                                                     </form>
-                                                    @if(($tramite->tp_saldo ?? 0) > 0)
-                                                        <button type="button" onclick="abrirModalCobro('poderes', {{ $tramite->id_tram_poderes }}, 'Poder #{{ $tramite->id_tram_poderes }}', {{ $tramite->tp_saldo }})" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs cursor-pointer shrink-0">
-                                                            💵 Cobrar
-                                                        </button>
-                                                    @endif
-                                                    <a href="{{ route('poderes.show', $tramite->id_tram_poderes) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors shrink-0" style="background-color: #fef3c7; color: #78350f; border-color: #fde68a;">
-                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                                        PDF
-                                                    </a>
                                                 </div>
+
+                                                <!-- Fila 2: Otorga / Motivo -->
+                                                @if(!empty($tramite->tp_nombres_otorga_poder))
+                                                    <p class="text-xs text-slate-700 font-medium truncate">
+                                                        Otorga: <strong class="text-slate-900 font-bold">{{ $tramite->tp_nombres_otorga_poder }}</strong>
+                                                    </p>
+                                                @endif
+                                                @if(!empty($tramite->tp_razon_otorga_poder))
+                                                    <p class="text-xs text-slate-500 truncate">
+                                                        Motivo: {{ $tramite->tp_razon_otorga_poder }}
+                                                    </p>
+                                                @endif
+
+                                                <!-- Fila 3: Valor / Saldo a la izquierda, Botones a la derecha -->
+                                                <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between gap-2">
+                                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                                        <span class="text-slate-800 font-bold text-xs">${{ number_format($tramite->tp_costo_tramite ?? 0, 2) }}</span>
+                                                        @if(($tramite->tp_saldo ?? 0) > 0)
+                                                            <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-amber-200">Saldo: ${{ number_format($tramite->tp_saldo, 2) }}</span>
+                                                        @else
+                                                            <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold text-[11px] border border-emerald-200">✓ Pagado</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-1.5 shrink-0">
+                                                        @if(($tramite->tp_saldo ?? 0) > 0)
+                                                            <button type="button" onclick="abrirModalCobro('poderes', {{ $tramite->id_tram_poderes }}, 'Poder #{{ $tramite->id_tram_poderes }}', {{ $tramite->tp_saldo }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer">
+                                                                <span>💵 Cobrar</span>
+                                                            </button>
+                                                        @endif
+                                                        <a href="{{ route('poderes.show', $tramite->id_tram_poderes) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-sm border transition-colors bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                                            <span>PDF</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
                                             </li>
                                         @endforeach
                                     </ul>

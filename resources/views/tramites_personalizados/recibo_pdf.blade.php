@@ -3,267 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Comprobante de Trámite #{{ str_pad($tramite->id, 5, '0', STR_PAD_LEFT) }} - {{ $tipo->nombre ?? 'Trámite' }}</title>
+    <title>Trámite #{{ str_pad($tramite->id, 5, '0', STR_PAD_LEFT) }} - {{ $tipo->nombre ?? 'Documento' }}</title>
     <style>
-        /* Brand Colors */
-        :root {
-            --primary-color: #004080;
-            --accent-color: #C0A16B;
+        @page {
+            size: letter portrait;
+            margin: 7mm 10mm 7mm 10mm;
         }
-
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            color: #333;
-            font-size: 13px;
+            color: #1e293b;
+            font-size: 7.5pt;
+            line-height: 1.2;
         }
-        .container {
-            width: 100%;
-            padding: 20px;
-        }
+
         /* Header Table */
         .header-table {
             width: 100%;
-            margin-bottom: 25px;
-            border-bottom: 3px solid #004080;
-            padding-bottom: 15px;
+            border-bottom: 2px solid #004080;
+            padding-bottom: 5px;
+            margin-bottom: 6px;
         }
-        .header-logo {
-            max-width: 180px;
-            height: auto;
+        .header-table td {
+            vertical-align: middle;
         }
-        .header-right {
-            text-align: right;
-            font-size: 11px;
-            color: #555;
-            vertical-align: bottom;
+        .logo-cell {
+            width: 100px;
         }
-        .header-right p {
-            margin: 2px 0;
+        .logo-cell img {
+            max-width: 90px;
+            max-height: 38px;
         }
-        
-        .title {
-            font-size: 19px;
-            font-weight: bold;
-            margin-bottom: 25px;
-            color: #004080;
+        .title-cell {
             text-align: center;
+        }
+        .title-cell h1 {
+            color: #004080;
+            font-size: 13pt;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .title-cell p {
+            color: #64748b;
+            margin: 1px 0 0 0;
+            font-size: 7.5pt;
+            font-weight: bold;
+        }
+        .info-cell {
+            width: 155px;
+            text-align: right;
+            font-size: 7pt;
+            color: #475569;
+            line-height: 1.3;
         }
 
-        .section-title {
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            color: #fff;
+        /* Section Headings */
+        .sec-title {
             background-color: #004080;
-            border-radius: 4px;
-            padding: 6px 12px;
-            border-left: 4px solid #C0A16B;
+            color: white;
+            padding: 2.5px 6px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 3px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-left: 3px solid #C0A16B;
         }
 
-        /* Field Row */
-        .info-table {
+        /* Data Tables */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 3px;
         }
-        .info-table td {
-            padding: 6px 8px;
+        .data-table td {
+            padding: 2px 4px;
             vertical-align: top;
-            border-bottom: 1px solid #f0f0f0;
+            font-size: 7.5pt;
         }
-        .label-cell {
-            width: 35%;
+        .lbl {
+            font-size: 6.5pt;
             font-weight: bold;
-            color: #444;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1px;
         }
-        .value-cell {
-            width: 65%;
-            color: #222;
+        .val {
+            font-size: 7.5pt;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1px;
+            min-height: 12px;
+            word-wrap: break-word;
         }
 
-        .total-amount {
-            text-align: right;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 35px;
-            border-top: 2px solid #004080;
-            padding-top: 15px;
+        /* Text Boxes */
+        .box-text {
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            color: #1e293b;
+            min-height: 44px;
+            line-height: 1.25;
+        }
+
+        /* Financial Table */
+        .fin-table {
             width: 100%;
-        }
-        .total-table {
-            width: 45%;
-            float: right;
             border-collapse: collapse;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
         }
-        .total-table td {
-            padding: 8px 12px;
+        .fin-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 3.5px 5px;
             text-align: right;
+            font-size: 7pt;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
         }
-        .total-table tr:not(:last-child) td {
-            border-bottom: 1px solid #dee2e6;
+        .fin-table td {
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
         }
-        .clearfix {
-            clear: both;
+        .fin-table .row-total th,
+        .fin-table .row-total td {
+            background-color: #e6f2ff;
+            color: #004080;
+            font-size: 9pt;
+            font-weight: 900;
+            border-bottom: none;
         }
 
         /* Signatures */
-        .signature-section {
-            margin-top: 70px;
+        .sig-table {
             width: 100%;
+            margin-top: 14px;
             text-align: center;
         }
-        .signature-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .signature-table td {
+        .sig-table td {
             width: 50%;
-            text-align: center;
             vertical-align: bottom;
+            padding: 0 20px;
         }
-        .signature-line {
-            border-top: 1px solid #000;
-            width: 80%;
-            margin: 0 auto;
-            margin-bottom: 5px;
-        }
-        .signature-text {
-            font-size: 10px;
-            color: #333;
+        .sig-line {
+            border-top: 1px solid #334155;
+            padding-top: 2px;
+            font-size: 7pt;
             font-weight: bold;
+            color: #334155;
+            text-transform: uppercase;
+        }
+
+        .footer-bar {
+            text-align: center;
+            font-size: 6.5pt;
+            color: #94a3b8;
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER OFICIAL CON LOGO E INFORMACIÓN NOTARIAL -->
-        <table class="header-table">
-            <tr>
-                <td style="width: 50%; vertical-align: top;">
-                    @php
-                        $logoPath = public_path('img/logo_impre.png');
-                        $logoBase64 = '';
-                        if(file_exists($logoPath)) {
-                            $logoData = file_get_contents($logoPath);
-                            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
-                        }
-                    @endphp
-                    @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="Logo Notaría" class="header-logo">
-                    @else
-                        <h2 style="color: #004080; margin: 0;">NOTARÍA & TRÁMITES</h2>
-                    @endif
-                </td>
-                <td class="header-right">
-                    <p><strong>Fecha:</strong> {{ $fecha }}</p>
-                    <p><strong>Oficina:</strong> {{ $tramite->oficina ?? 'General' }}</p>
-                    <p><strong>Atendido por:</strong> {{ $tramite->usuario ?? 'Personal Autorizado' }}</p>
-                </td>
-            </tr>
-        </table>
 
-        <!-- TÍTULO DEL COMPROBANTE -->
-        <div class="title">
-            COMPROBANTE DE {{ strtoupper($tipo->nombre ?? 'TRÁMITE') }} #{{ str_pad($tramite->id, 5, '0', STR_PAD_LEFT) }}
-        </div>
+    <!-- Header -->
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell">
+                @php
+                    $logoPath = public_path('img/logo_impre.png');
+                    if(file_exists($logoPath)) {
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                        echo '<img src="data:image/png;base64,'.$logoData.'" alt="Logo">';
+                    }
+                @endphp
+            </td>
+            <td class="title-cell">
+                <h1>{{ $tipo->nombre ?? 'Trámite Especial' }}</h1>
+                <p>Comprobante de Trámite #{{ str_pad($tramite->id, 5, '0', STR_PAD_LEFT) }}</p>
+            </td>
+            <td class="info-cell">
+                <strong>Fecha:</strong> {{ $fecha }}<br>
+                <strong>Oficina:</strong> {{ $tramite->oficina ?? 'General' }}<br>
+                <strong>Atendido por:</strong> {{ $tramite->usuario ?? 'Personal Autorizado' }}
+            </td>
+        </tr>
+    </table>
 
-        <!-- INFORMACIÓN DEL CLIENTE -->
-        <div class="section-title">INFORMACIÓN DEL CLIENTE</div>
-        <table class="info-table">
-            <tr>
-                <td class="label-cell">Nombres Completos:</td>
-                <td class="value-cell" style="font-weight: bold;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</td>
-            </tr>
-            <tr>
-                <td class="label-cell">Identificación / ID:</td>
-                <td class="value-cell">{{ $cliente->c_identificacion }}</td>
-            </tr>
-            <tr>
-                <td class="label-cell">Teléfono:</td>
-                <td class="value-cell">{{ $cliente->c_telefono }}</td>
-            </tr>
-            @if(!empty($cliente->c_direccion))
-            <tr>
-                <td class="label-cell">Dirección:</td>
-                <td class="value-cell">{{ $cliente->c_direccion }}, {{ $cliente->c_ciudad }}, {{ $cliente->c_estado }}</td>
-            </tr>
-            @endif
-            @if(!empty($cliente->c_email))
-            <tr>
-                <td class="label-cell">Email:</td>
-                <td class="value-cell">{{ $cliente->c_email }}</td>
-            </tr>
-            @endif
-        </table>
+    <!-- 1. DATOS DEL CLIENTE -->
+    <div class="sec-title">1. Datos del Solicitante / Cliente</div>
+    <table class="data-table">
+        <tr>
+            <td style="width: 50%;">
+                <span class="lbl">Nombres y Apellidos Completos</span>
+                <div class="val">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Identificación / C.I.</span>
+                <div class="val">{{ $cliente->c_identificacion ?: 'S/I' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Teléfono</span>
+                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%;">
+                <span class="lbl">Dirección Residencial</span>
+                <div class="val">{{ $cliente->c_direccion ?: 'N/E' }} {{ $cliente->c_departamento ? 'Apt '.$cliente->c_departamento : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Ciudad / Estado</span>
+                <div class="val">{{ $cliente->c_ciudad ?: 'N/E' }}{{ $cliente->c_estado ? ', '.$cliente->c_estado : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Correo Electrónico</span>
+                <div class="val">{{ $cliente->c_email ?: 'S/E' }}</div>
+            </td>
+        </tr>
+    </table>
 
-        <!-- DETALLES ESPECÍFICOS DEL TRÁMITE -->
-        <div class="section-title">DETALLES DEL TRÁMITE</div>
-        <table class="info-table">
-            @php $campos = $tipo->campos ?? []; @endphp
-            @forelse($campos as $campo)
-                <tr>
-                    <td class="label-cell">{{ $campo['label'] }}:</td>
-                    <td class="value-cell" style="font-weight: 600;">
-                        {{ $tramite->datos_formulario[$campo['name']] ?? 'N/A' }}
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td class="label-cell">Tipo:</td>
-                    <td class="value-cell">{{ $tipo->nombre }}</td>
-                </tr>
-            @endforelse
+    <!-- 2. CAMPOS ESPECÍFICOS DEL TRÁMITE -->
+    <div class="sec-title">2. Información Específica del Trámite ({{ $tipo->nombre ?? 'General' }})</div>
+    @php
+        $campos = $tipo->campos ?? [];
+        $chunks = array_chunk($campos, 3);
+    @endphp
 
-            @if(!empty($tramite->observaciones))
-            <tr>
-                <td class="label-cell">Observaciones:</td>
-                <td class="value-cell">{{ $tramite->observaciones }}</td>
-            </tr>
-            @endif
-        </table>
-
-        <!-- TOTALES Y LIQUIDACIÓN FINANCIERA -->
-        <div class="total-amount">
-            <table class="total-table">
+    @if(count($chunks) > 0)
+        @foreach($chunks as $chunk)
+            <table class="data-table">
                 <tr>
-                    <td style="color: #555;">Valor del Trámite:</td>
-                    <td>${{ number_format($tramite->valor_tramite, 2) }}</td>
-                </tr>
-                <tr>
-                    <td style="color: #555;">Abono Realizado:</td>
-                    <td style="color: green;">${{ number_format($tramite->abono_tramite, 2) }}</td>
-                </tr>
-                <tr>
-                    <td style="border-top: 1px solid #ccc; color: #555;">Saldo Pendiente:</td>
-                    <td style="border-top: 1px solid #ccc; color: red;">${{ number_format($tramite->saldo, 2) }}</td>
+                    @foreach($chunk as $campo)
+                        <td style="width: {{ 100 / count($chunk) }}%;">
+                            <span class="lbl">{{ $campo['label'] }}</span>
+                            <div class="val">{{ $tramite->datos_formulario[$campo['name']] ?? 'N/E' }}</div>
+                        </td>
+                    @endforeach
                 </tr>
             </table>
-            <div class="clearfix"></div>
-        </div>
+        @endforeach
+    @else
+        <table class="data-table">
+            <tr>
+                <td style="width: 100%;">
+                    <span class="lbl">Tipo de Trámite</span>
+                    <div class="val">{{ $tipo->nombre ?? 'Trámite Notarial' }}</div>
+                </td>
+            </tr>
+        </table>
+    @endif
 
-        <!-- FIRMAS AUTORIZADAS -->
-        <div class="signature-section">
-            <table class="signature-table">
-                <tr>
-                    <td>
-                        <div class="signature-line"></div>
-                        <div class="signature-text">FIRMA DEL CLIENTE<br>{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
-                    </td>
-                    <td>
-                        <div class="signature-line"></div>
-                        <div class="signature-text">FIRMA NOTARIO / RESPONSABLE<br>{{ $tramite->usuario ?? 'Oficina' }}</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+    <!-- 3. OBSERVACIONES & RESUMEN FINANCIERO -->
+    <div class="sec-title">3. Observaciones & Liquidación Financiera</div>
+    <table style="width: 100%; border-collapse: separate; border-spacing: 4px 0;">
+        <tr>
+            <td style="width: 58%; vertical-align: top;">
+                <div class="box-text">
+                    <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Observaciones del Trámite:</strong>
+                    {!! nl2br(e($tramite->observaciones ?: 'Ninguna observación especial registrada.')) !!}
+                </div>
+            </td>
+            <td style="width: 42%; vertical-align: top;">
+                <table class="fin-table">
+                    <tr>
+                        <th>Valor del Trámite:</th>
+                        <td>${{ number_format($tramite->valor_tramite, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th>Abono Realizado:</th>
+                        <td style="color: #059669;">${{ number_format($tramite->abono_tramite, 2) }}</td>
+                    </tr>
+                    <tr class="row-total">
+                        <th>Saldo Pendiente:</th>
+                        <td style="{{ $tramite->saldo > 0 ? 'color: #be123c;' : 'color: #059669;' }}">
+                            ${{ number_format($tramite->saldo, 2) }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 4. FIRMAS -->
+    <table class="sig-table">
+        <tr>
+            <td>
+                <div class="sig-line">Firma del Solicitante<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
+            </td>
+            <td>
+                <div class="sig-line">Firma Notario / Responsable<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $tramite->usuario ?? 'Personal Autorizado' }}</span></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer-bar">
+        Comprobante de Trámite Especial • NESISTEMA • Página 1 de 1
     </div>
+
 </body>
 </html>

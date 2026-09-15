@@ -3,395 +3,416 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Comprobante de Trámite de Divorcio #{{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}</title>
+    <title>Divorcio #{{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}</title>
     <style>
-        /* Brand Colors */
-        :root {
-            --primary-color: #004080;
-            --accent-color: #C0A16B;
+        @page {
+            size: letter portrait;
+            margin: 7mm 10mm 7mm 10mm;
         }
-
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
-            font-size: 11px;
-            color: #333;
-            line-height: 1.3;
             margin: 0;
             padding: 0;
-        }
-        
-        /* Header */
-        .header {
-            width: 100%;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #004080;
-            padding-bottom: 10px;
-        }
-        .header table {
-            width: 100%;
-            border: none;
-        }
-        .header td {
-            vertical-align: middle;
-            border: none;
-        }
-        .logo {
-            max-width: 200px;
-        }
-        .header-info {
-            text-align: right;
-            font-size: 10px;
-        }
-        .header-info strong {
-            color: #004080;
-        }
-        
-        /* Title */
-        .title-box {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #004080;
-            text-transform: uppercase;
-            margin: 0 0 5px 0;
-        }
-        .subtitle {
-            font-size: 12px;
-            color: #666;
-            margin: 0;
+            color: #1e293b;
+            font-size: 7.5pt;
+            line-height: 1.2;
         }
 
-        /* Sections */
-        .section-title {
+        /* Header Table */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #004080;
+            padding-bottom: 5px;
+            margin-bottom: 6px;
+        }
+        .header-table td {
+            vertical-align: middle;
+        }
+        .logo-cell {
+            width: 100px;
+        }
+        .logo-cell img {
+            max-width: 90px;
+            max-height: 38px;
+        }
+        .title-cell {
+            text-align: center;
+        }
+        .title-cell h1 {
+            color: #004080;
+            font-size: 13pt;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .title-cell p {
+            color: #64748b;
+            margin: 1px 0 0 0;
+            font-size: 7.5pt;
+            font-weight: bold;
+        }
+        .info-cell {
+            width: 155px;
+            text-align: right;
+            font-size: 7pt;
+            color: #475569;
+            line-height: 1.3;
+        }
+
+        /* Section Headings */
+        .sec-title {
             background-color: #004080;
             color: white;
+            padding: 2.5px 6px;
+            font-size: 7.5pt;
             font-weight: bold;
-            padding: 4px 8px;
-            margin-top: 15px;
-            margin-bottom: 8px;
-            font-size: 11px;
-            border-left: 4px solid #C0A16B;
+            margin-top: 5px;
+            margin-bottom: 3px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-left: 3px solid #C0A16B;
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 3px;
+        }
+        .data-table td {
+            padding: 2px 4px;
+            vertical-align: top;
+            font-size: 7.5pt;
+        }
+        .lbl {
+            font-size: 6.5pt;
+            font-weight: bold;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .val {
+            font-size: 7.5pt;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1px;
+            min-height: 12px;
+            word-wrap: break-word;
+        }
+
+        /* Checkbox badges */
+        .chk-grid {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            margin-bottom: 4px;
+        }
+        .chk-grid td {
+            padding: 3px 5px;
+            font-size: 7pt;
+        }
+        .chk-box {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            border: 1px solid #004080;
+            text-align: center;
+            line-height: 10px;
+            font-weight: bold;
+            font-size: 8pt;
+            color: #004080;
+            margin-right: 3px;
+            vertical-align: middle;
+            background: #fff;
+        }
+
+        /* Text Boxes */
+        .box-text {
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            color: #1e293b;
+            min-height: 26px;
+            line-height: 1.25;
+        }
+
+        /* Financial Table */
+        .fin-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+        }
+        .fin-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 7pt;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table td {
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table .row-total th,
+        .fin-table .row-total td {
+            background-color: #e6f2ff;
+            color: #004080;
+            font-size: 9pt;
+            font-weight: 900;
+            border-bottom: none;
+        }
+
+        /* Signatures */
+        .sig-table {
+            width: 100%;
+            margin-top: 14px;
+            text-align: center;
+        }
+        .sig-table td {
+            width: 50%;
+            vertical-align: bottom;
+            padding: 0 20px;
+        }
+        .sig-line {
+            border-top: 1px solid #334155;
+            padding-top: 2px;
+            font-size: 7pt;
+            font-weight: bold;
+            color: #334155;
             text-transform: uppercase;
         }
 
-        /* Layout Tables */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-        .info-table th {
-            text-align: left;
-            font-weight: bold;
-            color: #004080;
-            padding: 4px 2px;
-            width: 25%;
-            font-size: 10px;
-        }
-        .info-table td {
-            padding: 4px 2px;
-            border-bottom: 1px solid #eee;
-            color: #444;
-        }
-
-        .checkbox-item {
-            display: inline-block;
-            width: 30%;
-            margin-bottom: 5px;
-        }
-        .check-box {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 1px solid #004080;
+        .footer-bar {
             text-align: center;
-            line-height: 12px;
-            font-weight: bold;
-            color: #004080;
-            margin-right: 4px;
-        }
-
-        /* Financial Block */
-        .financial-box {
-            width: 40%;
-            float: right;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 20px;
-        }
-        .financial-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .financial-table th {
-            text-align: left;
-            padding: 3px 0;
-            color: #555;
-            font-weight: normal;
-        }
-        .financial-table td {
-            text-align: right;
-            padding: 3px 0;
-            font-weight: bold;
-        }
-        .financial-table tr.total th,
-        .financial-table tr.total td {
-            color: #004080;
-            font-size: 13px;
-            border-top: 1px solid #C0A16B;
-            padding-top: 5px;
-            margin-top: 2px;
-        }
-
-        /* Signature Block */
-        .signature-section {
-            width: 100%;
-            margin-top: 60px;
-            clear: both;
-        }
-        .signature-box {
-            width: 45%;
-            float: left;
-            text-align: center;
-        }
-        .signature-box.right {
-            float: right;
-        }
-        .signature-line {
-            border-top: 1px solid #004080;
-            width: 80%;
-            margin: 0 auto 5px auto;
-        }
-        .signature-name {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0px;
-            width: 100%;
-            text-align: center;
-            font-size: 9px;
-            color: #777;
-            border-top: 1px solid #eee;
-            padding-top: 5px;
-        }
-        
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
+            font-size: 6.5pt;
+            color: #94a3b8;
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 3px;
         }
     </style>
 </head>
 <body>
-    @php
-        $logoPath = public_path('img/logo_impre.png');
-        $logoBase64 = '';
-        if (file_exists($logoPath)) {
-            $logoData = file_get_contents($logoPath);
-            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
-            $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
-        }
-    @endphp
 
-    <div class="header">
-        <table>
-            <tr>
-                <td style="width: 50%;">
-                    @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" class="logo" alt="Logo">
-                    @else
-                        <h2 style="color: #004080; margin: 0;">NESISTEMA</h2>
-                    @endif
-                </td>
-                <td class="header-info">
-                    <strong>Fecha:</strong> {{ date('d/m/Y', strtotime($tramite->td_fecha)) }}<br>
-                    <strong>Nº Trámite:</strong> {{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}<br>
-                    <strong>Atendido por:</strong> {{ $tramite->usuario->name ?? 'Usuario Sistema' }}<br>
-                    <strong>Firma en:</strong> {{ $tramite->td_firmar_en }}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="title-box">
-        <h1 class="title">REGISTRO DE DIVORCIO</h1>
-        <p class="subtitle">Comprobante de Recepción de Trámite</p>
-    </div>
-
-    <div class="section-title">INFORMACIÓN DEL CLIENTE</div>
-    <table class="info-table">
+    <!-- Header -->
+    <table class="header-table">
         <tr>
-            <th>Identificación:</th>
-            <td>{{ $cliente->c_identificacion }}</td>
-            <th>Nombres:</th>
-            <td>{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</td>
-        </tr>
-        <tr>
-            <th>Teléfono:</th>
-            <td>{{ $cliente->c_telefono }}</td>
-            <th>Dirección:</th>
-            <td>{{ $cliente->c_direccion }} {{ $cliente->c_departamento ? 'Apt: '.$cliente->c_departamento : '' }}</td>
-        </tr>
-        <tr>
-            <th>Ciudad/Estado:</th>
-            <td>{{ $cliente->c_ciudad }} / {{ $cliente->c_estado }}</td>
-            <th>Email:</th>
-            <td>{{ $cliente->c_email }}</td>
-        </tr>
-    </table>
-
-    <div class="section-title">DETALLES DEL TRÁMITE</div>
-    <table style="width: 100%; margin-bottom: 15px; border-collapse: collapse;">
-        <!-- TIPO DE DIVORCIO -->
-        <tr>
-            <td colspan="3" style="padding: 8px 0 2px 0; font-weight: bold; font-size: 10px; color: #666; border-bottom: 1px solid #eee;">
-                TIPO DE DIVORCIO
+            <td class="logo-cell">
+                @php
+                    $logoPath = public_path('img/logo_impre.png');
+                    if(file_exists($logoPath)) {
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                        echo '<img src="data:image/png;base64,'.$logoData.'" alt="Logo">';
+                    }
+                @endphp
             </td>
-        </tr>
-        <tr>
-            <td style="width: 33%; padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_controvertido ? 'X' : '&nbsp;' !!}</span> Causal (Controvertido)
+            <td class="title-cell">
+                <h1>Registro de Divorcio</h1>
+                <p>Comprobante de Trámite #{{ str_pad($tramite->id_tram_div, 5, '0', STR_PAD_LEFT) }}</p>
             </td>
-            <td style="width: 33%; padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_consensual ? 'X' : '&nbsp;' !!}</span> Consensual
-            </td>
-            <td style="width: 33%; padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_notarial ? 'X' : '&nbsp;' !!}</span> Notarial
-            </td>
-        </tr>
-
-        <!-- SITUACIÓN FAMILIAR -->
-        <tr>
-            <td colspan="3" style="padding: 8px 0 2px 0; font-weight: bold; font-size: 10px; color: #666; border-bottom: 1px solid #eee;">
-                SITUACIÓN CONYUGAL Y FAMILIAR
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_separados ? 'X' : '&nbsp;' !!}</span> Separados
-            </td>
-            <td style="padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_noseparados ? 'X' : '&nbsp;' !!}</span> No Separados
-            </td>
-            <td style="padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_hijos ? 'X' : '&nbsp;' !!}</span> Hijos Menores
-            </td>
-        </tr>
-
-        <!-- DOCUMENTOS ENTREGADOS -->
-        <tr>
-            <td colspan="3" style="padding: 8px 0 2px 0; font-weight: bold; font-size: 10px; color: #666; border-bottom: 1px solid #eee;">
-                DOCUMENTOS FÍSICOS ENTREGADOS
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_ep_matrimonio ? 'X' : '&nbsp;' !!}</span> Partida de Matrimonio
-            </td>
-            <td style="padding: 6px 0;">
-                <span class="check-box">{!! $tramite->td_ep_nacimiento ? 'X' : '&nbsp;' !!}</span> Partida de Nacimiento
+            <td class="info-cell">
+                <strong>Fecha:</strong> {{ $tramite->td_fecha ? date('d/m/Y', strtotime($tramite->td_fecha)) : date('d/m/Y') }}<br>
+                <strong>Atendido por:</strong> {{ $tramite->usuario->name ?? 'N/A' }}<br>
+                <strong>Firmar en:</strong> {{ $tramite->td_firmar_en ?: 'Oficina' }}
             </td>
         </tr>
     </table>
 
-    <table class="info-table">
+    <!-- 1. DATOS DEL CLIENTE -->
+    <div class="sec-title">1. Datos del Solicitante / Cliente</div>
+    <table class="data-table">
         <tr>
-            <th>Lugar Matrimonio:</th>
-            <td>{{ $tramite->td_lugar_matrimonio }}</td>
-            <th>Fecha Matrimonio:</th>
-            <td>{{ $tramite->td_fecha_matrimonio ? date('d/m/Y', strtotime($tramite->td_fecha_matrimonio)) : '' }}</td>
+            <td style="width: 50%;">
+                <span class="lbl">Nombres y Apellidos</span>
+                <div class="val">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Identificación / Cédula</span>
+                <div class="val">{{ $cliente->c_identificacion ?: 'S/I' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Teléfono / Celular</span>
+                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
+            </td>
         </tr>
         <tr>
-            <th>Tiempo Separación:</th>
-            <td>{{ $tramite->td_tiempo_separacion }}</td>
-            <th>Hijos a cargo de:</th>
-            <td>{{ $tramite->td_con_quien_vive }}</td>
-        </tr>
-        <tr>
-            <th>Motivo Divorcio:</th>
-            <td colspan="3">{{ $tramite->td_motivo_divorcio }}</td>
-        </tr>
-    </table>
-
-    <div class="section-title">INFORMACIÓN DEL CÓNYUGE</div>
-    <table class="info-table">
-        <tr>
-            <th>Nombres:</th>
-            <td>{{ $tramite->td_nombre_c }}</td>
-            <th>Identificación:</th>
-            <td>{{ $tramite->td_identificacion_c }}</td>
-        </tr>
-        <tr>
-            <th>Teléfono:</th>
-            <td>{{ $tramite->td_telefono_c }}</td>
-            <th>Dirección:</th>
-            <td>{{ $tramite->td_direccion_c }} {{ $tramite->td_apt_c ? 'Apt: '.$tramite->td_apt_c : '' }}</td>
-        </tr>
-        <tr>
-            <th>Ciudad/Estado:</th>
-            <td>{{ $tramite->td_ciudad_c }} / {{ $tramite->td_estado_c }}</td>
-            <th>C. Postal:</th>
-            <td>{{ $tramite->td_cpostal_c }}</td>
+            <td style="width: 50%;">
+                <span class="lbl">Dirección Residencial</span>
+                <div class="val">{{ $cliente->c_direccion ?: 'N/E' }} {{ $cliente->c_departamento ? 'Apt '.$cliente->c_departamento : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Ciudad / Estado</span>
+                <div class="val">{{ $cliente->c_ciudad ?: 'N/E' }}{{ $cliente->c_estado ? ', '.$cliente->c_estado : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Correo Electrónico</span>
+                <div class="val">{{ $cliente->c_email ?: 'S/E' }}</div>
+            </td>
         </tr>
     </table>
 
-    <div class="section-title">CONTACTO EN ECUADOR & OBSERVACIONES</div>
-    <table class="info-table">
+    <!-- 2. DETALLES Y MODALIDAD DEL DIVORCIO -->
+    <div class="sec-title">2. Modalidad & Situación Conyugal</div>
+    <table class="chk-grid">
         <tr>
-            <th>Contacto Ecuador:</th>
-            <td>{{ $tramite->td_estado_contac_ecuador }}</td>
-            <th>Tel. Ecuador:</th>
-            <td>{{ $tramite->td_tel_ecuador }}</td>
-        </tr>
-        <tr>
-            <th>Observaciones:</th>
-            <td colspan="3">{{ $tramite->td_observaciones }}</td>
+            <td style="width: 35%; border-right: 1px solid #e2e8f0;">
+                <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Tipo de Divorcio:</strong>
+                <span class="chk-box">{!! $tramite->td_controvertido ? 'X' : '&nbsp;' !!}</span> Causal &nbsp;
+                <span class="chk-box">{!! $tramite->td_consensual ? 'X' : '&nbsp;' !!}</span> Consensual &nbsp;
+                <span class="chk-box">{!! $tramite->td_notarial ? 'X' : '&nbsp;' !!}</span> Notarial
+            </td>
+            <td style="width: 35%; border-right: 1px solid #e2e8f0;">
+                <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Situación Familiar:</strong>
+                <span class="chk-box">{!! $tramite->td_separados ? 'X' : '&nbsp;' !!}</span> Separados &nbsp;
+                <span class="chk-box">{!! $tramite->td_noseparados ? 'X' : '&nbsp;' !!}</span> No Sep. &nbsp;
+                <span class="chk-box">{!! $tramite->td_hijos ? 'X' : '&nbsp;' !!}</span> Con Hijos
+            </td>
+            <td style="width: 30%;">
+                <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Documentos Físicos:</strong>
+                <span class="chk-box">{!! $tramite->td_ep_matrimonio ? 'X' : '&nbsp;' !!}</span> P. Matrimonio &nbsp;
+                <span class="chk-box">{!! $tramite->td_ep_nacimiento ? 'X' : '&nbsp;' !!}</span> P. Nacimiento
+            </td>
         </tr>
     </table>
 
-    <div class="clearfix">
-        <div class="financial-box">
-            <table class="financial-table">
-                <tr>
-                    <th>Valor del Trámite:</th>
-                    <td>$ {{ number_format($tramite->td_valor, 2) }}</td>
-                </tr>
-                <tr>
-                    <th>Abono Inicial:</th>
-                    <td>$ {{ number_format($tramite->td_abono, 2) }}</td>
-                </tr>
-                <tr class="total">
-                    <th>SALDO PENDIENTE:</th>
-                    <td>$ {{ number_format($tramite->td_saldo, 2) }}</td>
-                </tr>
-            </table>
-        </div>
+    <!-- 3. ANTECEDENTES MATRIMONIALES -->
+    <div class="sec-title">3. Antecedentes Matrimoniales & Causa</div>
+    <table class="data-table">
+        <tr>
+            <td style="width: 35%;">
+                <span class="lbl">Lugar de Matrimonio</span>
+                <div class="val">{{ $tramite->td_lugar_matrimonio ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 20%;">
+                <span class="lbl">Fecha Matrimonio</span>
+                <div class="val">{{ $tramite->td_fecha_matrimonio ? date('d/m/Y', strtotime($tramite->td_fecha_matrimonio)) : 'N/E' }}</div>
+            </td>
+            <td style="width: 20%;">
+                <span class="lbl">Tiempo Separación</span>
+                <div class="val">{{ $tramite->td_tiempo_separacion ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Hijos a Cargo de</span>
+                <div class="val">{{ $tramite->td_con_quien_vive ?: 'N/E' }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="lbl">Motivo / Causal de Divorcio</span>
+                <div class="val">{{ $tramite->td_motivo_divorcio ?: 'No especificado' }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 4. DATOS DEL CÓNYUGE -->
+    <div class="sec-title">4. Información del Cónyuge</div>
+    <table class="data-table">
+        <tr>
+            <td style="width: 45%;">
+                <span class="lbl">Nombres y Apellidos del Cónyuge</span>
+                <div class="val">{{ $tramite->td_nombre_c ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Identificación / Cédula</span>
+                <div class="val">{{ $tramite->td_identificacion_c ?: 'S/I' }}</div>
+            </td>
+            <td style="width: 30%;">
+                <span class="lbl">Teléfono Cónyuge</span>
+                <div class="val">{{ $tramite->td_telefono_c ?: 'S/T' }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 45%;">
+                <span class="lbl">Dirección Cónyuge</span>
+                <div class="val">{{ $tramite->td_direccion_c ?: 'N/E' }} {{ $tramite->td_apt_c ? 'Apt '.$tramite->td_apt_c : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Ciudad / Estado</span>
+                <div class="val">{{ $tramite->td_ciudad_c ?: 'N/E' }}{{ $tramite->td_estado_c ? ', '.$tramite->td_estado_c : '' }}</div>
+            </td>
+            <td style="width: 30%;">
+                <span class="lbl">Código Postal</span>
+                <div class="val">{{ $tramite->td_cpostal_c ?: 'N/E' }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 5. CONTACTO EN ECUADOR, OBSERVACIONES & FINANZAS -->
+    <div class="sec-title">5. Contacto en Ecuador, Observaciones & Liquidación</div>
+    <table style="width: 100%; border-collapse: separate; border-spacing: 4px 0;">
+        <tr>
+            <td style="width: 58%; vertical-align: top;">
+                <table class="data-table" style="margin-bottom: 3px;">
+                    <tr>
+                        <td style="width: 50%;">
+                            <span class="lbl">Contacto en Ecuador</span>
+                            <div class="val">{{ $tramite->td_estado_contac_ecuador ?: 'N/E' }}</div>
+                        </td>
+                        <td style="width: 50%;">
+                            <span class="lbl">Teléfono Ecuador</span>
+                            <div class="val">{{ $tramite->td_tel_ecuador ?: 'S/T' }}</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="box-text" style="min-height: 38px;">
+                    <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Observaciones:</strong>
+                    {!! nl2br(e($tramite->td_observaciones ?: 'Ninguna observación especial.')) !!}
+                </div>
+            </td>
+            <td style="width: 42%; vertical-align: top;">
+                <table class="fin-table">
+                    <tr>
+                        <th>Valor del Trámite:</th>
+                        <td>${{ number_format($tramite->td_valor, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th>Abono Inicial:</th>
+                        <td style="color: #059669;">${{ number_format($tramite->td_abono, 2) }}</td>
+                    </tr>
+                    <tr class="row-total">
+                        <th>Saldo Pendiente:</th>
+                        <td style="{{ $tramite->td_saldo > 0 ? 'color: #be123c;' : 'color: #059669;' }}">
+                            ${{ number_format($tramite->td_saldo, 2) }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 6. FIRMAS -->
+    <table class="sig-table">
+        <tr>
+            <td>
+                <div class="sig-line">Firma del Solicitante<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
+            </td>
+            <td>
+                <div class="sig-line">Firma del Asesor Jurídico<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $tramite->usuario->name ?? 'Personal Autorizado' }}</span></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer-bar">
+        Comprobante de Recepción de Información para Divorcio • NESISTEMA • Página 1 de 1
     </div>
 
-    <div class="signature-section">
-        <div class="signature-box">
-            <div class="signature-line"></div>
-            <div class="signature-name">Firma del Cliente</div>
-            <div style="font-size: 9px; color: #666;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
-        </div>
-        <div class="signature-box right">
-            <div class="signature-line"></div>
-            <div class="signature-name">Firma del Asesor</div>
-            <div style="font-size: 9px; color: #666;">{{ $tramite->usuario->name ?? '' }}</div>
-        </div>
-    </div>
-
-    <div class="footer">
-        Este documento es un comprobante de recepción de información para iniciar su trámite de divorcio.<br>
-        Generado el {{ date('d/m/Y H:i') }} - Sistema de Gestión
-    </div>
 </body>
 </html>

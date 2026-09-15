@@ -277,7 +277,7 @@ class ClienteController extends Controller
             'oficina' => Auth::user()->office,
         ];
 
-        $pdf = Pdf::loadView('clientes.recibo_pdf', $data);
+        $pdf = Pdf::loadView('clientes.recibo_pdf', $data)->setPaper('letter', 'portrait');
         
         return $pdf->stream('Recibo_Abono_' . $cliente->c_identificacion . '.pdf');
     }

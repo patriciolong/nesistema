@@ -158,7 +158,7 @@ class TramiteVarioController extends Controller
         $tramite = $tramites_vario;
         $cliente = $tramite->cliente;
         
-        $pdf = Pdf::loadView('tramites_varios.recibo_pdf', compact('tramite', 'cliente'));
+        $pdf = Pdf::loadView('tramites_varios.recibo_pdf', compact('tramite', 'cliente'))->setPaper('letter', 'portrait');
         return $pdf->stream('Tramite_Vario_' . $tramite->id_tramite_varios . '.pdf');
     }
 }

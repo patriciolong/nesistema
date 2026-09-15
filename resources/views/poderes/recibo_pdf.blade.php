@@ -5,154 +5,179 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Poder #{{ str_pad($tramite->id_tram_poderes, 5, '0', STR_PAD_LEFT) }}</title>
     <style>
-        /* PDF specific styles for dompdf compatibility */
         @page {
-            margin: 15mm 20mm;
+            size: letter portrait;
+            margin: 7mm 10mm 7mm 10mm;
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            color: #333;
-            font-size: 10pt;
-            line-height: 1.3;
+            color: #1e293b;
+            font-size: 7.5pt;
+            line-height: 1.2;
         }
-        /* Header Container */
+
+        /* Header Table */
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #5a189a; /* Purple theme */
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #5a189a;
+            padding-bottom: 5px;
+            margin-bottom: 6px;
         }
         .header-table td {
             vertical-align: middle;
         }
         .logo-cell {
-            width: 120px;
+            width: 100px;
         }
         .logo-cell img {
-            width: 100%;
-            max-width: 110px;
+            max-width: 90px;
+            max-height: 38px;
         }
         .title-cell {
             text-align: center;
         }
         .title-cell h1 {
             color: #5a189a;
-            font-size: 16pt;
-            margin: 0 0 5px 0;
+            font-size: 13pt;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
         .title-cell p {
-            color: #666;
-            margin: 0;
-            font-size: 9pt;
+            color: #64748b;
+            margin: 1px 0 0 0;
+            font-size: 7.5pt;
+            font-weight: bold;
         }
         .info-cell {
-            width: 150px;
+            width: 155px;
             text-align: right;
-            font-size: 8.5pt;
-            color: #555;
-            line-height: 1.4;
+            font-size: 7pt;
+            color: #475569;
+            line-height: 1.3;
         }
-        
-        /* Sections */
-        .section-title {
+
+        /* Section Headings */
+        .sec-title {
             background-color: #5a189a;
             color: white;
-            padding: 5px 10px;
-            font-size: 10pt;
+            padding: 2.5px 6px;
+            font-size: 7.5pt;
             font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            border-radius: 3px;
+            margin-top: 5px;
+            margin-bottom: 3px;
+            border-radius: 2px;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        
-        /* Grid System using Tables (Dompdf requires tables for robust layouts) */
-        .grid-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-            margin-bottom: 5px;
-        }
-        .grid-table td {
-            vertical-align: top;
-        }
-        .label {
-            font-weight: bold;
-            color: #444;
-            font-size: 8.5pt;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .value {
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 2px;
-            font-size: 9.5pt;
-            min-height: 14px;
-            word-wrap: break-word;
-        }
-        
-        /* Financial Summary Box */
-        .financial-table {
+
+        /* Data Tables */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            border: 1px solid #ddd;
+            margin-bottom: 3px;
         }
-        .financial-table th {
-            background-color: #f5f5f5;
-            color: #333;
-            padding: 8px;
-            text-align: right;
-            font-size: 9pt;
-            border-bottom: 1px solid #ddd;
+        .data-table td {
+            padding: 2px 4px;
+            vertical-align: top;
+            font-size: 7.5pt;
         }
-        .financial-table td {
-            padding: 8px;
-            text-align: right;
-            font-size: 10pt;
-            border-bottom: 1px solid #ddd;
-        }
-        .financial-table .total-row th,
-        .financial-table .total-row td {
-            background-color: #f3e8ff; /* Light purple */
+        .lbl {
+            font-size: 6.5pt;
             font-weight: bold;
-            color: #5a189a;
-            border-bottom: none;
-            font-size: 11pt;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1px;
         }
-        
-        /* Observaciones */
-        .obs-box {
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            min-height: 40px;
-            font-size: 9pt;
-            background-color: #fafafa;
+        .val {
+            font-size: 7.5pt;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1px;
+            min-height: 12px;
+            word-wrap: break-word;
         }
-        
-        /* Signatures */
-        .signatures {
+
+        /* Text Boxes (Reason / Observations) */
+        .box-text {
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            color: #1e293b;
+            min-height: 28px;
+            line-height: 1.25;
+        }
+
+        /* Financial Table */
+        .fin-table {
             width: 100%;
-            margin-top: 50px;
+            border-collapse: collapse;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+        }
+        .fin-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 7pt;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table td {
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table .row-total th,
+        .fin-table .row-total td {
+            background-color: #f3e8ff;
+            color: #5a189a;
+            font-size: 9pt;
+            font-weight: 900;
+            border-bottom: none;
+        }
+
+        /* Signatures */
+        .sig-table {
+            width: 100%;
+            margin-top: 14px;
             text-align: center;
         }
-        .signatures td {
+        .sig-table td {
             width: 50%;
             vertical-align: bottom;
+            padding: 0 20px;
         }
-        .sign-line {
-            border-top: 1px solid #000;
-            width: 70%;
-            margin: 0 auto;
-            padding-top: 5px;
-            font-size: 9pt;
+        .sig-line {
+            border-top: 1px solid #334155;
+            padding-top: 2px;
+            font-size: 7pt;
             font-weight: bold;
-            color: #444;
+            color: #334155;
+            text-transform: uppercase;
+        }
+
+        .footer-bar {
+            text-align: center;
+            font-size: 6.5pt;
+            color: #94a3b8;
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 3px;
         }
     </style>
 </head>
@@ -176,221 +201,165 @@
             </td>
             <td class="info-cell">
                 <strong>Fecha:</strong> {{ $tramite->tp_fecha ? date('d/m/Y', strtotime($tramite->tp_fecha)) : date('d/m/Y') }}<br>
-                <strong>Oficina:</strong> {{ $tramite->tp_oficina }}<br>
+                <strong>Oficina:</strong> {{ $tramite->tp_oficina ?: 'General' }}<br>
                 <strong>Atendido por:</strong> {{ $tramite->usuario->name ?? 'N/A' }}<br>
-                <strong>Firmar en:</strong> {{ $tramite->tp_firmar_en }}
+                <strong>Firmar en:</strong> {{ $tramite->tp_firmar_en ?: 'Oficina' }}
             </td>
         </tr>
     </table>
 
-    <!-- Datos de Otorgantes -->
-    <div class="section-title">1. PERSONA QUE OTORGA EL PODER (USTED)</div>
-    <table class="grid-table">
+    <!-- 1. OTORGANTE(S) DEL PODER -->
+    <div class="sec-title">1. Persona que Otorga el Poder (Poderdante)</div>
+    <table class="data-table">
         <tr>
-            <td style="width: 50%; padding-right: 10px;">
-                <span class="label">NOMBRES Y APELLIDOS (COMPLETOS)</span>
-                <div class="value">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
-            </td>
             <td style="width: 50%;">
-                <span class="label">NÚMERO DE IDENTIFICACIÓN</span>
-                <div class="value">{{ $cliente->c_identificacion ?: '__________' }}</div>
+                <span class="lbl">Nombres y Apellidos Completos</span>
+                <div class="val">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Nº Identificación / Cédula / Pasaporte</span>
+                <div class="val">{{ $cliente->c_identificacion ?: 'S/I' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Estado Civil</span>
+                <div class="val">{{ mb_strtoupper($tramite->tp_estado_civil) ?: 'N/E' }}</div>
             </td>
         </tr>
-    </table>
-    
-    <table class="grid-table">
         <tr>
-            <td style="width: 100%;">
-                <span class="label">DIRECCIÓN</span>
-                <div class="value">{{ $cliente->c_direccion ?: '__________' }} {{ $cliente->c_departamento ? 'Apt/Suite '.$cliente->c_departamento : '' }}</div>
+            <td style="width: 50%;">
+                <span class="lbl">Dirección Residencial</span>
+                <div class="val">{{ $cliente->c_direccion ?: 'N/E' }} {{ $cliente->c_departamento ? 'Apt '.$cliente->c_departamento : '' }}</div>
             </td>
-        </tr>
-    </table>
-
-    <table class="grid-table">
-        <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">CIUDAD</span>
-                <div class="value">{{ $cliente->c_ciudad ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Ciudad / Estado / C.P.</span>
+                <div class="val">{{ $cliente->c_ciudad ?: 'N/E' }}{{ $cliente->c_estado ? ', '.$cliente->c_estado : '' }} {{ $cliente->c_codpostal }}</div>
             </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">ESTADO</span>
-                <div class="value">{{ $cliente->c_estado ?: '__________' }}</div>
-            </td>
-            <td style="width: 34%;">
-                <span class="label">CÓDIGO POSTAL</span>
-                <div class="value">{{ $cliente->c_codpostal ?: '__________' }}</div>
-            </td>
-        </tr>
-    </table>
-    
-    <table class="grid-table">
-        <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">ESTADO CIVIL</span>
-                <div class="value">{{ mb_strtoupper($tramite->tp_estado_civil) ?: '__________' }}</div>
-            </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">TELÉFONO</span>
-                <div class="value">{{ $cliente->c_telefono ?: '__________' }}</div>
-            </td>
-            <td style="width: 34%;">
-                <span class="label">CORREO ELECTRÓNICO</span>
-                <div class="value">{{ $cliente->c_email ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Teléfono / Celular</span>
+                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
             </td>
         </tr>
     </table>
 
     @if($tramite->tp_nombre2 || $tramite->tp_identificacion2)
-        <table class="grid-table" style="margin-top: 5px; border-top: 1px dotted #ccc; padding-top: 5px;">
-            <tr>
-                <td style="width: 100%;" colspan="2">
-                    <span class="label" style="color: #666; font-style: italic;">PERSONA QUE OTORGA EL PODER (2da Persona)</span>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; padding-right: 10px;">
-                    <span class="label">NOMBRES Y APELLIDOS COMPLETOS</span>
-                    <div class="value">{{ $tramite->tp_nombre2 }} {{ $tramite->tp_apellido2 }}</div>
-                </td>
-                <td style="width: 50%;">
-                    <span class="label">NÚMERO DE IDENTIFICACIÓN</span>
-                    <div class="value">{{ $tramite->tp_identificacion2 ?: '__________' }}</div>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; padding-right: 10px;">
-                    <span class="label">TELÉFONO</span>
-                    <div class="value">{{ $tramite->tp_telefono2 ?: '__________' }}</div>
-                </td>
-                <td style="width: 50%;"></td>
-            </tr>
-        </table>
-    @endif
-
-    <!-- Datos a favor de -->
-    <div class="section-title">2. PERSONA A FAVOR DE QUIEN OTORGA EL PODER</div>
-    <table class="grid-table">
+    <table class="data-table" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 2px;">
         <tr>
-            <td style="width: 100%;" colspan="2">
-                <span class="label" style="color: #666; font-style: italic;">1ra Persona</span>
+            <td style="width: 50%;">
+                <span class="lbl">2do Otorgante - Nombres y Apellidos</span>
+                <div class="val">{{ $tramite->tp_nombre2 }} {{ $tramite->tp_apellido2 }}</div>
             </td>
-        </tr>
-        <tr>
-            <td style="width: 60%; padding-right: 10px;">
-                <span class="label">NOMBRE Y APELLIDOS COMPLETOS</span>
-                <div class="value">{{ $tramite->tp_nombres_otorga_poder ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Identificación</span>
+                <div class="val">{{ $tramite->tp_identificacion2 ?: 'S/I' }}</div>
             </td>
-            <td style="width: 40%;">
-                <span class="label">NO. DE CÉDULA</span>
-                <div class="value">{{ $tramite->tp_cedulla_otorga_poder ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Teléfono</span>
+                <div class="val">{{ $tramite->tp_telefono2 ?: 'S/T' }}</div>
             </td>
         </tr>
     </table>
-
-    @if($tramite->tp_nombres_otorga_poder2 || $tramite->tp_cedulla_otorga_poder2)
-        <table class="grid-table" style="margin-top: 5px; border-top: 1px dotted #ccc; padding-top: 5px;">
-            <tr>
-                <td style="width: 100%;" colspan="2">
-                    <span class="label" style="color: #666; font-style: italic;">2da Persona</span>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 60%; padding-right: 10px;">
-                    <span class="label">NOMBRE Y APELLIDOS COMPLETOS</span>
-                    <div class="value">{{ $tramite->tp_nombres_otorga_poder2 ?: '__________' }}</div>
-                </td>
-                <td style="width: 40%;">
-                    <span class="label">NO. DE CÉDULA</span>
-                    <div class="value">{{ $tramite->tp_cedulla_otorga_poder2 ?: '__________' }}</div>
-                </td>
-            </tr>
-        </table>
     @endif
 
-    <!-- Razón del Poder -->
-    <div class="section-title">3. RAZÓN DEL PODER</div>
-    <table class="grid-table">
+    <!-- 2. A FAVOR DE QUIEN OTORGA EL PODER -->
+    <div class="sec-title">2. Persona a Favor de Quien Otorga el Poder (Apoderado)</div>
+    <table class="data-table">
         <tr>
-            <td style="width: 100%;">
-                <div class="obs-box" style="min-height: 50px;">
-                    {!! nl2br(e($tramite->tp_razon_otorga_poder ?: '__________')) !!}
+            <td style="width: 65%;">
+                <span class="lbl">Nombres y Apellidos Completos (1ra Persona)</span>
+                <div class="val">{{ $tramite->tp_nombres_otorga_poder ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 35%;">
+                <span class="lbl">Nº Cédula / Identificación</span>
+                <div class="val">{{ $tramite->tp_cedulla_otorga_poder ?: 'S/I' }}</div>
+            </td>
+        </tr>
+        @if($tramite->tp_nombres_otorga_poder2 || $tramite->tp_cedulla_otorga_poder2)
+        <tr>
+            <td style="width: 65%;">
+                <span class="lbl">Nombres y Apellidos Completos (2da Persona)</span>
+                <div class="val">{{ $tramite->tp_nombres_otorga_poder2 }}</div>
+            </td>
+            <td style="width: 35%;">
+                <span class="lbl">Nº Cédula / Identificación</span>
+                <div class="val">{{ $tramite->tp_cedulla_otorga_poder2 ?: 'S/I' }}</div>
+            </td>
+        </tr>
+        @endif
+    </table>
+
+    <!-- 3. RAZÓN DEL PODER -->
+    <div class="sec-title">3. Razón / Objeto del Poder</div>
+    <div class="box-text">
+        {!! nl2br(e($tramite->tp_razon_otorga_poder ?: 'Sin especificación adicional.')) !!}
+    </div>
+
+    <!-- 4. ENVÍO Y ENTREGA -->
+    <div class="sec-title">4. Envío y Entrega</div>
+    <table class="data-table">
+        <tr>
+            <td style="width: 35%;">
+                <span class="lbl">Método de Envío</span>
+                <div class="val" style="color: #5a189a; font-weight: bold;">{{ mb_strtoupper($tramite->tp_opcion_envio_poder) ?: 'OFICINA' }}</div>
+            </td>
+            <td style="width: 65%;">
+                <span class="lbl">Destinatario en Destino / Ciudad</span>
+                <div class="val">
+                    @if($tramite->tp_enviar_nombrede)
+                        {{ $tramite->tp_enviar_nombrede }} ({{ $tramite->tp_ciudad_enviar ?: '' }} - {{ $tramite->tp_provincia ?: '' }}) - Tel: {{ $tramite->tp_telefonos_enviar ?: 'S/T' }}
+                    @else
+                        Entrega directa en oficina / Según instrucción
+                    @endif
                 </div>
             </td>
         </tr>
     </table>
 
-    <!-- Envío y Pago -->
-    <div class="section-title">4. DETALLES DE ENVÍO Y COBRO</div>
-    
-    <table class="grid-table" style="margin-bottom: 10px;">
+    <!-- 5. OBSERVACIONES & RESUMEN FINANCIERO -->
+    <div class="sec-title">5. Observaciones & Liquidación Financiera</div>
+    <table style="width: 100%; border-collapse: separate; border-spacing: 4px 0;">
         <tr>
-            <td style="width: 100%;">
-                <span class="label">MÉTODO DE ENVÍO SELECCIONADO</span>
-                <div class="value" style="font-weight: bold; color: #5a189a;">{{ mb_strtoupper($tramite->tp_opcion_envio_poder) ?: '__________' }}</div>
-            </td>
-        </tr>
-    </table>
-
-    @if($tramite->tp_enviar_nombrede || $tramite->tp_ciudad_enviar)
-        <table class="grid-table">
-            <tr>
-                <td style="width: 100%;" colspan="2">
-                    <span class="label">ENVIAR A ECUADOR A NOMBRE DE:</span>
-                    <div class="value">{{ $tramite->tp_enviar_nombrede ?: '__________' }}</div>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; padding-right: 10px;">
-                    <span class="label">CIUDAD - PROVINCIA:</span>
-                    <div class="value">{{ $tramite->tp_ciudad_enviar ?: '____' }} - {{ $tramite->tp_provincia ?: '____' }}</div>
-                </td>
-                <td style="width: 50%;">
-                    <span class="label">TELÉFONOS (011593):</span>
-                    <div class="value">{{ $tramite->tp_telefonos_enviar ?: '__________' }}</div>
-                </td>
-            </tr>
-        </table>
-    @endif
-
-    <table style="width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px;">
-        <tr>
-            <td style="width: 55%; vertical-align: top; padding-right: 15px;">
-                <span class="label">OBSERVACIONES INTERNAS</span>
-                <div class="obs-box">
-                    {!! nl2br(e($tramite->tp_observaciones ?: 'Ninguna observación adicional.')) !!}
+            <td style="width: 58%; vertical-align: top;">
+                <div class="box-text" style="min-height: 48px;">
+                    <strong style="color: #475569; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Notas / Observaciones:</strong>
+                    {!! nl2br(e($tramite->tp_observaciones ?: 'Ninguna observación especial registrada.')) !!}
                 </div>
             </td>
-            <td style="width: 45%; vertical-align: top;">
-                <table class="financial-table">
+            <td style="width: 42%; vertical-align: top;">
+                <table class="fin-table">
                     <tr>
-                        <th>Valor del Trámite:</th>
+                        <th>Costo del Trámite:</th>
                         <td>${{ number_format($tramite->tp_costo_tramite, 2) }}</td>
                     </tr>
                     <tr>
                         <th>Monto Abonado:</th>
-                        <td>${{ number_format($tramite->tp_abono_tramite, 2) }}</td>
+                        <td style="color: #059669;">${{ number_format($tramite->tp_abono_tramite, 2) }}</td>
                     </tr>
-                    <tr class="total-row">
-                        <th>Saldo:</th>
-                        <td>${{ number_format($tramite->tp_saldo, 2) }}</td>
+                    <tr class="row-total">
+                        <th>Saldo Pendiente:</th>
+                        <td style="{{ $tramite->tp_saldo > 0 ? 'color: #be123c;' : 'color: #059669;' }}">
+                            ${{ number_format($tramite->tp_saldo, 2) }}
+                        </td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
 
-    <!-- Firmas -->
-    <table class="signatures">
+    <!-- 6. FIRMAS -->
+    <table class="sig-table">
         <tr>
             <td>
-                <div class="sign-line">FIRMA DEL CLIENTE</div>
+                <div class="sig-line">Firma del Cliente / Otorgante<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
             </td>
             <td>
-                <!-- Reserved for Authorised Signature if needed, or leave empty -->
+                <div class="sig-line">Firma y Sello Notaría / Asesor<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $tramite->usuario->name ?? 'Personal Autorizado' }}</span></div>
             </td>
         </tr>
     </table>
+
+    <div class="footer-bar">
+        Comprobante de Recepción de Trámite • Sistema Notarial & Jurídico NESISTEMA • Página 1 de 1
+    </div>
 
 </body>
 </html>

@@ -206,7 +206,7 @@ class TramiteDivorcioController extends Controller
             'cliente' => $cliente
         ];
 
-        $pdf = Pdf::loadView('divorcios.recibo_pdf', $data);
+        $pdf = Pdf::loadView('divorcios.recibo_pdf', $data)->setPaper('letter', 'portrait');
         return $pdf->stream('Tramite_Divorcio_' . $tramite->id_tram_div . '.pdf');
     }
 }

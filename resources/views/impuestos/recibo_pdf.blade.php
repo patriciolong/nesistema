@@ -3,175 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Declaración de Impuestos #{{ str_pad($tramite->id_tram_impuestos, 5, '0', STR_PAD_LEFT) }}</title>
+    <title>Impuestos #{{ str_pad($tramite->id_tram_impuestos, 5, '0', STR_PAD_LEFT) }}</title>
     <style>
-        /* PDF specific styles for dompdf compatibility */
         @page {
-            margin: 15mm 20mm;
+            size: letter portrait;
+            margin: 7mm 10mm 7mm 10mm;
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            color: #333;
-            font-size: 10pt;
-            line-height: 1.3;
+            color: #1e293b;
+            font-size: 7.5pt;
+            line-height: 1.2;
         }
-        /* Header Container */
+
+        /* Header Table */
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #004080;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 2px solid #0284c7; /* Cyan / Blue theme for taxes */
+            padding-bottom: 5px;
+            margin-bottom: 6px;
         }
         .header-table td {
             vertical-align: middle;
         }
         .logo-cell {
-            width: 120px;
+            width: 100px;
         }
         .logo-cell img {
-            width: 100%;
-            max-width: 110px;
+            max-width: 90px;
+            max-height: 38px;
         }
         .title-cell {
             text-align: center;
         }
         .title-cell h1 {
-            color: #004080;
-            font-size: 16pt;
-            margin: 0 0 5px 0;
+            color: #0369a1;
+            font-size: 13pt;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
         .title-cell p {
-            color: #666;
-            margin: 0;
-            font-size: 9pt;
+            color: #64748b;
+            margin: 1px 0 0 0;
+            font-size: 7.5pt;
+            font-weight: bold;
         }
         .info-cell {
-            width: 150px;
+            width: 155px;
             text-align: right;
-            font-size: 8.5pt;
-            color: #555;
-            line-height: 1.4;
+            font-size: 7pt;
+            color: #475569;
+            line-height: 1.3;
         }
-        
-        /* Sections */
-        .section-title {
-            background-color: #004080;
+
+        /* Section Headings */
+        .sec-title {
+            background-color: #0284c7;
             color: white;
-            padding: 5px 10px;
-            font-size: 10pt;
+            padding: 2.5px 6px;
+            font-size: 7.5pt;
             font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            border-radius: 3px;
+            margin-top: 5px;
+            margin-bottom: 3px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        
-        /* Grid System using Tables (Dompdf requires tables for robust layouts) */
-        .grid-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-            margin-bottom: 10px;
-        }
-        .grid-table td {
-            vertical-align: top;
-        }
-        .label {
-            font-weight: bold;
-            color: #444;
-            font-size: 8.5pt;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .value {
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 2px;
-            font-size: 9.5pt;
-            min-height: 14px;
-            word-wrap: break-word;
-        }
-        
-        /* Financial Summary Box */
-        .financial-table {
+
+        /* Data Tables */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            border: 1px solid #ddd;
+            margin-bottom: 3px;
         }
-        .financial-table th {
-            background-color: #f5f5f5;
-            color: #333;
-            padding: 8px;
-            text-align: right;
-            font-size: 9pt;
-            border-bottom: 1px solid #ddd;
+        .data-table td {
+            padding: 2px 4px;
+            vertical-align: top;
+            font-size: 7.5pt;
         }
-        .financial-table td {
-            padding: 8px;
-            text-align: right;
-            font-size: 10pt;
-            border-bottom: 1px solid #ddd;
-        }
-        .financial-table .total-row th,
-        .financial-table .total-row td {
-            background-color: #e6f2ff;
+        .lbl {
+            font-size: 6.5pt;
             font-weight: bold;
-            color: #004080;
-            border-bottom: none;
-            font-size: 11pt;
+            color: #64748b;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1px;
         }
-        
-        /* Observaciones */
-        .obs-box {
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            min-height: 50px;
-            font-size: 9pt;
-            background-color: #fafafa;
+        .val {
+            font-size: 7.5pt;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1px;
+            min-height: 12px;
+            word-wrap: break-word;
         }
-        
-        /* Signatures */
-        .signatures {
+
+        /* Text Boxes */
+        .box-text {
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            padding: 4px 6px;
+            border-radius: 3px;
+            font-size: 7.5pt;
+            color: #1e293b;
+            min-height: 48px;
+            line-height: 1.25;
+        }
+
+        /* Financial Table */
+        .fin-table {
             width: 100%;
-            margin-top: 50px;
+            border-collapse: collapse;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+        }
+        .fin-table th {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 7pt;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table td {
+            padding: 3.5px 5px;
+            text-align: right;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .fin-table .row-total th,
+        .fin-table .row-total td {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-size: 9pt;
+            font-weight: 900;
+            border-bottom: none;
+        }
+
+        /* Signatures */
+        .sig-table {
+            width: 100%;
+            margin-top: 14px;
             text-align: center;
         }
-        .signatures td {
+        .sig-table td {
             width: 50%;
             vertical-align: bottom;
+            padding: 0 20px;
         }
-        .sign-line {
-            border-top: 1px solid #000;
-            width: 70%;
-            margin: 0 auto;
-            padding-top: 5px;
-            font-size: 9pt;
+        .sig-line {
+            border-top: 1px solid #334155;
+            padding-top: 2px;
+            font-size: 7pt;
             font-weight: bold;
-            color: #444;
+            color: #334155;
+            text-transform: uppercase;
         }
-        
-        /* Checkboxes */
-        .checkbox-group {
-            margin-bottom: 10px;
-        }
-        .checkbox-item {
-            margin-bottom: 5px;
-            font-size: 9pt;
-        }
-        .check-box {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 1px solid #333;
-            margin-right: 5px;
+
+        .footer-bar {
             text-align: center;
-            line-height: 12px;
-            font-size: 10pt;
-            font-weight: bold;
+            font-size: 6.5pt;
+            color: #94a3b8;
+            margin-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 3px;
         }
     </style>
 </head>
@@ -195,171 +201,152 @@
             </td>
             <td class="info-cell">
                 <strong>Fecha:</strong> {{ $tramite->ti_fecha ? date('d/m/Y', strtotime($tramite->ti_fecha)) : date('d/m/Y') }}<br>
-                <strong>Oficina:</strong> {{ $tramite->ti_oficina }}<br>
+                <strong>Oficina:</strong> {{ $tramite->ti_oficina ?: 'General' }}<br>
                 <strong>Atendido por:</strong> {{ $tramite->usuario->name ?? 'N/A' }}<br>
-                <strong>Firmar en:</strong> {{ $tramite->ti_firmar_en }}
+                <strong>Firmar en:</strong> {{ $tramite->ti_firmar_en ?: 'Oficina' }}
             </td>
         </tr>
     </table>
 
-    <!-- Datos del Cliente -->
-    <div class="section-title">DATOS DEL CLIENTE</div>
-    <table class="grid-table">
+    <!-- 1. DATOS DEL CONTRIBUYENTE -->
+    <div class="sec-title">1. Datos del Contribuyente / Cliente</div>
+    <table class="data-table">
         <tr>
-            <td style="width: 50%; padding-right: 10px;">
-                <span class="label">NOMBRES COMPLETOS</span>
-                <div class="value">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
-            </td>
             <td style="width: 50%;">
-                <span class="label">IDENTIFICACIÓN</span>
-                <div class="value">{{ $cliente->c_identificacion ?: '__________' }}</div>
+                <span class="lbl">Nombres y Apellidos Completos</span>
+                <div class="val">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Identificación / ID</span>
+                <div class="val">{{ $cliente->c_identificacion ?: 'S/I' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Teléfono / Celular</span>
+                <div class="val">{{ $cliente->c_telefono ?: 'S/T' }}</div>
             </td>
         </tr>
-    </table>
-    <table class="grid-table">
         <tr>
-            <td style="width: 100%;">
-                <span class="label">DIRECCIÓN</span>
-                <div class="value">{{ $cliente->c_direccion ?: '__________' }} {{ $cliente->c_departamento ? 'Apt/Suite '.$cliente->c_departamento : '' }}</div>
-            </td>
-        </tr>
-    </table>
-    <table class="grid-table">
-        <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">CIUDAD</span>
-                <div class="value">{{ $cliente->c_ciudad ?: '__________' }}</div>
-            </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">ESTADO</span>
-                <div class="value">{{ $cliente->c_estado ?: '__________' }}</div>
-            </td>
-            <td style="width: 34%;">
-                <span class="label">CÓDIGO POSTAL</span>
-                <div class="value">{{ $cliente->c_codpostal ?: '__________' }}</div>
-            </td>
-        </tr>
-    </table>
-    <table class="grid-table">
-        <tr>
-            <td style="width: 50%; padding-right: 10px;">
-                <span class="label">TELÉFONO</span>
-                <div class="value">{{ $cliente->c_telefono ?: '__________' }}</div>
-            </td>
             <td style="width: 50%;">
-                <span class="label">EMAIL</span>
-                <div class="value">{{ $cliente->c_email ?: '__________' }}</div>
+                <span class="lbl">Dirección Residencial</span>
+                <div class="val">{{ $cliente->c_direccion ?: 'N/E' }} {{ $cliente->c_departamento ? 'Apt '.$cliente->c_departamento : '' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Ciudad / Estado / C.P.</span>
+                <div class="val">{{ $cliente->c_ciudad ?: 'N/E' }}{{ $cliente->c_estado ? ', '.$cliente->c_estado : '' }} {{ $cliente->c_codpostal }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Correo Electrónico</span>
+                <div class="val">{{ $cliente->c_email ?: 'S/E' }}</div>
             </td>
         </tr>
     </table>
 
-    <!-- Detalles del Trámite -->
-    <div class="section-title">DETALLES DE LA DECLARACIÓN</div>
-    <table class="grid-table">
+    <!-- 2. DETALLES DE LA DECLARACIÓN TRIBUTARIA -->
+    <div class="sec-title">2. Información Tributaria & Fiscal</div>
+    <table class="data-table">
         <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">APLICACIÓN ITIN</span>
-                <div class="value">{{ $tramite->ti_itin ? 'SÍ' : 'NO' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Aplicación ITIN</span>
+                <div class="val">{{ $tramite->ti_itin ? 'SÍ (Aplica)' : 'NO' }}</div>
             </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">NÚMERO ITIN O SOCIAL</span>
-                <div class="value">{{ $tramite->ti_nitin ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Nº ITIN / Social Security</span>
+                <div class="val">{{ $tramite->ti_nitin ?: 'N/E' }}</div>
             </td>
-            <td style="width: 34%;">
-                <span class="label">AÑO DE REPORTE</span>
-                <div class="value">{{ $tramite->ti_anio_reporte ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Año Fiscal de Reporte</span>
+                <div class="val">{{ $tramite->ti_anio_reporte ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 25%;">
+                <span class="lbl">Fecha Ingreso EE.UU.</span>
+                <div class="val">{{ $tramite->ti_fechain ? date('d/m/Y', strtotime($tramite->ti_fechain)) : 'N/E' }}</div>
             </td>
         </tr>
-    </table>
-    
-    <table class="grid-table">
         <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">FECHA INGRESO EE.UU.</span>
-                <div class="value">{{ $tramite->ti_fechain ? date('d/m/Y', strtotime($tramite->ti_fechain)) : '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Estado Civil Declarado</span>
+                <div class="val">{{ $tramite->ti_ecivil ?: 'N/E' }}</div>
             </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">ESTADO CIVIL</span>
-                <div class="value">{{ $tramite->ti_ecivil ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Profesión / Ocupación</span>
+                <div class="val">{{ $tramite->ti_profesion ?: 'N/E' }}</div>
             </td>
-            <td style="width: 34%;">
-                <span class="label">PROFESIÓN</span>
-                <div class="value">{{ $tramite->ti_profesion ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Nº Dependientes</span>
+                <div class="val">{{ $tramite->ti_dependientes ?: '0' }}</div>
             </td>
-        </tr>
-    </table>
-    
-    <table class="grid-table">
-        <tr>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">DEPENDIENTES</span>
-                <div class="value">{{ $tramite->ti_dependientes ?: '0' }}</div>
-            </td>
-            <td style="width: 33%; padding-right: 10px;">
-                <span class="label">MÉTODO DE PAGO</span>
-                <div class="value">{{ $tramite->ti_mpago ?: '__________' }}</div>
-            </td>
-            <td style="width: 34%;">
-                <span class="label">BANCO</span>
-                <div class="value">{{ $tramite->ti_banco ?: '__________' }}</div>
+            <td style="width: 25%;">
+                <span class="lbl">Método de Pago Declaración</span>
+                <div class="val">{{ $tramite->ti_mpago ?: 'N/E' }}</div>
             </td>
         </tr>
     </table>
 
-    <table class="grid-table">
+    <!-- 3. DETALLES DE CUENTA BANCARIA -->
+    <div class="sec-title">3. Información Bancaria (Depósito / Débito)</div>
+    <table class="data-table">
         <tr>
-            <td style="width: 50%; padding-right: 10px;">
-                <span class="label">NÚMERO DE CUENTA</span>
-                <div class="value">{{ $tramite->ti_ncuenta ?: '__________' }}</div>
+            <td style="width: 40%;">
+                <span class="lbl">Entidad Bancaria</span>
+                <div class="val">{{ $tramite->ti_banco ?: 'No especificado / Cheque' }}</div>
             </td>
-            <td style="width: 50%;">
-                <span class="label">NÚMERO DE RUTA</span>
-                <div class="value">{{ $tramite->ti_nruta ?: '__________' }}</div>
+            <td style="width: 30%;">
+                <span class="lbl">Número de Cuenta</span>
+                <div class="val">{{ $tramite->ti_ncuenta ?: 'N/E' }}</div>
+            </td>
+            <td style="width: 30%;">
+                <span class="lbl">Número de Ruta (Routing)</span>
+                <div class="val">{{ $tramite->ti_nruta ?: 'N/E' }}</div>
             </td>
         </tr>
     </table>
 
-    <!-- Financiero y Notas -->
-    <div class="section-title">RESUMEN FINANCIERO Y NOTAS</div>
-    
-    <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
+    <!-- 4. OBSERVACIONES & RESUMEN FINANCIERO -->
+    <div class="sec-title">4. Observaciones & Liquidación Financiera</div>
+    <table style="width: 100%; border-collapse: separate; border-spacing: 4px 0;">
         <tr>
-            <td style="width: 55%; vertical-align: top; padding-right: 15px;">
-                <span class="label">OBSERVACIONES INTERNAS</span>
-                <div class="obs-box">
+            <td style="width: 58%; vertical-align: top;">
+                <div class="box-text">
+                    <strong style="color: #64748b; font-size: 6.5pt; text-transform: uppercase; display: block; margin-bottom: 2px;">Observaciones / Notas Tributarias:</strong>
                     {!! nl2br(e($tramite->ti_observacion ?: 'Ninguna observación adicional.')) !!}
                 </div>
             </td>
-            <td style="width: 45%; vertical-align: top;">
-                <table class="financial-table">
+            <td style="width: 42%; vertical-align: top;">
+                <table class="fin-table">
                     <tr>
                         <th>Honorarios Totales:</th>
                         <td>${{ number_format($tramite->ti_costo_tramite, 2) }}</td>
                     </tr>
                     <tr>
                         <th>Abono Inicial:</th>
-                        <td>${{ number_format($tramite->ti_abono_tramite, 2) }}</td>
+                        <td style="color: #059669;">${{ number_format($tramite->ti_abono_tramite, 2) }}</td>
                     </tr>
-                    <tr class="total-row">
-                        <th>Saldo a Pagar:</th>
-                        <td>${{ number_format($tramite->ti_saldo, 2) }}</td>
+                    <tr class="row-total">
+                        <th>Saldo Pendiente:</th>
+                        <td style="{{ $tramite->ti_saldo > 0 ? 'color: #be123c;' : 'color: #059669;' }}">
+                            ${{ number_format($tramite->ti_saldo, 2) }}
+                        </td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
 
-    <!-- Firmas -->
-    <table class="signatures">
+    <!-- 5. FIRMAS -->
+    <table class="sig-table">
         <tr>
             <td>
-                <div class="sign-line">FIRMA DEL CLIENTE</div>
+                <div class="sig-line">Firma del Contribuyente<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $cliente->c_nombre }} {{ $cliente->c_apellido }}</span></div>
             </td>
             <td>
-                <div class="sign-line">FIRMA AUTORIZADA</div>
+                <div class="sig-line">Firma del Preparador de Impuestos<br><span style="font-size: 6pt; color: #64748b; text-transform: none;">{{ $tramite->usuario->name ?? 'Personal Autorizado' }}</span></div>
             </td>
         </tr>
     </table>
+
+    <div class="footer-bar">
+        Comprobante de Trámite Tributario • NESISTEMA • Página 1 de 1
+    </div>
 
 </body>
 </html>

@@ -168,7 +168,7 @@ class TramiteImpuestoController extends Controller
             'cliente' => $cliente
         ];
 
-        $pdf = Pdf::loadView('impuestos.recibo_pdf', $data);
+        $pdf = Pdf::loadView('impuestos.recibo_pdf', $data)->setPaper('letter', 'portrait');
         return $pdf->stream('Tramite_Impuestos_' . $tramite->id_tram_impuestos . '.pdf');
     }
 }

@@ -159,7 +159,7 @@ class TramitePersonalizadoController extends Controller
             'fecha' => $tramitePersonalizado->created_at->format('d/m/Y H:i A'),
         ];
 
-        $pdf = Pdf::loadView('tramites_personalizados.recibo_pdf', $data);
+        $pdf = Pdf::loadView('tramites_personalizados.recibo_pdf', $data)->setPaper('letter', 'portrait');
         return $pdf->stream('Tramite_' . ($tramitePersonalizado->tipoTramite->nombre ?? 'Doc') . '_' . $tramitePersonalizado->id . '.pdf');
     }
 }

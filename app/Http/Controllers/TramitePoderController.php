@@ -160,7 +160,7 @@ class TramitePoderController extends Controller
             'cliente' => $cliente
         ];
 
-        $pdf = Pdf::loadView('poderes.recibo_pdf', $data);
+        $pdf = Pdf::loadView('poderes.recibo_pdf', $data)->setPaper('letter', 'portrait');
         return $pdf->stream('Tramite_Poder_' . $tramite->id_tram_poderes . '.pdf');
     }
 }

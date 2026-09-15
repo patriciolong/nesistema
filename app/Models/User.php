@@ -126,6 +126,10 @@ class User extends Authenticatable
                     'nombre' => 'Desempeño y Efectividad de Cajeros',
                     'descripcion' => 'Permite ver estadísticas de cobros, diferencias y exactitud por usuario.',
                 ],
+                'reportes.cartera' => [
+                    'nombre' => 'Reportería de Cartera y Cuentas por Cobrar',
+                    'descripcion' => 'Permite consultar estados de morosidad, aging de cartera y exportar reportes de deudores en PDF y Excel.',
+                ],
             ],
         ],
         'administracion' => [
@@ -235,7 +239,7 @@ class User extends Authenticatable
                 'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'clientes.export', 'cartera.view',
                 'cajas.operar', 'cajas.historial',
                 'tramites.create', 'plantillas.view', 'plantillas.generar', 'plantillas.manage',
-                'reportes.cajas', 'reportes.desempeno',
+                'reportes.cajas', 'reportes.desempeno', 'reportes.cartera',
                 'bancos.manage', 'tarjetas.manage', 'tipo_tramites.manage',
             ];
         }

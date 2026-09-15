@@ -16,6 +16,12 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5">
+                @if(Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('cartera.view') || Auth::user()->role === 'Administrador' || Auth::user()->role === 'Supervisor')
+                    <a href="{{ route('reportes.cartera.index') }}" class="inline-flex items-center gap-2 px-3.5 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 rounded-xl text-xs font-bold shadow-sm transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span>Reportería & Aging</span>
+                    </a>
+                @endif
                 @if($tieneCajaAbierta && $cajaAbierta)
                     <div class="flex items-center gap-2 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-sm">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -26,8 +32,8 @@
                         <span>⚠️ Abrir Caja para Cobrar</span> &rarr;
                     </a>
                 @endif
-                <a href="{{ route('clientes.index') }}" class="px-3.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-sm transition-all">
-                    &larr; Directorio de Clientes
+                <a href="{{ route('clientes.index') }}" class="px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-sm transition-all">
+                    &larr; Clientes
                 </a>
             </div>
         </div>

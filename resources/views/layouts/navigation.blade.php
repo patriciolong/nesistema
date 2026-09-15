@@ -103,10 +103,22 @@
         @endif
 
         {{-- 2. SECCIÓN: REPORTES & AUDITORÍA --}}
-        @if(Auth::check() && (Auth::user()->hasPermission('reportes.cajas') || Auth::user()->hasPermission('reportes.desempeno')))
+        @if(Auth::check() && (Auth::user()->hasPermission('reportes.cajas') || Auth::user()->hasPermission('reportes.desempeno') || Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('cartera.view')))
             <div style="padding: 14px 10px 6px 10px; margin-bottom: 2px; font-size: 10px; font-weight: 900; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">
                 Reportes & Auditoría
             </div>
+
+            <!-- Reporte de Cartera Link -->
+            @if(Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('cartera.view'))
+                <a href="{{ route('reportes.cartera.index') }}" 
+                   style="{{ request()->routeIs('reportes.cartera.*') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
+                   class="flex items-center px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
+                    <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('reportes.cartera.*') ? 'color: #ffffff;' : 'color: #f43f5e;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span>Reporte de Cartera</span>
+                </a>
+            @endif
 
             <!-- Reportes de Caja Link -->
             @if(Auth::user()->hasPermission('reportes.cajas'))
@@ -114,7 +126,7 @@
                    style="{{ request()->routeIs('reportes.cajas.index') || request()->routeIs('reportes.cajas.show') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
                    class="flex items-center px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
                     <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('reportes.cajas.*') ? 'color: #ffffff;' : 'color: #38bdf8;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>Reportes de Caja</span>
                 </a>
@@ -125,7 +137,7 @@
                 <a href="{{ route('reportes.cajas.desempeno') }}" 
                    style="{{ request()->routeIs('reportes.cajas.desempeno') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
                    class="flex items-center px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
-                    <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('reportes.cajas.desempeno') ? 'color: #ffffff;' : 'color: #f43f5e;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('reportes.cajas.desempeno') ? 'color: #ffffff;' : 'color: #a855f7;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                     </svg>
                     <span>Desempeño Cajeros</span>

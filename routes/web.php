@@ -94,6 +94,11 @@ Route::middleware('auth')->group(function () {
     Route::get('reportes/cajas/desempeno', [App\Http\Controllers\CajaReporteController::class, 'desempeno'])->name('reportes.cajas.desempeno');
     Route::get('reportes/cajas/{id}', [App\Http\Controllers\CajaReporteController::class, 'show'])->name('reportes.cajas.show');
 
+    // Rutas para Módulo de Reportería de Cartera & Cuentas por Cobrar
+    Route::get('reportes/cartera', [App\Http\Controllers\CarteraReporteController::class, 'index'])->name('reportes.cartera.index');
+    Route::get('reportes/cartera/pdf', [App\Http\Controllers\CarteraReporteController::class, 'pdf'])->name('reportes.cartera.pdf');
+    Route::get('reportes/cartera/excel', [App\Http\Controllers\CarteraReporteController::class, 'excel'])->name('reportes.cartera.excel');
+
     // Rutas para Módulo de Gestión de Permisos Granulares
     Route::get('permisos', [App\Http\Controllers\PermisoController::class, 'index'])->name('permisos.index');
     Route::get('permisos/{user}/edit', [App\Http\Controllers\PermisoController::class, 'edit'])->name('permisos.edit');

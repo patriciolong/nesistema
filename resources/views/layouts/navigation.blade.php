@@ -103,10 +103,22 @@
         @endif
 
         {{-- 2. SECCIÓN: REPORTES & AUDITORÍA --}}
-        @if(Auth::check() && (Auth::user()->hasPermission('reportes.cajas') || Auth::user()->hasPermission('reportes.desempeno') || Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('cartera.view')))
+        @if(Auth::check() && (Auth::user()->hasPermission('reportes.cajas') || Auth::user()->hasPermission('reportes.desempeno') || Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('reportes.control_precios') || Auth::user()->hasPermission('cartera.view')))
             <div style="padding: 14px 10px 6px 10px; margin-bottom: 2px; font-size: 10px; font-weight: 900; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">
                 Reportes & Auditoría
             </div>
+
+            <!-- Control de Precios (±5%) Link -->
+            @if(Auth::user()->hasPermission('reportes.control_precios') || Auth::user()->role === 'Administrador' || Auth::user()->role === 'Supervisor')
+                <a href="{{ route('reportes.control_precios.index') }}" 
+                   style="{{ request()->routeIs('reportes.control_precios.*') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
+                   class="flex items-center px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
+                    <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('reportes.control_precios.*') ? 'color: #ffffff;' : 'color: #f59e0b;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <span>Control de Precios (±5%)</span>
+                </a>
+            @endif
 
             <!-- Reporte de Cartera Link -->
             @if(Auth::user()->hasPermission('reportes.cartera') || Auth::user()->hasPermission('cartera.view'))

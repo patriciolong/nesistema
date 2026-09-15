@@ -99,6 +99,9 @@ Route::middleware('auth')->group(function () {
     Route::get('reportes/cartera/pdf', [App\Http\Controllers\CarteraReporteController::class, 'pdf'])->name('reportes.cartera.pdf');
     Route::get('reportes/cartera/excel', [App\Http\Controllers\CarteraReporteController::class, 'excel'])->name('reportes.cartera.excel');
 
+    // Rutas para Módulo de Control de Precios y Auditoría de Desviaciones (±5%)
+    Route::get('reportes/control-precios', [App\Http\Controllers\ControlTramitesController::class, 'index'])->name('reportes.control_precios.index');
+
     // Rutas para Módulo de Gestión de Permisos Granulares
     Route::get('permisos', [App\Http\Controllers\PermisoController::class, 'index'])->name('permisos.index');
     Route::get('permisos/{user}/edit', [App\Http\Controllers\PermisoController::class, 'edit'])->name('permisos.edit');

@@ -130,6 +130,10 @@ class User extends Authenticatable
                     'nombre' => 'Reportería de Cartera y Cuentas por Cobrar',
                     'descripcion' => 'Permite consultar estados de morosidad, aging de cartera y exportar reportes de deudores en PDF y Excel.',
                 ],
+                'reportes.control_precios' => [
+                    'nombre' => 'Control de Precios & Auditoría de Desviaciones (±5%)',
+                    'descripcion' => 'Permite auditar trámites facturados con excesos o descuentos fuera del rango estándar de tarifas.',
+                ],
             ],
         ],
         'administracion' => [
@@ -239,7 +243,7 @@ class User extends Authenticatable
                 'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'clientes.export', 'cartera.view',
                 'cajas.operar', 'cajas.historial',
                 'tramites.create', 'plantillas.view', 'plantillas.generar', 'plantillas.manage',
-                'reportes.cajas', 'reportes.desempeno', 'reportes.cartera',
+                'reportes.cajas', 'reportes.desempeno', 'reportes.cartera', 'reportes.control_precios',
                 'bancos.manage', 'tarjetas.manage', 'tipo_tramites.manage',
             ];
         }

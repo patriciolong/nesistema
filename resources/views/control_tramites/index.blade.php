@@ -240,10 +240,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach($tramites as $t)
-                                @php
-                                    $jsonPayload = htmlspecialchars(json_encode($t), ENT_QUOTES, 'UTF-8');
-                                @endphp
-                                <tr class="hover:bg-amber-50/40 cursor-pointer transition-colors" onclick="abrirModalAuditoria({{ $jsonPayload }})">
+                                <tr class="hover:bg-amber-50/40 cursor-pointer transition-colors tramite-row" data-tramite="{{ json_encode($t) }}" onclick="abrirModalDesdeElemento(this)">
                                     
                                     <!-- Trámite & Tipo -->
                                     <td class="py-3.5 px-4">
@@ -314,8 +311,8 @@
                                     </td>
 
                                     <!-- Acción Botón -->
-                                    <td class="py-3.5 px-4 text-center" onclick="event.stopPropagation()">
-                                        <button type="button" onclick="abrirModalAuditoria({{ $jsonPayload }})" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white text-xs font-bold transition-all shadow-sm">
+                                    <td class="py-3.5 px-4 text-center">
+                                        <button type="button" onclick="event.stopPropagation(); abrirModalDesdeElemento(this)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white text-xs font-bold transition-all shadow-sm">
                                             <span>🔍 Ver Detalle</span>
                                         </button>
                                     </td>
@@ -470,76 +467,133 @@
 
     <!-- Script para control del Modal -->
     <script>
+        function abrirModalDesdeElemento(el) {
+            try {
+                const row = el.closest('[data-tramite]');
+                if (!row) return;
+                const raw = row.getAttribute('data-tramite');
+                if (!raw) return;
+                const tramite = JSON.parse(raw);
+                abrirModalAuditoria(tramite);
+            } catch (err) {
+                console.error('Error al procesar datos del trámite:', err);
+            }
+        }
+
         function abrirModalAuditoria(tramite) {
-            document.getElementById('modalIcono').innerText = tramite.tipo_icono || '📜';
-            document.getElementById('modalTipoNombre').innerText = tramite.tipo_nombre || 'Trámite';
-            document.getElementById('modalFolioBadge').innerText = '#' + String(tramite.id).padStart(5, '0');
+            if (!tramite) return;
+
+            const setText = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = val !== null && val !== undefined && val !== '' ? val : 'N/A';
+            };
+
+            setText('modalIcono', tramite.tipo_icono || '📜');
+            setText('modalTipoNombre', tramite.tipo_nombre || 'Trámite');
+            setText('modalFolioBadge', '#' + String(tramite.id || 0).padStart(5, '0'));
             
             // Valores financieros
-            document.getElementById('modalValorCobrado').innerText = '$' + Number(tramite.costo).toFixed(2);
-            document.getElementById('modalValorBase').innerText = 'Tarifa Base: $' + Number(tramite.precio_base).toFixed(2);
+            const costo = parseFloat(tramite.costo || 0);
+            const precioBase = parseFloat(tramite.precio_base || 0);
+            const diferencia = parseFloat(tramite.diferencia || 0);
+            const desviacion = parseFloat(tramite.desviacion_porc || 0);
+            const abono = parseFloat(tramite.abono || 0);
+            const saldo = parseFloat(tramite.saldo || 0);
+
+            setText('modalValorCobrado', '$' + costo.toFixed(2));
+            setText('modalValorBase', 'Tarifa Base: $' + precioBase.toFixed(2));
             
             const card = document.getElementById('modalDesviacionCard');
             const badgeContainer = document.getElementById('modalDesviacionBadgeContainer');
             const textoDesviacion = document.getElementById('modalDesviacionTexto');
 
             if (tramite.tipo_desviacion === 'exceso') {
-                card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-rose-50 border-rose-200';
-                textoDesviacion.className = 'text-xs font-bold text-rose-700';
-                textoDesviacion.innerText = '⚠️ Sobreprecio: +$' + Number(tramite.diferencia).toFixed(2) + ' (+' + Number(tramite.desviacion_porc).toFixed(1) + '% sobre la tarifa)';
-                badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-rose-600 text-white shadow-sm">🔴 ALERTA EXCESO</span>';
+                if (card) card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-rose-50 border-rose-200';
+                if (textoDesviacion) {
+                    textoDesviacion.className = 'text-xs font-bold text-rose-700';
+                    textoDesviacion.innerText = '⚠️ Sobreprecio: +$' + diferencia.toFixed(2) + ' (+' + desviacion.toFixed(1) + '% sobre la tarifa)';
+                }
+                if (badgeContainer) badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-rose-600 text-white shadow-sm">🔴 ALERTA EXCESO</span>';
             } else if (tramite.tipo_desviacion === 'descuento') {
-                card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-blue-50 border-blue-200';
-                textoDesviacion.className = 'text-xs font-bold text-blue-700';
-                textoDesviacion.innerText = '🏷️ Descuento: -$' + Math.abs(Number(tramite.diferencia)).toFixed(2) + ' (' + Number(tramite.desviacion_porc).toFixed(1) + '% respecto a la tarifa)';
-                badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm">🔵 TARIFA DESCUENTO</span>';
+                if (card) card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-blue-50 border-blue-200';
+                if (textoDesviacion) {
+                    textoDesviacion.className = 'text-xs font-bold text-blue-700';
+                    textoDesviacion.innerText = '🏷️ Descuento: -$' + Math.abs(diferencia).toFixed(2) + ' (' + desviacion.toFixed(1) + '% respecto a la tarifa)';
+                }
+                if (badgeContainer) badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-blue-600 text-white shadow-sm">🔵 TARIFA DESCUENTO</span>';
             } else {
-                card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-emerald-50 border-emerald-200';
-                textoDesviacion.className = 'text-xs font-bold text-emerald-700';
-                textoDesviacion.innerText = '🟢 Tarifa Estándar dentro del rango de tolerancia';
-                badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-600 text-white shadow-sm">🟢 PRECIO NORMAL</span>';
+                if (card) card.className = 'p-4 rounded-2xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-emerald-50 border-emerald-200';
+                if (textoDesviacion) {
+                    textoDesviacion.className = 'text-xs font-bold text-emerald-700';
+                    textoDesviacion.innerText = '🟢 Tarifa Estándar dentro del rango de tolerancia';
+                }
+                if (badgeContainer) badgeContainer.innerHTML = '<span class="px-3.5 py-1.5 rounded-full text-xs font-black bg-emerald-600 text-white shadow-sm">🟢 PRECIO NORMAL</span>';
             }
 
             // Datos de Registro
-            document.getElementById('modalAsesor').innerText = tramite.usuario || 'N/A';
-            document.getElementById('modalFecha').innerText = tramite.fecha_hora_formatted || tramite.fecha || 'N/A';
-            document.getElementById('modalHora').innerText = tramite.hora || '09:00 AM';
-            document.getElementById('modalOficina').innerText = tramite.oficina || 'General';
+            setText('modalAsesor', tramite.usuario || 'N/A');
+            setText('modalFecha', tramite.fecha_hora_formatted || tramite.fecha || 'N/A');
+            setText('modalHora', tramite.hora || '09:00 AM');
+            setText('modalOficina', tramite.oficina || 'General');
 
             // Datos de Caja
-            if (tramite.caja_id) {
-                document.getElementById('modalCaja').innerText = 'Caja Turno #' + tramite.caja_id + ' (' + (tramite.caja_estado || 'Cerrada') + ')';
-            } else {
-                document.getElementById('modalCaja').innerText = 'Pendiente en Cartera / Cobro Diferido';
+            const cajaEl = document.getElementById('modalCaja');
+            if (cajaEl) {
+                cajaEl.innerText = tramite.caja_id ? ('Caja Turno #' + tramite.caja_id + ' (' + (tramite.caja_estado || 'Cerrada') + ')') : 'Pendiente en Cartera / Cobro Diferido';
             }
-            document.getElementById('modalCajero').innerText = tramite.cajero || 'N/A';
-            document.getElementById('modalMetodoPago').innerText = tramite.metodo_pago || 'Efectivo / Cartera';
-            document.getElementById('modalFechaPago').innerText = tramite.fecha_pago || 'No registrada';
+            setText('modalCajero', tramite.cajero || 'N/A');
+            setText('modalMetodoPago', tramite.metodo_pago || 'Efectivo / Cartera');
+            setText('modalFechaPago', tramite.fecha_pago || 'No registrada');
 
             // Cliente
-            document.getElementById('modalClienteNombre').innerText = tramite.cliente_nombre || 'N/A';
-            document.getElementById('modalClienteId').innerText = tramite.cliente_identificacion || 'S/I';
-            document.getElementById('modalClienteTel').innerText = tramite.cliente_telefono || 'S/T';
-            document.getElementById('modalClienteDir').innerText = tramite.cliente_direccion || 'No especificada';
+            setText('modalClienteNombre', tramite.cliente_nombre || 'N/A');
+            setText('modalClienteId', tramite.cliente_identificacion || 'S/I');
+            setText('modalClienteTel', tramite.cliente_telefono || 'S/T');
+            setText('modalClienteDir', tramite.cliente_direccion || 'No especificada');
 
             // Finanzas
-            document.getElementById('modalFinCosto').innerText = '$' + Number(tramite.costo).toFixed(2);
-            document.getElementById('modalFinAbono').innerText = '$' + Number(tramite.abono).toFixed(2);
-            document.getElementById('modalFinSaldo').innerText = '$' + Number(tramite.saldo).toFixed(2);
+            setText('modalFinCosto', '$' + costo.toFixed(2));
+            setText('modalFinAbono', '$' + abono.toFixed(2));
+            setText('modalFinSaldo', '$' + saldo.toFixed(2));
 
             // Observaciones
-            document.getElementById('modalObservaciones').innerText = tramite.observaciones || 'Sin observaciones registradas.';
+            setText('modalObservaciones', tramite.observaciones || 'Sin observaciones registradas.');
 
             // Links
-            document.getElementById('modalPdfLink').href = tramite.route_pdf || '#';
-            document.getElementById('modalClienteTramitesLink').href = '/clientes/' + tramite.cliente_id + '/tramites';
+            const pdfLink = document.getElementById('modalPdfLink');
+            if (pdfLink) {
+                if (tramite.route_pdf && tramite.route_pdf !== '#') {
+                    pdfLink.href = tramite.route_pdf;
+                    pdfLink.style.display = 'inline-flex';
+                } else {
+                    pdfLink.style.display = 'none';
+                }
+            }
+
+            const clienteLink = document.getElementById('modalClienteTramitesLink');
+            if (clienteLink) {
+                if (tramite.cliente_id) {
+                    clienteLink.href = '/clientes/' + tramite.cliente_id + '/tramites';
+                    clienteLink.style.display = 'inline-flex';
+                } else {
+                    clienteLink.style.display = 'none';
+                }
+            }
 
             // Mostrar modal
-            document.getElementById('modalAuditoria').classList.remove('hidden');
+            const modal = document.getElementById('modalAuditoria');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function cerrarModalAuditoria() {
-            document.getElementById('modalAuditoria').classList.add('hidden');
+            const modal = document.getElementById('modalAuditoria');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
         }
 
         // Cerrar con Escape

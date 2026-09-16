@@ -95,6 +95,10 @@ class User extends Authenticatable
             'icono' => '📝',
             'color' => 'amber',
             'permisos' => [
+                'tramites.view_all' => [
+                    'nombre' => 'Ver Trámites Realizados (Historial Global)',
+                    'descripcion' => 'Permite consultar y filtrar todos los trámites realizados en el sistema a nivel general.',
+                ],
                 'tramites.create' => [
                     'nombre' => 'Crear y Redactar Trámites',
                     'descripcion' => 'Permite iniciar trámites varios, divorcios, impuestos, poderes y personalizados.',
@@ -242,7 +246,7 @@ class User extends Authenticatable
                 'dashboard.view', 'dashboard.export', 'dashboard.ia',
                 'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'clientes.export', 'cartera.view',
                 'cajas.operar', 'cajas.historial',
-                'tramites.create', 'plantillas.view', 'plantillas.generar', 'plantillas.manage',
+                'tramites.view_all', 'tramites.create', 'plantillas.view', 'plantillas.generar', 'plantillas.manage',
                 'reportes.cajas', 'reportes.desempeno', 'reportes.cartera', 'reportes.control_precios',
                 'bancos.manage', 'tarjetas.manage', 'tipo_tramites.manage',
             ];
@@ -253,7 +257,7 @@ class User extends Authenticatable
             'dashboard.view',
             'clientes.view', 'clientes.create', 'clientes.edit', 'clientes.abonar', 'cartera.view',
             'cajas.operar', 'cajas.historial',
-            'tramites.create', 'plantillas.view', 'plantillas.generar',
+            'tramites.view_all', 'tramites.create', 'plantillas.view', 'plantillas.generar',
         ];
     }
 

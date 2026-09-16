@@ -30,6 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::post('cartera/cobrar', [App\Http\Controllers\CarteraController::class, 'cobrar'])->name('cartera.cobrar');
 
     Route::get('clientes/export', [App\Http\Controllers\ClienteController::class, 'export'])->name('clientes.export');
+    
+    // Rutas para Módulo Global de Trámites Realizados (Historial y Explorador General)
+    Route::get('tramites/realizados', [App\Http\Controllers\TramiteGlobalController::class, 'index'])->name('tramites.realizados.index');
+    Route::get('tramites/realizados/export', [App\Http\Controllers\TramiteGlobalController::class, 'export'])->name('tramites.realizados.export');
+    
     Route::post('tramites/cambiar-estado', [App\Http\Controllers\TramiteController::class, 'cambiarEstado'])->name('tramites.cambiar_estado');
     Route::post('tramites/cobrar', [App\Http\Controllers\TramiteController::class, 'cobrarTramite'])->name('tramites.cobrar');
     Route::get('clientes/{cliente}/tramites', [App\Http\Controllers\TramiteController::class, 'index'])->name('clientes.tramites');

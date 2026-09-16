@@ -44,6 +44,18 @@
             </a>
         @endif
 
+        <!-- Trámites Realizados (Historial Global) Link -->
+        @if(Auth::check() && (Auth::user()->hasPermission('tramites.view_all') || Auth::user()->hasPermission('tramites.create') || Auth::user()->role === 'Administrador' || Auth::user()->role === 'Supervisor'))
+            <a href="{{ route('tramites.realizados.index') }}" 
+               style="{{ request()->routeIs('tramites.realizados.*') ? 'background-color: #4f46e5; color: #ffffff; box-shadow: 0 8px 15px -3px rgba(79,70,229,0.4); font-weight: 800;' : 'color: #cbd5e1; font-weight: 700;' }}"
+               class="flex items-center px-3.5 py-3 text-sm rounded-xl transition-all duration-200 hover:bg-slate-800 hover:text-white mb-1.5 text-decoration-none">
+                <svg class="w-5 h-5 mr-3 shrink-0" style="{{ request()->routeIs('tramites.realizados.*') ? 'color: #ffffff;' : 'color: #38bdf8;' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                </svg>
+                <span>Trámites Realizados</span>
+            </a>
+        @endif
+
         <!-- Cartera de Clientes (Cuentas por Cobrar & Créditos) Link -->
         @if(Auth::check() && (Auth::user()->hasPermission('cartera.view') || Auth::user()->hasPermission('clientes.view')))
             @php

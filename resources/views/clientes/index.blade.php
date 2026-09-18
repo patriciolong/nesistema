@@ -467,6 +467,7 @@
                                 <option value="Efectivo">Efectivo</option>
                                 <option value="Tarjeta">Tarjeta / POS (Débito/Crédito)</option>
                                 <option value="Transferencia">Transferencia Bancaria</option>
+                                <option value="Zelle">Zelle</option>
                                 <option value="Cheque">Cheque</option>
                             </select>
                         </div>
@@ -486,7 +487,7 @@
                             </div>
                         </div>
 
-                        <!-- Campo Condicional: Banco para Transferencia / Cheque -->
+                        <!-- Campo Condicional: Banco para Transferencia / Cheque / Zelle -->
                         <div id="campo_banco" class="hidden space-y-3 p-3.5 bg-blue-50/50 rounded-2xl border border-blue-100">
                             <div>
                                 <label for="banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Banco Destino / Emisor *</label>
@@ -501,8 +502,8 @@
 
                         <!-- Campo Referencia / Comprobante -->
                         <div id="campo_referencia" class="hidden">
-                            <label for="numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">N° de Voucher / Cheque / Confirmación</label>
-                            <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ej: Voucher #4829, Cheque #004"
+                            <label for="numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">N° de Voucher / Cheque / Confirmación Zelle</label>
+                            <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ej: Voucher #4829, Cheque #004, Ref Zelle #9381"
                                    class="w-full text-xs bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 font-medium text-slate-800">
                         </div>
 
@@ -578,7 +579,7 @@
             if (metodo === 'Tarjeta') {
                 campoTarjeta.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
-            } else if (metodo === 'Transferencia' || metodo === 'Cheque') {
+            } else if (metodo === 'Transferencia' || metodo === 'Cheque' || metodo === 'Zelle') {
                 campoBanco.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
             }

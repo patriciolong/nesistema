@@ -504,6 +504,7 @@
                                         <option value="Efectivo">💵 Efectivo</option>
                                         <option value="Tarjeta">💳 Tarjeta (POS / Débito / Crédito)</option>
                                         <option value="Transferencia">🏦 Transferencia Bancaria</option>
+                                        <option value="Zelle">⚡ Zelle</option>
                                         <option value="Cheque">📜 Cheque</option>
                                     </select>
                                 </div>
@@ -521,7 +522,7 @@
 
                                 <!-- Selector de Banco (Condicional) -->
                                 <div id="cartera_campo_banco" class="hidden">
-                                    <label for="cartera_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">Banco Destino</label>
+                                    <label for="cartera_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">Banco Destino / Cuenta</label>
                                     <select name="banco_id" id="cartera_banco_id" class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-900">
                                         <option value="">Seleccione Banco...</option>
                                         @foreach($bancos as $ban)
@@ -533,8 +534,8 @@
 
                             <!-- Nro de Referencia -->
                             <div id="cartera_campo_referencia" class="hidden">
-                                <label for="cartera_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">N° Voucher / Cheque / Autorización</label>
-                                <input type="text" name="numero_referencia" id="cartera_numero_referencia" placeholder="Ej: Voucher #12345 / Lote #09"
+                                <label for="cartera_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">N° Voucher / Ref / Confirmación</label>
+                                <input type="text" name="numero_referencia" id="cartera_numero_referencia" placeholder="Ej: Voucher #12345 / Ref Zelle #8492"
                                        class="w-full text-xs bg-white border border-slate-300 rounded-xl px-3 py-2.5 font-semibold text-slate-900 placeholder-slate-400">
                             </div>
 
@@ -750,7 +751,7 @@
             if (metodo === 'Tarjeta') {
                 campoTarjeta.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
-            } else if (metodo === 'Transferencia' || metodo === 'Cheque') {
+            } else if (metodo === 'Transferencia' || metodo === 'Cheque' || metodo === 'Zelle') {
                 campoBanco.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
             }

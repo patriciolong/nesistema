@@ -221,6 +221,15 @@
                 </td>
             </tr>
             <tr>
+                <td><strong>Zelle</strong></td>
+                <td class="text-right">${{ number_format($totales['zelle'], 2) }}</td>
+                <td class="text-right">${{ number_format($caja->monto_cierre_zelle ?? $totales['zelle'], 2) }}</td>
+                <td class="text-right">${{ number_format($caja->diferencia_zelle ?? 0, 2) }}</td>
+                <td class="text-center font-bold" style="color: {{ ($caja->diferencia_zelle ?? 0) == 0 ? '#16a34a' : '#dc2626' }}">
+                    {{ ($caja->diferencia_zelle ?? 0) == 0 ? 'CUADRADO' : 'DESCUADRE' }}
+                </td>
+            </tr>
+            <tr>
                 <td><strong>Cheques en Custodia</strong></td>
                 <td class="text-right">${{ number_format($totales['cheque'], 2) }}</td>
                 <td class="text-right">${{ number_format($caja->monto_cierre_cheque ?? $totales['cheque'], 2) }}</td>

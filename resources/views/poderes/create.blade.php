@@ -274,6 +274,7 @@
                                             <option value="Tarjeta">Tarjeta / POS</option>
                                             <option value="Transferencia">Transferencia Bancaria</option>
                                             <option value="Cheque">Cheque</option>
+                                            <option value="Zelle">Zelle</option>
                                         </select>
                                     </div>
 
@@ -360,7 +361,7 @@
             if (metodo === 'Tarjeta') {
                 divTarjeta.classList.remove('hidden');
                 divRef.classList.remove('hidden');
-            } else if (metodo === 'Transferencia' || metodo === 'Cheque') {
+            } else if (metodo === 'Transferencia' || metodo === 'Cheque' || metodo === 'Zelle') {
                 divBanco.classList.remove('hidden');
                 divRef.classList.remove('hidden');
             }

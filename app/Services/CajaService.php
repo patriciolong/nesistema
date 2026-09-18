@@ -69,6 +69,7 @@ class CajaService
             'total_sistema_cheque' => 0,
             'total_sistema_transferencia' => 0,
             'total_sistema_tarjeta' => 0,
+            'total_sistema_zelle' => 0,
             'total_sistema_credito' => 0,
             'total_sistema_ingresos_extra' => 0,
             'total_sistema_egresos_extra' => 0,
@@ -121,6 +122,7 @@ class CajaService
             'total_sistema_cheque' => $totales['cheque'],
             'total_sistema_transferencia' => $totales['transferencia'],
             'total_sistema_tarjeta' => $totales['tarjeta'],
+            'total_sistema_zelle' => $totales['zelle'],
             'total_sistema_credito' => $totales['credito'],
             'total_sistema_ingresos_extra' => $totales['ingresos_extra'],
             'total_sistema_egresos_extra' => $totales['egresos_extra'],
@@ -146,12 +148,13 @@ class CajaService
         $totalCheque = $movimientos->whereIn('tipo', ['ingreso_tramite', 'ingreso_abono', 'ingreso_extra'])->where('metodo_pago', 'Cheque')->sum('monto');
         $totalTransferencia = $movimientos->whereIn('tipo', ['ingreso_tramite', 'ingreso_abono', 'ingreso_extra'])->where('metodo_pago', 'Transferencia')->sum('monto');
         $totalTarjeta = $movimientos->whereIn('tipo', ['ingreso_tramite', 'ingreso_abono', 'ingreso_extra'])->where('metodo_pago', 'Tarjeta')->sum('monto');
+        $totalZelle = $movimientos->whereIn('tipo', ['ingreso_tramite', 'ingreso_abono', 'ingreso_extra'])->where('metodo_pago', 'Zelle')->sum('monto');
         $totalCredito = $movimientos->whereIn('tipo', ['ingreso_tramite', 'ingreso_abono'])->where('metodo_pago', 'Crédito')->sum('monto');
 
         $ingresosExtra = $movimientos->where('tipo', 'ingreso_extra')->sum('monto');
         $egresosExtra = $movimientos->whereIn('tipo', ['egreso_gasto', 'egreso_retiro'])->sum('monto');
 
-        $totalGeneral = $totalEfectivoEsperado + $totalCheque + $totalTransferencia + $totalTarjeta;
+        $totalGeneral = $totalEfectivoEsperado + $totalCheque + $totalTransferencia + $totalTarjeta + $totalZelle;
 
         return [
             'monto_apertura' => (float)$cajaModel->monto_apertura,
@@ -161,6 +164,7 @@ class CajaService
             'cheque' => (float)$totalCheque,
             'transferencia' => (float)$totalTransferencia,
             'tarjeta' => (float)$totalTarjeta,
+            'zelle' => (float)$totalZelle,
             'credito' => (float)$totalCredito,
             'ingresos_extra' => (float)$ingresosExtra,
             'egresos_extra' => (float)$egresosExtra,
@@ -180,17 +184,19 @@ class CajaService
         $montoCheque = floatval($declarados['monto_cheque'] ?? ($declarados['cheque'] ?? 0));
         $montoTransferencia = floatval($declarados['monto_transferencia'] ?? ($declarados['transferencia'] ?? 0));
         $montoTarjeta = floatval($declarados['monto_tarjeta'] ?? ($declarados['tarjeta'] ?? 0));
+        $montoZelle = floatval($declarados['monto_zelle'] ?? ($declarados['zelle'] ?? 0));
         $montoCredito = floatval($declarados['monto_credito'] ?? ($declarados['credito'] ?? $sistema['credito']));
 
         $difEfectivo = round($montoEfectivo - $sistema['efectivo'], 2);
         $difCheque = round($montoCheque - $sistema['cheque'], 2);
         $difTransferencia = round($montoTransferencia - $sistema['transferencia'], 2);
         $difTarjeta = round($montoTarjeta - $sistema['tarjeta'], 2);
+        $difZelle = round($montoZelle - $sistema['zelle'], 2);
 
-        $totalDeclarado = $montoEfectivo + $montoCheque + $montoTransferencia + $montoTarjeta;
+        $totalDeclarado = $montoEfectivo + $montoCheque + $montoTransferencia + $montoTarjeta + $montoZelle;
         $difTotal = round($totalDeclarado - $sistema['total_general'], 2);
 
-        $cuadrado = (abs($difTotal) < 0.01 && abs($difEfectivo) < 0.01 && abs($difCheque) < 0.01 && abs($difTransferencia) < 0.01 && abs($difTarjeta) < 0.01);
+        $cuadrado = (abs($difTotal) < 0.01 && abs($difEfectivo) < 0.01 && abs($difCheque) < 0.01 && abs($difTransferencia) < 0.01 && abs($difTarjeta) < 0.01 && abs($difZelle) < 0.01);
 
         return [
             'sistema' => $sistema,
@@ -199,6 +205,7 @@ class CajaService
                 'cheque' => $montoCheque,
                 'transferencia' => $montoTransferencia,
                 'tarjeta' => $montoTarjeta,
+                'zelle' => $montoZelle,
                 'credito' => $montoCredito,
                 'total' => $totalDeclarado,
             ],
@@ -207,6 +214,7 @@ class CajaService
                 'cheque' => $difCheque,
                 'transferencia' => $difTransferencia,
                 'tarjeta' => $difTarjeta,
+                'zelle' => $difZelle,
                 'total' => $difTotal,
             ],
             'diferencia_total' => $difTotal,
@@ -241,6 +249,7 @@ class CajaService
                 'total_sistema_cheque' => $sistema['cheque'],
                 'total_sistema_transferencia' => $sistema['transferencia'],
                 'total_sistema_tarjeta' => $sistema['tarjeta'],
+                'total_sistema_zelle' => $sistema['zelle'],
                 'total_sistema_credito' => $sistema['credito'],
                 'total_sistema_total' => $sistema['total_general'],
                 // Totales de Cierre Declarados
@@ -248,6 +257,7 @@ class CajaService
                 'monto_cierre_cheque' => $decl['cheque'],
                 'monto_cierre_transferencia' => $decl['transferencia'],
                 'monto_cierre_tarjeta' => $decl['tarjeta'],
+                'monto_cierre_zelle' => $decl['zelle'],
                 'monto_cierre_credito' => $decl['credito'],
                 'monto_cierre_total' => $decl['total'],
                 // Diferencias
@@ -255,6 +265,7 @@ class CajaService
                 'diferencia_cheque' => $dif['cheque'],
                 'diferencia_transferencia' => $dif['transferencia'],
                 'diferencia_tarjeta' => $dif['tarjeta'],
+                'diferencia_zelle' => $dif['zelle'],
                 'diferencia_total' => $dif['total'],
             ]);
 

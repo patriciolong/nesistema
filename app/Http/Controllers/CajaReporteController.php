@@ -80,6 +80,7 @@ class CajaReporteController extends Controller
         $totalTarjeta = (float) (clone $query)->sum('total_sistema_tarjeta');
         $totalTransferencia = (float) (clone $query)->sum('total_sistema_transferencia');
         $totalCheque = (float) (clone $query)->sum('total_sistema_cheque');
+        $totalZelle = (float) (clone $query)->sum('total_sistema_zelle');
         $cajasAbiertas = (clone $query)->where('estado', 'abierta')->count();
         $cajasCerradas = (clone $query)->where('estado', 'cerrada')->count();
 
@@ -94,6 +95,7 @@ class CajaReporteController extends Controller
             'total_tarjeta' => $totalTarjeta,
             'total_transferencia' => $totalTransferencia,
             'total_cheque' => $totalCheque,
+            'total_zelle' => $totalZelle,
             'cajas_abiertas' => $cajasAbiertas,
             'cajas_cerradas' => $cajasCerradas,
         ];
@@ -127,6 +129,7 @@ class CajaReporteController extends Controller
             'Tarjeta' => $caja->movimientos->where('metodo_pago', 'Tarjeta'),
             'Transferencia' => $caja->movimientos->where('metodo_pago', 'Transferencia'),
             'Cheque' => $caja->movimientos->where('metodo_pago', 'Cheque'),
+            'Zelle' => $caja->movimientos->where('metodo_pago', 'Zelle'),
             'Crédito' => $caja->movimientos->where('metodo_pago', 'Crédito'),
         ];
 
@@ -178,6 +181,11 @@ class CajaReporteController extends Controller
                 $q->whereBetween(DB::raw('DATE(fecha_apertura)'), [$fechaDesde, $fechaHasta]);
             }
         ], 'total_sistema_cheque')
+        ->withSum([
+            'cajaSesiones as total_zelle' => function ($q) use ($fechaDesde, $fechaHasta) {
+                $q->whereBetween(DB::raw('DATE(fecha_apertura)'), [$fechaDesde, $fechaHasta]);
+            }
+        ], 'total_sistema_zelle')
         ->get();
 
         // Get total transactions per user

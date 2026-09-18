@@ -244,7 +244,7 @@ class AiAnalysisService
                 "- Se recomienda mantener los mostradores de caja totalmente habilitados entre las **10:00 AM y las 3:00 PM** para evitar filas de espera.";
         }
 
-        if (str_contains($q, 'pago') || str_contains($q, 'tarjeta') || str_contains($q, 'efectivo') || str_contains($q, 'transferencia') || str_contains($q, 'cheque')) {
+        if (str_contains($q, 'pago') || str_contains($q, 'tarjeta') || str_contains($q, 'efectivo') || str_contains($q, 'transferencia') || str_contains($q, 'cheque') || str_contains($q, 'zelle')) {
             $pagoText = "";
             foreach ($metodos as $metodo => $monto) {
                 $cnt = $metodosCounts[$metodo] ?? 0;

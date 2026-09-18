@@ -69,6 +69,14 @@
                     <span class="text-xs text-slate-400 font-medium">Bancos / depósitos</span>
                 </div>
 
+                <div class="bg-white p-5 rounded-2xl border border-violet-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-violet-600">Total Zelle</span>
+                        <h4 class="text-2xl font-black text-violet-600 mt-1">${{ number_format($stats['total_zelle'], 2) }}</h4>
+                    </div>
+                    <span class="text-xs text-slate-400 font-medium">Pagos por Zelle</span>
+                </div>
+
                 <div class="bg-white p-5 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between">
                     <div>
                         <span class="text-xs font-bold uppercase tracking-wider text-purple-600">Total Cheques</span>

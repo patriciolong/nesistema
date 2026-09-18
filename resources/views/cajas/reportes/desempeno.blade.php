@@ -110,7 +110,7 @@
                             </div>
 
                             <!-- Desglose por Método -->
-                            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-xs">
                                 <div class="p-2.5 bg-slate-50 rounded-xl">
                                     <span class="text-slate-400 block text-[10px] font-bold uppercase">Efectivo</span>
                                     <span class="font-black text-emerald-600 text-sm">${{ number_format((float)$cajero->total_efectivo, 2) }}</span>
@@ -124,6 +124,10 @@
                                     <span class="font-black text-blue-600 text-sm">${{ number_format((float)$cajero->total_transferencia, 2) }}</span>
                                 </div>
                                 <div class="p-2.5 bg-slate-50 rounded-xl">
+                                    <span class="text-slate-400 block text-[10px] font-bold uppercase">Zelle</span>
+                                    <span class="font-black text-violet-600 text-sm">${{ number_format((float)$cajero->total_zelle, 2) }}</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-50 rounded-xl col-span-2 sm:col-span-1">
                                     <span class="text-slate-400 block text-[10px] font-bold uppercase">Cheques</span>
                                     <span class="font-black text-purple-600 text-sm">${{ number_format((float)$cajero->total_cheque, 2) }}</span>
                                 </div>

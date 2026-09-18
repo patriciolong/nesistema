@@ -105,6 +105,15 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="py-3.5 px-6 font-bold text-slate-800">Zelle</td>
+                                <td class="py-3.5 px-6 text-right font-black text-slate-800">${{ number_format($totales['zelle'], 2) }}</td>
+                                <td class="py-3.5 px-6 text-right font-black text-indigo-600">${{ number_format($caja->monto_cierre_zelle ?? $totales['zelle'], 2) }}</td>
+                                <td class="py-3.5 px-6 text-right font-black">${{ number_format($caja->diferencia_zelle ?? 0, 2) }}</td>
+                                <td class="py-3.5 px-6 text-center font-bold text-xs" style="color: {{ ($caja->diferencia_zelle ?? 0) == 0 ? '#16a34a' : '#dc2626' }}">
+                                    {{ ($caja->diferencia_zelle ?? 0) == 0 ? 'CUADRADO' : 'DESCUADRADO' }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="py-3.5 px-6 font-bold text-slate-800">Cheques en Custodia</td>
                                 <td class="py-3.5 px-6 text-right font-black text-slate-800">${{ number_format($totales['cheque'], 2) }}</td>
                                 <td class="py-3.5 px-6 text-right font-black text-indigo-600">${{ number_format($caja->monto_cierre_cheque ?? $totales['cheque'], 2) }}</td>
@@ -144,11 +153,13 @@
                 @endif
             </div>
 
-            <!-- Listado Completo de Transacciones -->
+            <!-- Tabla de Detalle de Transacciones Auditadas -->
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-6 pb-4 border-b border-slate-100">
-                    <h3 class="text-base font-extrabold text-slate-800">Transacciones de la Sesión ({{ $caja->movimientos->count() }})</h3>
-                    <p class="text-xs text-slate-400">Detalle cronológico de cada cobro, abono o gasto registrado en esta caja</p>
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900">Transacciones Registradas en la Sesión ({{ $caja->movimientos->count() }})</h3>
+                        <p class="text-xs text-slate-400">Auditoría completa de cobros, egresos y movimientos de la sesión #{{ $caja->id }}</p>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -157,10 +168,10 @@
                             <tr>
                                 <th class="py-3.5 px-6">Hora</th>
                                 <th class="py-3.5 px-6">Concepto / Tipo</th>
-                                <th class="py-3.5 px-6">Cliente</th>
+                                <th class="py-3.5 px-6">Cliente / Trámite</th>
                                 <th class="py-3.5 px-6">Método de Pago</th>
                                 <th class="py-3.5 px-6">Banco / Tarjeta / Ref</th>
-                                <th class="py-3.5 px-6 text-right">Monto ($)</th>
+                                <th class="py-3.5 px-6 text-right">Monto</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
@@ -190,6 +201,7 @@
                                             {{ $mov->metodo_pago === 'Efectivo' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : '' }}
                                             {{ $mov->metodo_pago === 'Tarjeta' ? 'bg-pink-50 text-pink-700 border border-pink-200' : '' }}
                                             {{ $mov->metodo_pago === 'Transferencia' ? 'bg-blue-50 text-blue-700 border border-blue-200' : '' }}
+                                            {{ $mov->metodo_pago === 'Zelle' ? 'bg-violet-50 text-violet-700 border border-violet-200' : '' }}
                                             {{ $mov->metodo_pago === 'Cheque' ? 'bg-purple-50 text-purple-700 border border-purple-200' : '' }}
                                             {{ $mov->metodo_pago === 'Crédito' ? 'bg-amber-50 text-amber-700 border border-amber-200' : '' }}">
                                             {{ $mov->metodo_pago }}

@@ -51,7 +51,7 @@ class TramiteImpuestoController extends Controller
             'vtramite' => ['required', 'numeric', 'min:0'],
             'abono' => ['nullable', 'numeric', 'min:0'],
             'notas' => ['nullable', 'string'],
-            'metodo_pago' => ['nullable', 'string', 'in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito'],
+            'metodo_pago' => ['nullable', 'string', 'in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito,Zelle'],
             'banco_id' => ['nullable', 'exists:bancos,id'],
             'tarjeta_id' => ['nullable', 'exists:tarjetas,id'],
             'numero_referencia' => ['nullable', 'string', 'max:100'],

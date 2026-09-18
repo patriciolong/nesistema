@@ -187,6 +187,7 @@
                                     <option value="Tarjeta">Tarjeta / POS (Débito/Crédito)</option>
                                     <option value="Transferencia">Transferencia Bancaria</option>
                                     <option value="Cheque">Cheque</option>
+                                    <option value="Zelle">Zelle</option>
                                 </select>
                             </div>
 
@@ -200,7 +201,7 @@
                                 </select>
                             </div>
 
-                            <div x-show="metodoPago === 'Transferencia' || metodoPago === 'Cheque'">
+                            <div x-show="metodoPago === 'Transferencia' || metodoPago === 'Cheque' || metodoPago === 'Zelle'">
                                 <label for="banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Banco</label>
                                 <select name="banco_id" id="banco_id" class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
                                     <option value="">Seleccione Banco...</option>

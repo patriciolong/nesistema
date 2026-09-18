@@ -241,7 +241,7 @@ class CarteraController extends Controller
             'cliente_id' => 'required|integer|exists:cliente,id_cliente',
             'modo_cobro' => 'required|string|in:individual,multiple,total',
             'monto_pago' => 'required|numeric|min:0.01',
-            'metodo_pago' => 'required|string|in:Efectivo,Cheque,Transferencia,Tarjeta',
+            'metodo_pago' => 'required|string|in:Efectivo,Cheque,Transferencia,Tarjeta,Zelle',
             'banco_id' => 'nullable|exists:bancos,id',
             'tarjeta_id' => 'nullable|exists:tarjetas,id',
             'numero_referencia' => 'nullable|string|max:100',

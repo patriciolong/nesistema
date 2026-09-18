@@ -48,7 +48,7 @@ class TramitePoderController extends Controller
             'cedula_otorga' => 'required|string',
             'razon_poder' => 'required|string',
             'opcion_envio_poder' => 'required|string',
-            'metodo_pago' => 'nullable|string|in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito',
+            'metodo_pago' => 'nullable|string|in:Efectivo,Cheque,Transferencia,Tarjeta,Crédito,Zelle',
             'banco_id' => 'nullable|exists:bancos,id',
             'tarjeta_id' => 'nullable|exists:tarjetas,id',
             'numero_referencia' => 'nullable|string|max:100',

@@ -198,13 +198,48 @@
                             </div>
                         </div>
 
-                        <!-- 4. Cheques -->
+                        <!-- 4. Zelle -->
+                        <div class="p-4 sm:p-5 bg-slate-50/70 hover:bg-slate-50 rounded-2xl border border-slate-200/90 transition-colors">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                                <div class="md:col-span-4 space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 h-3 rounded-full bg-violet-500"></span>
+                                        <h4 class="font-extrabold text-sm text-slate-800">4. Zelle</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Comprobantes y transferencias confirmadas por Zelle</p>
+                                </div>
+
+                                <div class="md:col-span-3 text-left md:text-center">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Esperado por Sistema</span>
+                                    <span class="text-base font-black text-slate-800">${{ number_format($totales['zelle'], 2) }}</span>
+                                </div>
+
+                                <div class="md:col-span-3">
+                                    <label for="monto_zelle" class="text-[11px] font-bold uppercase tracking-wider text-slate-600 block mb-1">Total Zelle ($) *</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold">$</span>
+                                        <input type="number" step="0.01" min="0" name="monto_zelle" id="monto_zelle" value="{{ old('monto_zelle', '0.00') }}" required
+                                               class="w-full pl-8 pr-4 py-2.5 text-base font-bold bg-white border border-slate-300 rounded-xl focus:border-violet-500 focus:ring-2 focus:ring-violet-200 text-slate-800 shadow-sm"
+                                               oninput="calcularCuadreEnVivo()">
+                                    </div>
+                                </div>
+
+                                <div class="md:col-span-2 text-left md:text-right">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Diferencia</span>
+                                    <span id="diff_zelle_badge" class="inline-block text-xs font-black px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 mt-1">
+                                        $0.00
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Cheques -->
                         <div class="p-4 sm:p-5 bg-slate-50/70 hover:bg-slate-50 rounded-2xl border border-slate-200/90 transition-colors">
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                                 <div class="md:col-span-4 space-y-1">
                                     <div class="flex items-center gap-2">
                                         <span class="w-3 h-3 rounded-full bg-purple-500"></span>
-                                        <h4 class="font-extrabold text-sm text-slate-800">4. Cheques en Custodia</h4>
+                                        <h4 class="font-extrabold text-sm text-slate-800">5. Cheques en Custodia</h4>
                                     </div>
                                     <p class="text-xs text-slate-500">Total en cheques recibidos físicamente</p>
                                 </div>
@@ -248,44 +283,42 @@
                 <!-- Panel Resumen de Balance y Botón de Cierre -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-slate-100">
-                        <div class="space-y-1">
-                            <h3 class="text-xl font-black text-slate-900">Balance Global de Turno</h3>
-                            <p class="text-xs text-slate-400">Total Esperado de Sistema vs Total Físico Declarado</p>
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Arqueado por Cajero</span>
+                            <h3 id="display_declarado_total" class="text-3xl sm:text-4xl font-black text-slate-900 mt-1">$0.00</h3>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-4 sm:gap-6 w-full md:w-auto">
-                            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Esperado Sistema:</span>
-                                <span class="text-lg font-black text-slate-800">${{ number_format($totales['total_general'], 2) }}</span>
-                            </div>
+                        <div class="flex items-center gap-4">
+                            <button type="button" onclick="llenarValoresEsperados()"
+                                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition-all cursor-pointer">
+                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                Auto-completar Valores Esperados
+                            </button>
 
-                            <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl">
-                                <span class="text-[10px] font-bold uppercase text-indigo-600 block">Total Declarado:</span>
-                                <span class="text-lg font-black text-indigo-700" id="display_declarado_total">$0.00</span>
-                            </div>
-
-                            <div class="p-3 rounded-2xl border" id="box_diferencia_total">
-                                <span class="text-[10px] font-bold uppercase block" id="label_diferencia">Diferencia Total:</span>
-                                <span class="text-lg font-black" id="display_diferencia_total">$0.00</span>
+                            <div id="box_diferencia_total" class="p-3 rounded-2xl border bg-slate-50 border-slate-200 text-slate-700">
+                                <span class="text-[10px] font-extrabold uppercase tracking-wider block">Diferencia Total</span>
+                                <span id="display_diferencia_total" class="text-lg font-black block">$0.00</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Banner de Estado de Cuadre en Vivo -->
-                    <div id="banner_cuadre_estado" class="p-4 sm:p-5 rounded-2xl border text-center transition-all">
-                        <!-- Actualizado por JS -->
+                    <!-- Estado del Cuadre en Vivo -->
+                    <div id="banner_cuadre_estado" class="p-5 rounded-2xl border bg-slate-50 border-slate-200 text-slate-700 text-center space-y-1">
+                        <div class="flex items-center justify-center gap-2 font-black text-sm text-slate-700">
+                            <span>ℹ️</span> Ingresa los montos físicos contados arriba para validar el balance
+                        </div>
                     </div>
 
-                    <!-- Botón de Cierre Formal -->
-                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
-                        <p class="text-xs text-slate-400 italic text-center sm:text-left">
-                            * Al confirmar el cierre se generará el Acta Formal en PDF y la sesión de caja quedará sellada.
-                        </p>
+                    <!-- Botón de Envío -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                        <a href="{{ route('cajas.index') }}" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors text-center cursor-pointer">
+                            Volver al Panel de Caja
+                        </a>
 
                         <button type="submit" id="btnConfirmarCierre" disabled
-                                class="w-full sm:w-auto min-w-[280px] py-4 px-8 rounded-2xl text-sm font-black tracking-wide shadow-lg transition-all flex items-center justify-center gap-2 cursor-not-allowed bg-slate-300 text-slate-500 shadow-none">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Confirmar y Cerrar Caja</span>
+                                class="w-full sm:w-auto min-w-[280px] py-4 px-8 rounded-2xl text-sm font-black tracking-wide transition-all flex items-center justify-center gap-2 cursor-not-allowed bg-slate-300 text-slate-500 shadow-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Cerrar Sesión de Caja</span>
                         </button>
                     </div>
                 </div>
@@ -301,6 +334,7 @@
             efectivo: {{ (float)$totales['efectivo'] }},
             tarjeta: {{ (float)$totales['tarjeta'] }},
             transferencia: {{ (float)$totales['transferencia'] }},
+            zelle: {{ (float)$totales['zelle'] }},
             cheque: {{ (float)$totales['cheque'] }},
             total: {{ (float)$totales['total_general'] }}
         };
@@ -309,6 +343,7 @@
             document.getElementById('monto_efectivo').value = sistema.efectivo.toFixed(2);
             document.getElementById('monto_tarjeta').value = sistema.tarjeta.toFixed(2);
             document.getElementById('monto_transferencia').value = sistema.transferencia.toFixed(2);
+            document.getElementById('monto_zelle').value = sistema.zelle.toFixed(2);
             document.getElementById('monto_cheque').value = sistema.cheque.toFixed(2);
             calcularCuadreEnVivo();
         }
@@ -317,13 +352,15 @@
             const decEfectivo = parseFloat(document.getElementById('monto_efectivo').value) || 0;
             const decTarjeta = parseFloat(document.getElementById('monto_tarjeta').value) || 0;
             const decTransf = parseFloat(document.getElementById('monto_transferencia').value) || 0;
+            const decZelle = parseFloat(document.getElementById('monto_zelle').value) || 0;
             const decCheque = parseFloat(document.getElementById('monto_cheque').value) || 0;
 
-            const totalDeclarado = +(decEfectivo + decTarjeta + decTransf + decCheque).toFixed(2);
+            const totalDeclarado = +(decEfectivo + decTarjeta + decTransf + decZelle + decCheque).toFixed(2);
 
             const difEfectivo = +(decEfectivo - sistema.efectivo).toFixed(2);
             const difTarjeta = +(decTarjeta - sistema.tarjeta).toFixed(2);
             const difTransf = +(decTransf - sistema.transferencia).toFixed(2);
+            const difZelle = +(decZelle - sistema.zelle).toFixed(2);
             const difCheque = +(decCheque - sistema.cheque).toFixed(2);
             const difTotal = +(totalDeclarado - sistema.total).toFixed(2);
 
@@ -331,6 +368,7 @@
             updateRubroBadge('diff_efectivo_badge', difEfectivo);
             updateRubroBadge('diff_tarjeta_badge', difTarjeta);
             updateRubroBadge('diff_transferencia_badge', difTransf);
+            updateRubroBadge('diff_zelle_badge', difZelle);
             updateRubroBadge('diff_cheque_badge', difCheque);
 
             // Actualizar Totales
@@ -345,6 +383,7 @@
                                Math.abs(difEfectivo) < 0.009 && 
                                Math.abs(difTarjeta) < 0.009 && 
                                Math.abs(difTransf) < 0.009 && 
+                               Math.abs(difZelle) < 0.009 && 
                                Math.abs(difCheque) < 0.009;
 
             if (esCuadrado) {

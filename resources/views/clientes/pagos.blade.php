@@ -111,6 +111,7 @@
                                                     {{ $pago->metodo_pago === 'Tarjeta' ? 'bg-pink-50 text-pink-700 border border-pink-200' : '' }}
                                                     {{ $pago->metodo_pago === 'Transferencia' ? 'bg-blue-50 text-blue-700 border border-blue-200' : '' }}
                                                     {{ $pago->metodo_pago === 'Cheque' ? 'bg-purple-50 text-purple-700 border border-purple-200' : '' }}
+                                                    {{ $pago->metodo_pago === 'Zelle' ? 'bg-violet-50 text-violet-700 border border-violet-200' : '' }}
                                                     {{ !$pago->metodo_pago || $pago->metodo_pago === 'Crédito' ? 'bg-slate-100 text-slate-700 border border-slate-200' : '' }}">
                                                     {{ $pago->metodo_pago ?? 'Efectivo' }}
                                                 </span>

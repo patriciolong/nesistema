@@ -140,6 +140,7 @@ class DashboardAnalyticsService
             'Tarjeta' => 0,
             'Transferencia' => 0,
             'Cheque' => 0,
+            'Zelle' => 0,
             'Crédito' => 0,
         ];
         $metodosMontos = [
@@ -147,6 +148,7 @@ class DashboardAnalyticsService
             'Tarjeta' => 0.0,
             'Transferencia' => 0.0,
             'Cheque' => 0.0,
+            'Zelle' => 0.0,
             'Crédito' => 0.0,
         ];
 

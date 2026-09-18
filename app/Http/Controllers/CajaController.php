@@ -77,7 +77,7 @@ class CajaController extends Controller
         $request->validate([
             'tipo' => 'required|in:ingreso_extra,egreso_gasto,egreso_retiro',
             'monto' => 'required|numeric|min:0.01',
-            'metodo_pago' => 'required|in:Efectivo,Cheque,Transferencia,Tarjeta',
+            'metodo_pago' => 'required|in:Efectivo,Cheque,Transferencia,Tarjeta,Zelle',
             'concepto' => 'required|string|max:255',
             'numero_referencia' => 'nullable|string|max:100',
             'banco_id' => 'nullable|exists:bancos,id',
@@ -141,6 +141,7 @@ class CajaController extends Controller
             'cheque' => floatval($request->input('monto_cheque', 0)),
             'transferencia' => floatval($request->input('monto_transferencia', 0)),
             'tarjeta' => floatval($request->input('monto_tarjeta', 0)),
+            'zelle' => floatval($request->input('monto_zelle', 0)),
         ];
 
         $resultado = $this->cajaService->validarCuadre($caja, $declarados);
@@ -158,6 +159,7 @@ class CajaController extends Controller
             'monto_cheque' => 'required|numeric|min:0',
             'monto_transferencia' => 'required|numeric|min:0',
             'monto_tarjeta' => 'required|numeric|min:0',
+            'monto_zelle' => 'required|numeric|min:0',
             'observaciones_cierre' => 'nullable|string|max:1000',
         ]);
 
@@ -170,6 +172,7 @@ class CajaController extends Controller
                 'cheque' => floatval($request->input('monto_cheque')),
                 'transferencia' => floatval($request->input('monto_transferencia')),
                 'tarjeta' => floatval($request->input('monto_tarjeta')),
+                'zelle' => floatval($request->input('monto_zelle')),
             ];
 
             // Validation strictly requires cuadre = true

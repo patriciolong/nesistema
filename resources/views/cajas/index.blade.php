@@ -162,14 +162,14 @@
                 </div>
 
                 <!-- Tarjetas Métricas en Tiempo Real -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                     <!-- Total General -->
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total en Caja (Global)</span>
                             <h4 class="text-2xl font-black text-slate-900 mt-1">${{ number_format($totales['total_general'], 2) }}</h4>
                         </div>
-                        <span class="text-xs text-slate-500 mt-2 font-medium">Efectivo + Tarjetas + Transf.</span>
+                        <span class="text-xs text-slate-500 mt-2 font-medium">Efectivo + Tarjetas + Zelle + Transf.</span>
                     </div>
 
                     <!-- Efectivo en Mano -->
@@ -197,6 +197,15 @@
                             <h4 class="text-2xl font-black text-blue-600 mt-1">${{ number_format($totales['transferencia'], 2) }}</h4>
                         </div>
                         <span class="text-xs text-slate-500 mt-2 font-medium">Depósitos y bancos</span>
+                    </div>
+
+                    <!-- Zelle -->
+                    <div class="bg-white p-5 rounded-2xl border border-violet-100 shadow-sm flex flex-col justify-between bg-violet-50/10">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-violet-600">Zelle</span>
+                            <h4 class="text-2xl font-black text-violet-600 mt-1">${{ number_format($totales['zelle'], 2) }}</h4>
+                        </div>
+                        <span class="text-xs text-slate-500 mt-2 font-medium">Pagos y confirmaciones Zelle</span>
                     </div>
 
                     <!-- Cheques -->
@@ -234,7 +243,7 @@
                                 @forelse ($movimientos as $mov)
                                     <tr class="hover:bg-slate-50/80 transition-colors">
                                         <td class="py-3.5 px-6 font-mono text-xs text-slate-500 whitespace-nowrap">
-                                            {{ $mov->created_at->format('h:i:s A') }}
+                                             {{ $mov->created_at->format('h:i:s A') }}
                                         </td>
                                         <td class="py-3.5 px-6">
                                             <div class="font-bold text-slate-800 text-xs">{{ $mov->concepto }}</div>
@@ -259,6 +268,8 @@
                                                 <span class="px-2.5 py-1 text-xs font-bold text-pink-700 bg-pink-50 border border-pink-200 rounded-lg">Tarjeta</span>
                                             @elseif($mov->metodo_pago === 'Transferencia')
                                                 <span class="px-2.5 py-1 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg">Transferencia</span>
+                                            @elseif($mov->metodo_pago === 'Zelle')
+                                                <span class="px-2.5 py-1 text-xs font-bold text-violet-700 bg-violet-50 border border-violet-200 rounded-lg">Zelle</span>
                                             @elseif($mov->metodo_pago === 'Cheque')
                                                 <span class="px-2.5 py-1 text-xs font-bold text-purple-700 bg-purple-50 border border-purple-200 rounded-lg">Cheque</span>
                                             @else
@@ -357,6 +368,7 @@
                                             <option value="Efectivo">Efectivo</option>
                                             <option value="Tarjeta">Tarjeta / POS</option>
                                             <option value="Transferencia">Transferencia</option>
+                                            <option value="Zelle">Zelle</option>
                                             <option value="Cheque">Cheque</option>
                                         </select>
                                     </div>
@@ -390,8 +402,8 @@
                                     </div>
 
                                     <div>
-                                        <label for="ref_mov" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Comprobante / Voucher / Factura (Opcional)</label>
-                                        <input type="text" name="numero_referencia" id="ref_mov" placeholder="Ej: Voucher #00234, Factura #12"
+                                        <label for="ref_mov" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Comprobante / Voucher / Factura / Ref (Opcional)</label>
+                                        <input type="text" name="numero_referencia" id="ref_mov" placeholder="Ej: Voucher #00234, Factura #12, Ref Zelle #489"
                                                class="w-full text-sm bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
                                     </div>
                                 </div>
@@ -422,7 +434,7 @@
                         const divBanco = document.getElementById('div_mov_banco');
 
                         if (divTarjeta) divTarjeta.classList.toggle('hidden', metodo !== 'Tarjeta');
-                        if (divBanco) divBanco.classList.toggle('hidden', metodo !== 'Transferencia' && metodo !== 'Cheque');
+                        if (divBanco) divBanco.classList.toggle('hidden', metodo !== 'Transferencia' && metodo !== 'Cheque' && metodo !== 'Zelle');
                     }
                 </script>
 

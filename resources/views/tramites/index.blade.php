@@ -882,6 +882,7 @@
                                 <option value="Efectivo">💵 Efectivo</option>
                                 <option value="Tarjeta">💳 Tarjeta (POS / Débito / Crédito)</option>
                                 <option value="Transferencia">🏦 Transferencia Bancaria</option>
+                                <option value="Zelle">⚡ Zelle</option>
                                 <option value="Cheque">📜 Cheque</option>
                             </select>
                         </div>
@@ -899,7 +900,7 @@
 
                         <!-- Selector de Banco (Condicional) -->
                         <div id="cobro_campo_banco" class="hidden">
-                            <label for="cobro_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Banco de Destino</label>
+                            <label for="cobro_banco_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Banco de Destino / Cuenta</label>
                             <select name="banco_id" id="cobro_banco_id" class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
                                 <option value="">Seleccione Banco...</option>
                                 @foreach($bancos as $ban)
@@ -910,8 +911,8 @@
 
                         <!-- Nro de Referencia -->
                         <div id="cobro_campo_referencia" class="hidden">
-                            <label for="cobro_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Voucher / Cheque / Transferencia</label>
-                            <input type="text" name="numero_referencia" id="cobro_numero_referencia" placeholder="Ej: Aut #893412 / Ref #0482"
+                            <label for="cobro_numero_referencia" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">N° Voucher / Ref / Confirmación</label>
+                            <input type="text" name="numero_referencia" id="cobro_numero_referencia" placeholder="Ej: Aut #893412 / Ref Zelle #0482"
                                    class="w-full text-sm bg-white border border-slate-300 rounded-xl px-4 py-2.5 font-medium text-slate-800">
                         </div>
 
@@ -1025,7 +1026,7 @@
             if (metodo === 'Tarjeta') {
                 campoTarjeta.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
-            } else if (metodo === 'Transferencia' || metodo === 'Cheque') {
+            } else if (metodo === 'Transferencia' || metodo === 'Cheque' || metodo === 'Zelle') {
                 campoBanco.classList.remove('hidden');
                 campoRef.classList.remove('hidden');
             }
